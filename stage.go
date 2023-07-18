@@ -45,7 +45,7 @@ var packages = []string{
 }
 
 var yayPackages = []string{
-	"xdg-desktop-hyprland-git",
+	"xdg-desktop-portal-hyprland-git",
 	"waybar-hyprland-no-systemd",
 }
 
