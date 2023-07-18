@@ -1,0 +1,23 @@
+{
+    "aspell.check": "off",
+    "autosu": true,
+    "colorscheme": "dukedark-tc",
+    "ft:go": {
+        "tabstospaces": false
+    },
+    "ft:lua": {
+        "tabsize": 4
+    },
+    "ft:markdown": {
+        "softwrap": true
+    },
+    "ft:tex": {
+        "softwrap": true
+    },
+    "indentchar": "+",
+    "linter": false,
+    "misspell": false,
+    "mkparents": true,
+    "tabsize": 2,
+    "tabstospaces": true
+}
