@@ -348,11 +348,13 @@ func main() {
 		fmt.Println("Performing Stage 3 ...")
 
 		homeDir, _ := os.UserHomeDir()
+		curDir, _ := os.Getwd()
 
 		// Installing yay
 		exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
 		exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
-		exe("makepkg -sip " + filepath.Join(homeDir, "/repos/yay/PKGBUILD"))
+		os.Chdir(filepath.Join(homeDir, "/repos/yay"))
+		exe("makepkg -si")
 
 		// Install yay packages
 		exe("yay -S " + strings.Join(yayPackages, " "))
@@ -363,8 +365,11 @@ func main() {
 		// Install dinit-userservd
 		exe("mkdir " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 		exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
-		exe("makepkg -sip " + filepath.Join(homeDir, "/repos/dinit-userservd/PKGBUILD"))
+		os.Chdir(filepath.Join(homeDir, "/repos/dinit-userservd"))
+		exe("makepkg -si")
 		exe("sudo dinitctl enable dinit-userservd")
+
+		os.Chdir(curDir)
 
 		exeAppendFile("sudo echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
 
