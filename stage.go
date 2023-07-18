@@ -41,6 +41,7 @@ var packages = []string{
 	"pavucontrol",
 	"pcmanfm",
 	"sddm-dinit",
+	"playerctl",
 }
 
 var yayPackages = []string{
@@ -92,6 +93,28 @@ func exe(command string) {
 		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
 		os.Exit(1)
 	}
+}
+
+func exeDontCare(command string) {
+	words := strings.Split(command, " ")
+	if len(words) == 0 {
+		fmt.Fprintln(os.Stderr, "No Command")
+		os.Exit(1)
+	}
+
+	var args []string
+	if len(words) > 1 {
+		args = words[1:]
+	}
+
+	cmd := exec.Command(words[0], args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	fmt.Println(command)
+
+	cmd.Run()
 }
 
 func exeAppendFile(command, filename string) {
@@ -360,7 +383,7 @@ func main() {
 		exe("yay -S " + strings.Join(yayPackages, " "))
 
 		// Remove unneeded packages
-		exe("yay -Rnsdd xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-desktop-portal-kde xdg-desktop-portal-wlr")
+		exeDontCare("yay -Rnsdd xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-desktop-portal-kde xdg-desktop-portal-wlr")
 
 		// Install dinit-userservd
 		exe("mkdir " + filepath.Join(homeDir, "/repos/dinit-userservd"))
