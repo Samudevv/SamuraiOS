@@ -205,10 +205,11 @@ func copyConfig(src string) {
 
 	dirname := filepath.Dir(dst)
 
-	exe("mkdir -p " + dirname)
 	if strings.HasPrefix(dst, homeDir) {
+		exe("mkdir -p " + dirname)
 		exe("cp " + src + " " + dst)
 	} else {
+		exe("sudo mkdir -p " + dirname)
 		exe("sudo cp " + src + " " + dst)
 	}
 }
