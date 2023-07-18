@@ -24,7 +24,6 @@ var packages = []string{
 	"dhcpcd",
 	"wpa_supplicant",
 	"connman-dinit",
-	"connman-gtk",
 	"go",
 
 	// Packages for good working system
@@ -59,7 +58,7 @@ func input() string {
 	if err != nil {
 		return ""
 	}
-	return text
+	return strings.TrimSuffix(text, "\n")
 }
 
 func inputWithDefault(defaultValue string) string {
@@ -107,7 +106,7 @@ func exeAppendFile(command, filename string) {
 		args = words[1:]
 	}
 
-	file, err := os.OpenFile(filename, os.O_APPEND, 0770)
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0770)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to open \"%s\" for \"%s\": %s\n", filename, command, err)
 		os.Exit(1)
@@ -159,8 +158,10 @@ func exeToString(command string) string {
 func copyConfig(src string) {
 	var dst string
 
+	homeDir, _ := os.UserHomeDir()
+
 	if strings.HasPrefix(src, "home/samurai") {
-		dst = strings.Replace(src, "home/samurai", "$HOME", 1)
+		dst = strings.Replace(src, "home/samurai", homeDir, 1)
 	} else {
 		dst = "/" + src
 	}
@@ -168,7 +169,7 @@ func copyConfig(src string) {
 	dirname := filepath.Dir(dst)
 
 	exe("mkdir -p " + dirname)
-	if strings.HasPrefix(dst, "$HOME") {
+	if strings.HasPrefix(dst, homeDir) {
 		exe("cp " + src + " " + dst)
 	} else {
 		exe("sudo cp " + src + " " + dst)
@@ -346,13 +347,12 @@ func main() {
 	} else if stage == 3 {
 		fmt.Println("Performing Stage 3 ...")
 
-		// Activate connman
-		exe("sudo dinitctl enable connmand")
+		homeDir, _ := os.UserHomeDir()
 
 		// Installing yay
-		exe("mkdir -p $HOME/repos/yay")
-		exe("git clone https://aur.archlinux.org/yay.git $HOME/repos/yay")
-		exe("makepkg -sip $HOME/repos/yay/PKGBUILD")
+		exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
+		exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
+		exe("makepkg -sip " + filepath.Join(homeDir, "/repos/yay/PKGBUILD"))
 
 		// Install yay packages
 		exe("yay -S " + strings.Join(yayPackages, " "))
@@ -361,9 +361,9 @@ func main() {
 		exe("yay -Rnsdd xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-desktop-portal-kde xdg-desktop-portal-wlr")
 
 		// Install dinit-userservd
-		exe("mkdir $HOME/repos/dinit-userservd")
-		exe("git clone https://github.com/Xynonners/dinit-userservd.git $HOME/repos/dinit-userservd")
-		exe("makepkg -sip $HOME/repos/dinit-userservd/PKGBUILD")
+		exe("mkdir " + filepath.Join(homeDir, "/repos/dinit-userservd"))
+		exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
+		exe("makepkg -sip " + filepath.Join(homeDir, "/repos/dinit-userservd/PKGBUILD"))
 		exe("sudo dinitctl enable dinit-userservd")
 
 		exeAppendFile("sudo echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")

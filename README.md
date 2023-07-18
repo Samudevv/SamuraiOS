@@ -9,18 +9,18 @@ An Artix Linux configuration for Samurais 👹 and Ninjas 🥷
 loadkeys de
 ```
 
-2. Partition the disk
+2. Partition the disk and create file system
 
 3. Mount partitions
 
 4. Connect to the internet
 
-5. Install go on the host
+5. Install go and git on the host
 ```
-pacman -S go
+pacman -Sy go git
 ```
 
-6. Execute `go run stage.go 1`
+1. Execute `go run stage.go 1`
 
 ## Stage 2
 
@@ -28,7 +28,7 @@ pacman -S go
 
 8. Make user able to use `sudo`
 ```
-visudo # Uncomment the line with '%wheel ALL=(ALL:ALL) ALL'
+EDITOR=micro visudo # Uncomment the line with '%wheel ALL=(ALL:ALL) ALL'
 usermod -aG wheel yourusername
 ```
 
@@ -41,9 +41,11 @@ reboot
 
 ## Stage 3
 
-10. After logging in execute `go run stage.go 3`
+1.  After logging in execute `sudo dinitctl enable connmand`
 
-11. Logout
+2. Execute `go run stage.go 3`
+
+3.  Logout
 
 # Stage 4
 
