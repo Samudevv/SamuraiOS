@@ -117,6 +117,20 @@ func exeDontCare(command string) {
 	cmd.Run()
 }
 
+func exeArgs(args ...string) {
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	fmt.Println(strings.Join(args, " "))
+
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", strings.Join(args, " "), err)
+		os.Exit(1)
+	}
+}
+
 func exeAppendFile(command, filename string) {
 	words := strings.Split(command, " ")
 	if len(words) == 0 {
@@ -394,7 +408,7 @@ func main() {
 
 		os.Chdir(curDir)
 
-		exeAppendFile("sudo echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
+		exeArgs("sudo", "go", "run", "append.go", "echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
 
 		// Copy configuration files
 		copyConfig("etc/sddm.conf.d/default.conf")
