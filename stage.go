@@ -42,6 +42,8 @@ var packages = []string{
 	"pcmanfm",
 	"sddm-dinit",
 	"playerctl",
+	"mpv",
+	"libmpeg2",
 }
 
 var yayPackages = []string{
@@ -421,7 +423,6 @@ func main() {
 		copyConfig("home/samurai/.config/dinit.d/dunst")
 		copyConfig("home/samurai/.config/dinit.d/pipewire")
 		copyConfig("home/samurai/.config/dinit.d/pipewire-pulse")
-		copyConfig("home/samurai/.config/dinit.d/wireplumber")
 
 		copyConfig("home/samurai/.config/hypr/hyprland.conf")
 		copyConfig("home/samurai/.config/micro/bindings.json")
@@ -437,7 +438,6 @@ func main() {
 		exe("dinitctl enable dunst")
 		exe("dinitctl enable pipewire")
 		exe("dinitctl enable pipewire-pulse")
-		exe("dinitctl enable wireplumber")
 
 		fmt.Println("Stage 4 Done")
 	} else {
