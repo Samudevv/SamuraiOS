@@ -395,7 +395,7 @@ func main() {
 		exe("makepkg -si --noconfirm")
 
 		// Install yay packages
-		exe("yay -S " + strings.Join(yayPackages, " "))
+		exe("yay -S --noconfirm " + strings.Join(yayPackages, " "))
 
 		// Remove unneeded packages
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
