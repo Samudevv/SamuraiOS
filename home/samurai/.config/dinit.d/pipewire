@@ -1,5 +1,5 @@
-type = process
+type         = process
 load-options = sub-vars
-logfile = $HOME/.local/share/dinit/pipewire.log
-command = pipewire
-restart = true
+logfile      = /home/samurai/.local/share/dinit/pipewire.log
+command      = /usr/bin/pipewire
+restart      = true

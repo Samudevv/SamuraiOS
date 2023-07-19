@@ -7,10 +7,22 @@ import (
 	"strings"
 )
 
+func main() {
+	if len(os.Args) != 3 {
+		logError("Invalid Arguments")
+		os.Exit(1)
+	}
+
+	command := os.Args[1]
+	file := os.Args[2]
+
+	exeAppendFile(command, file)
+}
+
 func exeAppendFile(command, filename string) {
 	words := strings.Split(command, " ")
 	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
+		logError("No Command")
 		os.Exit(1)
 	}
 
@@ -21,7 +33,7 @@ func exeAppendFile(command, filename string) {
 
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0770)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to open \"%s\" for \"%s\": %s\n", filename, command, err)
+		logError("Failed to open \"", filename, "\" for \"", command, "\": ", err)
 		os.Exit(1)
 	}
 	defer file.Close()
@@ -31,22 +43,20 @@ func exeAppendFile(command, filename string) {
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
-	fmt.Println(fmt.Sprint(command, " >> ", filename))
+	logScript(command, " >> ", filename)
 
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
+		logError("\"", command, "\" failed: ", err)
 		os.Exit(1)
 	}
 }
 
-func main() {
-	if len(os.Args) != 3 {
-		fmt.Fprintln(os.Stderr, "Invalid Arguments")
-		os.Exit(1)
-	}
+func logError(msg ...any) {
+	msgStr := fmt.Sprint(msg...)
+	fmt.Fprintf(os.Stderr, "\n\n\033[30;41m[ERROR]\033[0;33m %s\033[0m\n\n", msgStr)
+}
 
-	command := os.Args[1]
-	file := os.Args[2]
-
-	exeAppendFile(command, file)
+func logScript(msg ...any) {
+	msgStr := fmt.Sprint(msg...)
+	fmt.Printf("\033[30;47m[CALL]\033[0;33m %s\033[0m\n", msgStr)
 }

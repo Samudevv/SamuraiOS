@@ -231,12 +231,13 @@ func main() {
 		exe("usermod -aG wheel " + userName)
 
 		logInfo("Stage 2 Done")
-		logInfo("Now reboot and boot into new drive and execute \"sudo dinitctl enable connmand\" to activate the network daemon. After that reconnect to the internet and execute \"go run stage.go 3\"")
+		logInfo("Now run \"EDITOR=micro visudo\" and uncomment the line saying \"%wheel ALL=(ALL:ALL) ALL\" to allow the new user to use sudo and reboot into the new drive and execute \"sudo dinitctl enable connmand\" to activate the network daemon. After that reconnect to the internet and execute \"go run stage.go 3\"")
 	} else if stage == 3 {
 		logInfo("Performing Stage 3 ...")
 
 		homeDir, _ := os.UserHomeDir()
 		curDir, _ := os.Getwd()
+		curUser, _ := user.Current()
 
 		// Installing yay
 		logInfo("Installing yay ...")
@@ -279,13 +280,19 @@ func main() {
 		copyConfig("home/samurai/.config/waybar/config")
 		copyConfig("home/samurai/.config/waybar/style.css")
 
+		exe("go run replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
+		exe("go run replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
+
 		logInfo("Stage 3 Done")
 		logInfo("Now logout and login again and execute \"go run stage.go 4\"")
 	} else if stage == 4 {
 		logInfo("Performing Stage 4 ...")
 
+		homeDir, _ := os.UserHomeDir()
+
 		// Activate dinit user services
 		logInfo("Activating dinit user services ...")
+		exe("mkdir -p " + filepath.Join(homeDir, "/.local/share/dinit"))
 		exe("dinitctl enable pipewire")
 		exe("dinitctl enable pipewire-pulse")
 
@@ -390,7 +397,7 @@ func exeArgs(args ...string) {
 	logScript(strings.Join(args, " "))
 
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", strings.Join(args, " "), err)
+		logError("\"", strings.Join(args, " "), "\" failed: ", err)
 		os.Exit(1)
 	}
 }
