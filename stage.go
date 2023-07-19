@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -227,8 +228,10 @@ func main() {
 			hosts.WriteString("127.0.1.1\t" + hostName + ".localdomain\t" + hostName + "\n")
 		}
 
+		exe("usermod -aG wheel " + userName)
+
 		logInfo("Stage 2 Done")
-		logInfo("Now reboot and boot into new drive")
+		logInfo("Now reboot and boot into new drive and execute \"sudo dinitctl enable connmand\" to activate the network daemon. After that reconnect to the internet and execute \"go run stage.go 3\"")
 	} else if stage == 3 {
 		logInfo("Performing Stage 3 ...")
 
@@ -286,7 +289,11 @@ func main() {
 		exe("dinitctl enable pipewire")
 		exe("dinitctl enable pipewire-pulse")
 
+		currentUser, _ := user.Current()
+		exe("sudo go run replace.go /etc/sddm.conf.d/default.conf samurai " + currentUser.Username)
+
 		logInfo("Stage 4 Done")
+		logInfo("The final step is to enable sddm which will launch you into hyprland: \"sudo dinitctl enable sddm\"")
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
@@ -296,9 +303,12 @@ func main() {
 		logError("Task not failed successfully")
 		exe("rm -rf /tmp/stage_test")
 
-		prompt("Create which folder")
-		folderName := input()
+		prompt("Create which folder (/tmp/another_samurai)")
+		folderName := inputWithDefault("/tmp/another/samurai")
 		exe("mkdir -p " + folderName)
+
+		exeAppendFile("echo Hello World", "/tmp/hello_samurai")
+		exe("go run replace.go /tmp/hello_samurai Hello Greetings")
 
 		logInfo("Tests Done")
 	} else {
