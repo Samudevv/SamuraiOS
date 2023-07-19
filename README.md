@@ -47,7 +47,7 @@ reboot
 
 3.  Logout
 
-# Stage 4
+## Stage 4
 
 12. After logging in again execute `go run stage.go 4`
 
