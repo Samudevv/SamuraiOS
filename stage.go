@@ -49,6 +49,7 @@ var packages = []string{
 var yayPackages = []string{
 	"xdg-desktop-portal-hyprland-git",
 	"waybar-hyprland-no-systemd",
+	"connman-gtk",
 }
 
 var dinitServices = []string{
