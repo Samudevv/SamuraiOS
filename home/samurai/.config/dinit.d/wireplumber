@@ -1,3 +1,0 @@
-type = process
-command = wireplumber
-depends-on = pipewire

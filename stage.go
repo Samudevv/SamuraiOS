@@ -55,22 +55,23 @@ var yayPackages = []string{
 func main() {
 	// Determine stage
 	if len(os.Args) != 2 {
-		fmt.Fprintln(os.Stderr, "Invalid Arguments")
+		logError("Invalid Arguments")
 		os.Exit(1)
 	}
 
 	stage, err := strconv.ParseUint(os.Args[1], 10, 64)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Failed to parse stage argument: ", err)
+		logError("Failed to parse stage argument: ", err)
 		os.Exit(1)
 	}
 
 	if stage == 1 {
-		fmt.Println("Performing Stage 1 ...")
+		logInfo("Performing Stage 1 ...")
 
 		// Update the system clock
 		exe("dinitctl start ntpd")
 
+		logInfo("Refreshing new mirrorlist ...")
 		// Install rankmirrors and create better mirrorlist
 		exe("pacman -S --noconfirm pacman-contrib")
 
@@ -78,7 +79,7 @@ func main() {
 		{
 			mirrorlist, err := os.Create("/etc/pacman.d/mirrorlist")
 			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
+				logError(err)
 				os.Exit(1)
 			}
 
@@ -87,7 +88,8 @@ func main() {
 		}
 
 		// Install base system
-		fmt.Println("Is UEFI yes/no (no): ")
+		logInfo("Installing base packages ...")
+		prompt("Is UEFI yes|no (no)")
 		isUEFIStr := inputWithDefault("no")
 		isUEFI := strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
 		if isUEFI {
@@ -99,16 +101,18 @@ func main() {
 		exeAppendFile("fstabgen -U /mnt", "/mnt/etc/fstab")
 
 		// chroot into system
-		exe("artix-chroot /mnt")
+		logInfo("Stage 1 Done")
+		logInfo("Now clone the repo again and execute \"go run stage.go 2\"")
 
-		fmt.Println("Stage 1 Done")
+		exe("artix-chroot /mnt")
 	} else if stage == 2 {
-		fmt.Println("Performing Stage 2 ...")
+		logInfo("Performing Stage 2 ...")
 
 		// set the time zone
-		fmt.Println("Region (Europe): ")
+		logInfo("Setting locale ...")
+		prompt("Region (Europe)")
 		region := inputWithDefault("Europe")
-		fmt.Println("City (Vienna): ")
+		prompt("City (Vienna)")
 		city := inputWithDefault("Vienna")
 
 		exe(fmt.Sprint("ln -sf /usr/share/zoneinfo/", region, "/", city, " /etc/localtime"))
@@ -116,7 +120,7 @@ func main() {
 		exe("hwclock --systohc")
 
 		// Set locale
-		fmt.Println("Locale (comma seperated) (de_AT.UTF-8, en_GB.UTF-8): ")
+		prompt("Locale (comma seperated) (de_AT.UTF-8, en_GB.UTF-8)")
 		localesStr := inputWithDefault("de_AT.UTF-8, en_GB.UTF-8")
 		locales := strings.Split(localesStr, ",")
 		for i := 0; i < len(locales); i++ {
@@ -126,7 +130,7 @@ func main() {
 		{
 			localeGen, err := os.Open("/etc/locale.gen")
 			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
+				logError(err)
 				os.Exit(1)
 			}
 
@@ -155,7 +159,7 @@ func main() {
 
 			localeGen, err = os.Create("/etc/locale.gen")
 			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
+				logError(err)
 				os.Exit(1)
 			}
 
@@ -167,15 +171,19 @@ func main() {
 		exeAppendFile("echo export LANG=\""+locales[0]+"\"", "/etc/locale.conf")
 
 		// Boot Loader
-		fmt.Println("Is UEFI yes/no (no): ")
+		logInfo("Installing boot loader (grub) ...")
+		prompt("Is UEFI yes|no (no)")
 		isUEFIStr := inputWithDefault("no")
 		isUEFI := strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
 
 		if isUEFI {
 			exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
 		} else {
-			fmt.Println("Device: ")
-			device := input()
+			prompt("Device")
+			var device string
+			for device == "" {
+				device = input()
+			}
 
 			exe("grub-install --recheck " + device)
 		}
@@ -183,17 +191,17 @@ func main() {
 		exe("grub-mkconfig -o /boot/grub/grub.cfg")
 
 		// Passwords, Username and Hostname
-		fmt.Println("Enter root password")
+		logInfo("Enter root password")
 		exe("passwd")
 
-		fmt.Println("Username (ninja): ")
+		prompt("Username (ninja)")
 		userName := inputWithDefault("ninja")
 		exe("useradd -m " + userName)
 
-		fmt.Println("Enter password for " + userName)
+		logInfo("Enter password for ", userName)
 		exe("passwd " + userName)
 
-		fmt.Println("Hostname (samurai): ")
+		prompt("Hostname (samurai)")
 		hostName := inputWithDefault("samurai")
 
 		{
@@ -219,20 +227,23 @@ func main() {
 			hosts.WriteString("127.0.1.1\t" + hostName + ".localdomain\t" + hostName + "\n")
 		}
 
-		fmt.Println("Stage 2 Done")
+		logInfo("Stage 2 Done")
+		logInfo("Now reboot and boot into new drive")
 	} else if stage == 3 {
-		fmt.Println("Performing Stage 3 ...")
+		logInfo("Performing Stage 3 ...")
 
 		homeDir, _ := os.UserHomeDir()
 		curDir, _ := os.Getwd()
 
 		// Installing yay
+		logInfo("Installing yay ...")
 		exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
 		exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
 		os.Chdir(filepath.Join(homeDir, "/repos/yay"))
 		exe("makepkg -si --noconfirm")
 
 		// Install yay packages
+		logInfo("Installing AUR packages ...")
 		exe("yay -S --noconfirm " + strings.Join(yayPackages, " "))
 
 		// Remove unneeded packages
@@ -242,21 +253,20 @@ func main() {
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
 		// Install dinit-userservd
+		logInfo("Installing dinit user service ...")
 		exe("mkdir " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 		exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 		os.Chdir(filepath.Join(homeDir, "/repos/dinit-userservd"))
 		exe("makepkg -si --noconfirm")
 		exe("sudo dinitctl enable dinit-userservd")
-
 		os.Chdir(curDir)
-
 		exeArgs("sudo", "go", "run", "append.go", "echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
 
 		// Copy configuration files
+		logInfo("Copying configuration files ...")
 		copyConfig("etc/sddm.conf.d/default.conf")
 
 		exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d/boot.d"))
-		copyConfig("home/samurai/.config/dinit.d/dunst")
 		copyConfig("home/samurai/.config/dinit.d/pipewire")
 		copyConfig("home/samurai/.config/dinit.d/pipewire-pulse")
 
@@ -266,18 +276,33 @@ func main() {
 		copyConfig("home/samurai/.config/waybar/config")
 		copyConfig("home/samurai/.config/waybar/style.css")
 
-		fmt.Println("Stage 3 Done")
+		logInfo("Stage 3 Done")
+		logInfo("Now logout and login again and execute \"go run stage.go 4\"")
 	} else if stage == 4 {
-		fmt.Println("Performing Stage 4")
+		logInfo("Performing Stage 4 ...")
 
 		// Activate dinit user services
-		exe("dinitctl enable dunst")
+		logInfo("Activating dinit user services ...")
 		exe("dinitctl enable pipewire")
 		exe("dinitctl enable pipewire-pulse")
 
-		fmt.Println("Stage 4 Done")
+		logInfo("Stage 4 Done")
+	} else if stage == 255 {
+		// Testing
+		logInfo("Performing Tests ...")
+
+		exe("mkdir -p /tmp/stage_test")
+		exe("git clone https://github.com/PucklaJ/SamuraiOS.git /tmp/stage_test")
+		logError("Task not failed successfully")
+		exe("rm -rf /tmp/stage_test")
+
+		prompt("Create which folder")
+		folderName := input()
+		exe("mkdir -p " + folderName)
+
+		logInfo("Tests Done")
 	} else {
-		fmt.Fprintln(os.Stderr, "Invalid Stage", stage)
+		logError("Invalid Stage ", stage)
 		os.Exit(1)
 	}
 }
@@ -302,7 +327,7 @@ func inputWithDefault(defaultValue string) string {
 func exe(command string) {
 	words := strings.Split(command, " ")
 	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
+		logError("No Command")
 		os.Exit(1)
 	}
 
@@ -316,10 +341,10 @@ func exe(command string) {
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
-	fmt.Println(command)
+	logScript(command)
 
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
+		logError("\"", command, "\" failed: ", err)
 		os.Exit(1)
 	}
 }
@@ -327,7 +352,7 @@ func exe(command string) {
 func exeDontCare(command string) {
 	words := strings.Split(command, " ")
 	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
+		logError("No Command")
 		os.Exit(1)
 	}
 
@@ -341,7 +366,7 @@ func exeDontCare(command string) {
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
-	fmt.Println(command)
+	logScript(command)
 
 	cmd.Run()
 }
@@ -352,7 +377,7 @@ func exeArgs(args ...string) {
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
-	fmt.Println(strings.Join(args, " "))
+	logScript(strings.Join(args, " "))
 
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", strings.Join(args, " "), err)
@@ -363,7 +388,7 @@ func exeArgs(args ...string) {
 func exeAppendFile(command, filename string) {
 	words := strings.Split(command, " ")
 	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
+		logError("No Command")
 		os.Exit(1)
 	}
 
@@ -374,7 +399,7 @@ func exeAppendFile(command, filename string) {
 
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0770)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to open \"%s\" for \"%s\": %s\n", filename, command, err)
+		logError("Failed to open \"", filename, "\" for \"", command, "\": ", err)
 		os.Exit(1)
 	}
 	defer file.Close()
@@ -384,10 +409,10 @@ func exeAppendFile(command, filename string) {
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
-	fmt.Println(fmt.Sprint(command, " >> ", filename))
+	logScript(command, " >> ", filename)
 
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
+		logError("\"", command, "\" failed: ", err)
 		os.Exit(1)
 	}
 }
@@ -396,6 +421,7 @@ func exeToString(command string) string {
 	words := strings.Split(command, " ")
 	if len(words) == 0 {
 		fmt.Fprintln(os.Stderr, "No Command")
+		logError("No Command")
 		os.Exit(1)
 	}
 
@@ -411,10 +437,10 @@ func exeToString(command string) string {
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
-	fmt.Println(command)
+	logScript(command)
 
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
+		logError("\"", command, "\" failed: ", err)
 		os.Exit(1)
 	}
 
@@ -441,4 +467,24 @@ func copyConfig(src string) {
 		exe("sudo mkdir -p " + dirname)
 		exe("sudo cp " + src + " " + dst)
 	}
+}
+
+func logInfo(msg ...any) {
+	msgStr := fmt.Sprint(msg...)
+	fmt.Printf("\n\n\033[30;46m[INFO]\033[0;33m %s\033[0m\n\n", msgStr)
+}
+
+func logError(msg ...any) {
+	msgStr := fmt.Sprint(msg...)
+	fmt.Fprintf(os.Stderr, "\n\n\033[30;41m[ERROR]\033[0;33m %s\033[0m\n\n", msgStr)
+}
+
+func logScript(msg ...any) {
+	msgStr := fmt.Sprint(msg...)
+	fmt.Printf("\033[30;47m[CALL]\033[0;33m %s\033[0m\n", msgStr)
+}
+
+func prompt(msg ...any) {
+	msgStr := fmt.Sprint(msg...)
+	fmt.Printf("\033[30;47m[PROMPT]\033[0;33m %s: \033[0m", msgStr)
 }
