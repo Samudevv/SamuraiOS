@@ -52,171 +52,6 @@ var yayPackages = []string{
 	"connman-gtk",
 }
 
-var dinitServices = []string{
-	"connmand",
-}
-
-func input() string {
-	reader := bufio.NewReader(os.Stdin)
-	text, err := reader.ReadString('\n')
-	if err != nil {
-		return ""
-	}
-	return strings.TrimSuffix(text, "\n")
-}
-
-func inputWithDefault(defaultValue string) string {
-	text := input()
-	if text == "" {
-		return defaultValue
-	}
-	return text
-}
-
-func exe(command string) {
-	words := strings.Split(command, " ")
-	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
-		os.Exit(1)
-	}
-
-	var args []string
-	if len(words) > 1 {
-		args = words[1:]
-	}
-
-	cmd := exec.Command(words[0], args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-
-	fmt.Println(command)
-
-	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
-		os.Exit(1)
-	}
-}
-
-func exeDontCare(command string) {
-	words := strings.Split(command, " ")
-	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
-		os.Exit(1)
-	}
-
-	var args []string
-	if len(words) > 1 {
-		args = words[1:]
-	}
-
-	cmd := exec.Command(words[0], args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-
-	fmt.Println(command)
-
-	cmd.Run()
-}
-
-func exeArgs(args ...string) {
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-
-	fmt.Println(strings.Join(args, " "))
-
-	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", strings.Join(args, " "), err)
-		os.Exit(1)
-	}
-}
-
-func exeAppendFile(command, filename string) {
-	words := strings.Split(command, " ")
-	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
-		os.Exit(1)
-	}
-
-	var args []string
-	if len(words) > 1 {
-		args = words[1:]
-	}
-
-	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0770)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to open \"%s\" for \"%s\": %s\n", filename, command, err)
-		os.Exit(1)
-	}
-	defer file.Close()
-
-	cmd := exec.Command(words[0], args...)
-	cmd.Stdout = file
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-
-	fmt.Println(fmt.Sprint(command, " >> ", filename))
-
-	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
-		os.Exit(1)
-	}
-}
-
-func exeToString(command string) string {
-	words := strings.Split(command, " ")
-	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
-		os.Exit(1)
-	}
-
-	var args []string
-	if len(words) > 1 {
-		args = words[1:]
-	}
-
-	var builder strings.Builder
-
-	cmd := exec.Command(words[0], args...)
-	cmd.Stdout = &builder
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-
-	fmt.Println(command)
-
-	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
-		os.Exit(1)
-	}
-
-	return builder.String()
-}
-
-func copyConfig(src string) {
-	var dst string
-
-	homeDir, _ := os.UserHomeDir()
-
-	if strings.HasPrefix(src, "home/samurai") {
-		dst = strings.Replace(src, "home/samurai", homeDir, 1)
-	} else {
-		dst = "/" + src
-	}
-
-	dirname := filepath.Dir(dst)
-
-	if strings.HasPrefix(dst, homeDir) {
-		exe("mkdir -p " + dirname)
-		exe("cp " + src + " " + dst)
-	} else {
-		exe("sudo mkdir -p " + dirname)
-		exe("sudo cp " + src + " " + dst)
-	}
-}
-
 func main() {
 	// Determine stage
 	if len(os.Args) != 2 {
@@ -444,5 +279,166 @@ func main() {
 	} else {
 		fmt.Fprintln(os.Stderr, "Invalid Stage", stage)
 		os.Exit(1)
+	}
+}
+
+func input() string {
+	reader := bufio.NewReader(os.Stdin)
+	text, err := reader.ReadString('\n')
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSuffix(text, "\n")
+}
+
+func inputWithDefault(defaultValue string) string {
+	text := input()
+	if text == "" {
+		return defaultValue
+	}
+	return text
+}
+
+func exe(command string) {
+	words := strings.Split(command, " ")
+	if len(words) == 0 {
+		fmt.Fprintln(os.Stderr, "No Command")
+		os.Exit(1)
+	}
+
+	var args []string
+	if len(words) > 1 {
+		args = words[1:]
+	}
+
+	cmd := exec.Command(words[0], args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	fmt.Println(command)
+
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
+		os.Exit(1)
+	}
+}
+
+func exeDontCare(command string) {
+	words := strings.Split(command, " ")
+	if len(words) == 0 {
+		fmt.Fprintln(os.Stderr, "No Command")
+		os.Exit(1)
+	}
+
+	var args []string
+	if len(words) > 1 {
+		args = words[1:]
+	}
+
+	cmd := exec.Command(words[0], args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	fmt.Println(command)
+
+	cmd.Run()
+}
+
+func exeArgs(args ...string) {
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	fmt.Println(strings.Join(args, " "))
+
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", strings.Join(args, " "), err)
+		os.Exit(1)
+	}
+}
+
+func exeAppendFile(command, filename string) {
+	words := strings.Split(command, " ")
+	if len(words) == 0 {
+		fmt.Fprintln(os.Stderr, "No Command")
+		os.Exit(1)
+	}
+
+	var args []string
+	if len(words) > 1 {
+		args = words[1:]
+	}
+
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0770)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to open \"%s\" for \"%s\": %s\n", filename, command, err)
+		os.Exit(1)
+	}
+	defer file.Close()
+
+	cmd := exec.Command(words[0], args...)
+	cmd.Stdout = file
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	fmt.Println(fmt.Sprint(command, " >> ", filename))
+
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
+		os.Exit(1)
+	}
+}
+
+func exeToString(command string) string {
+	words := strings.Split(command, " ")
+	if len(words) == 0 {
+		fmt.Fprintln(os.Stderr, "No Command")
+		os.Exit(1)
+	}
+
+	var args []string
+	if len(words) > 1 {
+		args = words[1:]
+	}
+
+	var builder strings.Builder
+
+	cmd := exec.Command(words[0], args...)
+	cmd.Stdout = &builder
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	fmt.Println(command)
+
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "\"%s\" failed: %s\n", command, err)
+		os.Exit(1)
+	}
+
+	return builder.String()
+}
+
+func copyConfig(src string) {
+	var dst string
+
+	homeDir, _ := os.UserHomeDir()
+
+	if strings.HasPrefix(src, "home/samurai") {
+		dst = strings.Replace(src, "home/samurai", homeDir, 1)
+	} else {
+		dst = "/" + src
+	}
+
+	dirname := filepath.Dir(dst)
+
+	if strings.HasPrefix(dst, homeDir) {
+		exe("mkdir -p " + dirname)
+		exe("cp " + src + " " + dst)
+	} else {
+		exe("sudo mkdir -p " + dirname)
+		exe("sudo cp " + src + " " + dst)
 	}
 }
