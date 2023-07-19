@@ -303,7 +303,7 @@ func main() {
 		logError("Task not failed successfully")
 		exe("rm -rf /tmp/stage_test")
 
-		prompt("Create which folder (/tmp/another_samurai)")
+		prompt("Create which folder (/tmp/another/samurai)")
 		folderName := inputWithDefault("/tmp/another/samurai")
 		exe("mkdir -p " + folderName)
 

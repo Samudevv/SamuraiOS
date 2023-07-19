@@ -21,6 +21,14 @@ ip link set wlan0 up # Replace wlan0 with the interface name. List all with "ip 
 wpa_passphrase 'SSID' > /etc/wpa_supplicant.conf # Replace SSID with the name of your WiFi and enter the passphrase
 wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf # Replace wlan0 with your interface
 dhcpcd wlan0 # Here again replace wlan0 with the name of your interface
+
+# Using connmanctl
+connmanctl
+connmanctl> scan wifi
+connmanctl> services
+connmanctl> agent on
+connmanctl> connect wifi_237sdf98734sdf987wfsdf98734_managed_psk
+connmanctl> quit
 ```
 5. Install go and git on the host
 ```
