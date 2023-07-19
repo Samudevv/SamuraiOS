@@ -234,7 +234,7 @@ func main() {
 		exe("dinitctl start ntpd")
 
 		// Install rankmirrors and create better mirrorlist
-		exe("pacman -S pacman-contrib")
+		exe("pacman -S --noconfirm pacman-contrib")
 
 		newMirrorlist := exeToString("rankmirrors -n 5 /etc/pacman.d/mirrorlist")
 		{
@@ -392,19 +392,22 @@ func main() {
 		exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
 		exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
 		os.Chdir(filepath.Join(homeDir, "/repos/yay"))
-		exe("makepkg -si")
+		exe("makepkg -si --noconfirm")
 
 		// Install yay packages
 		exe("yay -S " + strings.Join(yayPackages, " "))
 
 		// Remove unneeded packages
-		exeDontCare("yay -Rnsdd xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-desktop-portal-kde xdg-desktop-portal-wlr")
+		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
+		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
+		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
+		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
 		// Install dinit-userservd
 		exe("mkdir " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 		exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 		os.Chdir(filepath.Join(homeDir, "/repos/dinit-userservd"))
-		exe("makepkg -si")
+		exe("makepkg -si --noconfirm")
 		exe("sudo dinitctl enable dinit-userservd")
 
 		os.Chdir(curDir)
@@ -414,6 +417,7 @@ func main() {
 		// Copy configuration files
 		copyConfig("etc/sddm.conf.d/default.conf")
 
+		exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d/boot.d"))
 		copyConfig("home/samurai/.config/dinit.d/dunst")
 		copyConfig("home/samurai/.config/dinit.d/pipewire")
 		copyConfig("home/samurai/.config/dinit.d/pipewire-pulse")
