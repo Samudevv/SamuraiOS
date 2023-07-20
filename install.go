@@ -51,6 +51,7 @@ var yayPackages = []string{
 	"xdg-desktop-portal-hyprland-git",
 	"waybar-hyprland-no-systemd",
 	"connman-gtk",
+	"hyprpaper-git",
 }
 
 func main() {
@@ -291,6 +292,9 @@ func main() {
 		copyConfig("home/samurai/.config/dinit.d/pipewire-pulse")
 
 		copyConfig("home/samurai/.config/hypr/hyprland.conf")
+		copyConfig("home/samurai/.config/hypr/hyprpaper.conf")
+		copyConfig("home/samurai/.config/hypr/wallpapers/fuji-main.jpg")
+		copyConfig("home/samurai/.config/hypr/wallpapers/fuji-side.jpg")
 		copyConfig("home/samurai/.config/micro/bindings.json")
 		copyConfig("home/samurai/.config/micro/settings.json")
 		copyConfig("home/samurai/.config/waybar/config")
