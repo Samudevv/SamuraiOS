@@ -34,6 +34,8 @@ var packages = []string{
 	"pipewire-pulse",
 	"pipewire-alsa",
 	"noto-fonts",
+	"noto-fonts-emoji",
+	"noto-fonts-cjk",
 	"hyprland",
 	"kitty",
 	"dunst",
