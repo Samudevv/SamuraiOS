@@ -101,11 +101,15 @@ func main() {
 		// fstabgen
 		exeAppendFile("fstabgen -U /mnt", "/mnt/etc/fstab")
 
+		// Copying repository into system
+		exe("cp -r . /mnt/SamuraiOS")
+		exe("chmod +x /mnt/SamuraiOS/scripts/install2.sh")
+
 		// chroot into system
 		logInfo("Stage 1 Done")
-		logInfo("Now clone the repo again and execute \"go run stage.go 2\"")
+		logInfo("Now using chroot to go into /mnt ...")
 
-		exe("artix-chroot /mnt")
+		exeArgs("artix-chroot", "/mnt", "/SamuraiOS/scripts/install2.sh")
 	} else if stage == 2 {
 		logInfo("Performing Stage 2 ...")
 
@@ -180,7 +184,8 @@ func main() {
 		if isUEFI {
 			exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
 		} else {
-			prompt("Device")
+			exe("lsblk")
+			prompt("What is your device? (e.g /dev/sda)")
 			var device string
 			for device == "" {
 				device = input()
@@ -229,9 +234,10 @@ func main() {
 		}
 
 		exe("usermod -aG wheel " + userName)
+		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# %wheel ALL=(ALL:ALL) ALL", "%wheel ALL=(ALL:ALL) ALL")
 
 		logInfo("Stage 2 Done")
-		logInfo("Now run \"EDITOR=micro visudo\" and uncomment the line saying \"%wheel ALL=(ALL:ALL) ALL\" to allow the new user to use sudo and reboot into the new drive and execute \"sudo dinitctl enable connmand\" to activate the network daemon. After that reconnect to the internet and execute \"go run stage.go 3\"")
+		logInfo("Reboot into the new drive and execute \"sudo dinitctl enable connmand\" to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
 	} else if stage == 3 {
 		logInfo("Performing Stage 3 ...")
 
@@ -264,7 +270,7 @@ func main() {
 		exe("makepkg -si --noconfirm")
 		exe("sudo dinitctl enable dinit-userservd")
 		os.Chdir(curDir)
-		exeArgs("sudo", "go", "run", "append.go", "echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
+		exeArgs("sudo", "go", "run", "scripts/append.go", "echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
 
 		// Copy configuration files
 		logInfo("Copying configuration files ...")
@@ -280,11 +286,11 @@ func main() {
 		copyConfig("home/samurai/.config/waybar/config")
 		copyConfig("home/samurai/.config/waybar/style.css")
 
-		exe("go run replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
-		exe("go run replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
+		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
+		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
 
 		logInfo("Stage 3 Done")
-		logInfo("Now logout and login again and execute \"go run stage.go 4\"")
+		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
 	} else if stage == 4 {
 		logInfo("Performing Stage 4 ...")
 
@@ -297,7 +303,7 @@ func main() {
 		exe("dinitctl enable pipewire-pulse")
 
 		currentUser, _ := user.Current()
-		exe("sudo go run replace.go /etc/sddm.conf.d/default.conf samurai " + currentUser.Username)
+		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/default.conf samurai " + currentUser.Username)
 
 		logInfo("Stage 4 Done")
 		logInfo("The final step is to enable sddm which will launch you into hyprland: \"sudo dinitctl enable sddm\"")
@@ -315,7 +321,7 @@ func main() {
 		exe("mkdir -p " + folderName)
 
 		exeAppendFile("echo Hello World", "/tmp/hello_samurai")
-		exe("go run replace.go /tmp/hello_samurai Hello Greetings")
+		exe("go run scripts/replace.go /tmp/hello_samurai Hello Greetings")
 
 		logInfo("Tests Done")
 	} else {
