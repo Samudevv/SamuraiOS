@@ -246,11 +246,16 @@ func main() {
 		curUser, _ := user.Current()
 
 		// Installing yay
-		logInfo("Installing yay ...")
-		exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
-		exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
-		os.Chdir(filepath.Join(homeDir, "/repos/yay"))
-		exe("makepkg -si --noconfirm")
+		if !isInstalled("yay") {
+			logInfo("Installing yay ...")
+			exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
+			exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
+			os.Chdir(filepath.Join(homeDir, "/repos/yay"))
+			exe("makepkg -si --noconfirm")
+			exe("rm -rf " + filepath.Join(homeDir, "/repos/yay"))
+		} else {
+			logInfo("Skipping installation of yay since it is already installed")
+		}
 
 		// Install yay packages
 		logInfo("Installing AUR packages ...")
@@ -263,14 +268,19 @@ func main() {
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
 		// Install dinit-userservd
-		logInfo("Installing dinit user service ...")
-		exe("mkdir " + filepath.Join(homeDir, "/repos/dinit-userservd"))
-		exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
-		os.Chdir(filepath.Join(homeDir, "/repos/dinit-userservd"))
-		exe("makepkg -si --noconfirm")
-		exe("sudo dinitctl enable dinit-userservd")
-		os.Chdir(curDir)
-		exeArgs("sudo", "go", "run", "scripts/append.go", "echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
+		if !dinitServiceExists("dinit-userservd") {
+			logInfo("Installing dinit user service ...")
+			exe("mkdir " + filepath.Join(homeDir, "/repos/dinit-userservd"))
+			exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
+			os.Chdir(filepath.Join(homeDir, "/repos/dinit-userservd"))
+			exe("makepkg -si --noconfirm")
+			exe("sudo dinitctl enable dinit-userservd")
+			os.Chdir(curDir)
+			exeArgs("sudo", "go", "run", "scripts/append.go", "echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
+			exe("rm -rf " + filepath.Join(homeDir, "/repos/dinit-userservd"))
+		} else {
+			logInfo("Skipping installation of dinit-userservd since it is already installed")
+		}
 
 		// Copy configuration files
 		logInfo("Copying configuration files ...")
@@ -305,8 +315,21 @@ func main() {
 		currentUser, _ := user.Current()
 		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/default.conf samurai " + currentUser.Username)
 
-		logInfo("Stage 4 Done")
-		logInfo("The final step is to enable sddm which will launch you into hyprland: \"sudo dinitctl enable sddm\"")
+		logInfo("Installation Done")
+
+		prompt("Remove /SamuraiOS yes|no (yes)")
+		rmSamuraiStr := inputWithDefault("yes")
+		rmSamurai := strings.HasPrefix(strings.ToLower(rmSamuraiStr), "y")
+		if rmSamurai {
+			exe("sudo rm -rf /SamuraiOS")
+		}
+
+		prompt("Execute \"sudo dinitctl enable sddm\" and launch into hyprland yes|no (yes)")
+		launchHyprStr := inputWithDefault("yes")
+		launchHypr := strings.HasPrefix(strings.ToLower(launchHyprStr), "y")
+		if launchHypr {
+			exe("sudo dinitctl enable sddm")
+		}
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
@@ -510,4 +533,15 @@ func logScript(msg ...any) {
 func prompt(msg ...any) {
 	msgStr := fmt.Sprint(msg...)
 	fmt.Printf("\033[30;47m[PROMPT]\033[0;33m %s: \033[0m", msgStr)
+}
+
+func isInstalled(program string) bool {
+	_, err := exec.LookPath(program)
+	return err == nil
+}
+
+func dinitServiceExists(service string) bool {
+	cmd := exec.Command("sudo", "dinitctl", "status", service)
+	err := cmd.Run()
+	return err == nil
 }
