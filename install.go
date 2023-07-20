@@ -32,12 +32,12 @@ var packages = []string{
 	"wireplumber",
 	"pipewire-jack",
 	"pipewire-pulse",
+	"pipewire-alsa",
 	"noto-fonts",
 	"hyprland",
 	"kitty",
 	"dunst",
 	"git",
-	"polkit-kde-agent",
 	"libnotify",
 	"pavucontrol",
 	"pcmanfm",
@@ -45,6 +45,7 @@ var packages = []string{
 	"playerctl",
 	"mpv",
 	"libmpeg2",
+	"polkit-gnome",
 }
 
 var yayPackages = []string{
@@ -52,6 +53,8 @@ var yayPackages = []string{
 	"waybar-hyprland-no-systemd",
 	"connman-gtk",
 	"hyprpaper-git",
+	"pamac-aur",
+	"vscodium-bin",
 }
 
 func main() {
