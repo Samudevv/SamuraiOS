@@ -3,6 +3,7 @@
 set fish_greeting
 set VIRTUAL_ENV_DISABLE_PROMPT "1"
 set -x MANPAGER "bat -l man -p"
+set -x LANG de_AT.UTF-8
 
 ## Export variable need for qt-theme
 #if type "qtile" >> /dev/null 2>&1
