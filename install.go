@@ -48,6 +48,8 @@ var packages = []string{
 	"mpv",
 	"libmpeg2",
 	"polkit-gnome",
+	"fish",
+	"nerd-fonts",
 }
 
 var yayPackages = []string{
@@ -57,6 +59,9 @@ var yayPackages = []string{
 	"hyprpaper-git",
 	"pamac-aur",
 	"vscodium-bin",
+	"starship-git",
+	"exa-git",
+	"bat-cat-git",
 }
 
 func main() {
@@ -272,6 +277,9 @@ func main() {
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
+
+		// Change shell
+		exe("chsh -s /usr/bin/fish")
 
 		// Install dinit-userservd
 		if !dinitServiceExists("dinit-userservd") {
