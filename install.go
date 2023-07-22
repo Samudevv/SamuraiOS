@@ -64,6 +64,7 @@ var yayPackages = []string{
 	"exa-git",
 	"bat-cat-git",
 	"wofi-hg",
+	"wlogout",
 }
 
 func main() {
@@ -314,9 +315,15 @@ func main() {
 		copyConfig("home/samurai/.config/micro/settings.json")
 		copyConfig("home/samurai/.config/waybar/config")
 		copyConfig("home/samurai/.config/waybar/style.css")
+		copyConfig("home/samurai/.config/wofi/config")
+		copyConfig("home/samurai/.config/wofi/style.css")
+		copyConfig("home/samurai/.config/wlogout/background.jpg")
+		copyConfig("home/samurai/.config/wlogout/layout")
+		copyConfig("home/samurai/.config/wlogout/style.css")
 
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
+		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + currentUser.Username)
 
 		logInfo("Stage 3 Done")
 		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
