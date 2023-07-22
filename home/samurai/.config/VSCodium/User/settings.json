@@ -1,0 +1,104 @@
+{
+  "workbench.iconTheme": "vscode-icons",
+  "explorer.sortOrder": "type",
+  "editor.formatOnSave": true,
+  "git.enableSmartCommit": true,
+  "editor.renderWhitespace": "all",
+  "git.confirmSync": false,
+  "explorer.confirmDelete": false,
+  "cSpell.language": "en,de",
+  "python.showStartPage": false,
+  "python.formatting.provider": "yapf",
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "cmake.configureOnOpen": true,
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "explorer.confirmDragAndDrop": false,
+  "go.useLanguageServer": true,
+  "vsicons.dontShowNewVersionMessage": true,
+  "settingsSync.keybindingsPerPlatform": false,
+  "editor.minimap.enabled": false,
+  "cSpell.userWords": [
+    "Affigierung",
+    "Affigierungen",
+    "deallocated",
+    "Deallocates",
+    "deserialise",
+    "Dienstnehmung",
+    "fullscreen",
+    "Initialisation",
+    "initialises",
+    "J",
+    "Jänner",
+    "nner",
+    "normalise",
+    "Postalveolar",
+    "Redistributable",
+    "serialised",
+    "Serialises",
+    "Steirisch",
+    "steirische",
+    "steirischen",
+    "synchronise",
+    "trilaterate",
+    "utilised",
+    "visualisation",
+    "Weiters",
+    "Weiz"
+  ],
+  "files.associations": {
+    "*.dyn": "lsdyna",
+    "*.h": "cpp",
+    "*.inc": "fortran_fixed-form"
+  },
+  "go.formatTool": "gofmt",
+  "diffEditor.renderSideBySide": true,
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+  "debug.allowBreakpointsEverywhere": true,
+  "workbench.sideBar.location": "right",
+  "workbench.settings.editor": "json",
+  "testMate.cpp.log.userId": "60d59671fdeaa5793863b28a23a202a8f5a59e8e",
+  "testMate.cpp.log.logSentry": "disable_3",
+  "go.toolsManagement.autoUpdate": true,
+  "workbench.editor.wrapTabs": true,
+  "workbench.editor.decorations.colors": true,
+  "git.ignoreLegacyWarning": true,
+  "[c]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "kite.showWelcomeNotificationOnStartup": false,
+  "kite.codefinder.enableLineDecoration": false,
+  "workbench.startupEditor": "newUntitledFile",
+  "[typescript]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "[rust]": {
+    "editor.defaultFormatter": "matklad.rust-analyzer"
+  },
+  "debug.onTaskErrors": "abort",
+  "C_Cpp.default.cppStandard": "c++17",
+  "workbench.colorTheme": "Dracula",
+  "latex-workshop.latexindent.path": "latexindent",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "security.workspace.trust.untrustedFiles": "open",
+  "latex-workshop.latex.autoBuild.run": "never",
+  "editor.tabSize": 2,
+  "fortran.linterEnabled": false,
+  "fortran.formatting.formatter": "Disabled",
+  "cmake.configureOnEdit": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "git.autoRepositoryDetection": "subFolders",
+  "[python]": {
+    "editor.formatOnType": false,
+    "editor.formatOnSave": false
+  },
+  "[lua]": {
+    "editor.tabSize": 4
+  },
+  "files.trimTrailingWhitespace": true,
+  "rust.ignore_deprecation_warning": true,
+  "svg.preview.mode": "svg"
+}

@@ -180,6 +180,7 @@ alias microkeys="$EDITOR $HOME/.config/micro/bindings.json"
 alias microf="micro (fzf)"
 alias e="$EDITOR"
 alias ef="$EDITOR (fzf)"
+alias code="vscodium"
 
 # Source hidden.fish if it exists
 if test -f (status dirname)/hidden.fish

@@ -323,7 +323,7 @@ func main() {
 
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
-		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + currentUser.Username)
+		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + curUser.Username)
 
 		logInfo("Stage 3 Done")
 		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
