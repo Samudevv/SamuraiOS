@@ -50,6 +50,7 @@ var packages = []string{
 	"polkit-gnome",
 	"fish",
 	"nerd-fonts",
+	"man",
 }
 
 var yayPackages = []string{
@@ -62,6 +63,7 @@ var yayPackages = []string{
 	"starship-git",
 	"exa-git",
 	"bat-cat-git",
+	"wofi-hg",
 }
 
 func main() {
