@@ -14,7 +14,6 @@
     "hyprland/window"
   ],
   "modules-center": [
-    "custom/lock_screen",
     "clock",
     "custom/power_btn"
   ],
@@ -30,11 +29,6 @@
   "custom/launch_menu": {
     "format": "",
     "on-click": "notify-send -u critical \"not yet implement\"",
-    "tooltip": false
-  },
-  "custom/lock_screen": {
-    "format": "",
-    "on-click": "swaylock",
     "tooltip": false
   },
   "custom/power_btn": {

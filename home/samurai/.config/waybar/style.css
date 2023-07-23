@@ -54,18 +54,12 @@ tooltip label {
 }
 
 #custom-launch_menu,
-#custom-lock_screen,
-#custom-light_dark,
 #custom-power_btn,
-#custom-power_profile,
-#custom-weather,
 #window,
 #cpu,
 #disk,
-#custom-updates,
 #memory,
 #clock,
-#battery,
 #pulseaudio,
 #network,
 #tray,
@@ -80,6 +74,7 @@ tooltip label {
     border: 0px;
 }
 
+#clock,
 #tray,
 #custom-lock_screen,
 #temperature,
