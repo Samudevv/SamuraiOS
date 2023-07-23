@@ -66,6 +66,8 @@ var yayPackages = []string{
 	"wofi-hg",
 	"wlogout",
 	"swaylock-effects",
+	"openrgb",
+	"wev",
 }
 
 func main() {
@@ -322,6 +324,11 @@ func main() {
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + curUser.Username)
+
+		// Install go programs
+		os.Chdir(filepath.Join(homeDir, "go/src/github.com/PucklaJ/paswapsink"))
+		exe("go install")
+		os.Chdir(curDir)
 
 		logInfo("Stage 3 Done")
 		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
