@@ -65,6 +65,7 @@ var yayPackages = []string{
 	"bat-cat-git",
 	"wofi-hg",
 	"wlogout",
+	"swaylock-effects",
 }
 
 func main() {
