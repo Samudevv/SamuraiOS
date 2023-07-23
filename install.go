@@ -303,23 +303,20 @@ func main() {
 		logInfo("Copying configuration files ...")
 		copyConfig("etc/sddm.conf.d/default.conf")
 
-		exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d/boot.d"))
-		copyConfig("home/samurai/.config/dinit.d/pipewire")
-		copyConfig("home/samurai/.config/dinit.d/pipewire-pulse")
+		homeEntries, err := os.ReadDir("home/samurai")
+		if err != nil {
+			logError(err)
+			os.Exit(1)
+		}
 
-		copyConfig("home/samurai/.config/hypr/hyprland.conf")
-		copyConfig("home/samurai/.config/hypr/hyprpaper.conf")
-		copyConfig("home/samurai/.config/hypr/wallpapers/fuji-main.jpg")
-		copyConfig("home/samurai/.config/hypr/wallpapers/fuji-side.jpg")
-		copyConfig("home/samurai/.config/micro/bindings.json")
-		copyConfig("home/samurai/.config/micro/settings.json")
-		copyConfig("home/samurai/.config/waybar/config")
-		copyConfig("home/samurai/.config/waybar/style.css")
-		copyConfig("home/samurai/.config/wofi/config")
-		copyConfig("home/samurai/.config/wofi/style.css")
-		copyConfig("home/samurai/.config/wlogout/background.jpg")
-		copyConfig("home/samurai/.config/wlogout/layout")
-		copyConfig("home/samurai/.config/wlogout/style.css")
+		// Copy contents of home directory
+		var homeEntriesStr []string
+		for _, h := range homeEntries {
+			homeEntriesStr = append(homeEntriesStr, filepath.Join("home/samurai", h.Name()))
+		}
+
+		exe("cp -r " + strings.Join(homeEntriesStr, " ") + " " + homeDir)
+		exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d/boot.d"))
 
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
