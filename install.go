@@ -325,6 +325,11 @@ func main() {
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + curUser.Username)
 
+		// Copy wireplumber alsa configuration (Fix for broken headset audio)
+		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
+		exe("sudo cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua /etc/wireplumber/main.lua.d")
+		// TODO: change line containing "api.alsa.headroom" to 1024
+
 		// Install go programs
 		os.Chdir(filepath.Join(homeDir, "go/src/github.com/PucklaJ/paswapsink"))
 		exe("go install")
