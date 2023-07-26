@@ -51,6 +51,8 @@ var packages = []string{
 	"fish",
 	"nerd-fonts",
 	"man",
+	"protobuf-c",
+	"gtksourceview4",
 }
 
 var yayPackages = []string{
@@ -302,6 +304,25 @@ func main() {
 			logInfo("Skipping installation of dinit-userservd since it is already installed")
 		}
 
+		// Install eruptuion
+		if !isInstalled("eruption") {
+			logInfo("Installing eruption ...")
+			exe("mkdir " + filepath.Join(homeDir, "repos/eruption"))
+			exe("git clone --branch no-systemd https://github.com/PucklaJ/eruption.git " + filepath.Join(homeDir, "repos/eruption"))
+			os.Chdir(filepath.Join(homeDir, "repos/eruption"))
+			exe("make")
+			exe("sudo make install")
+
+			exe("sudo dinitctl enable eruption")
+
+			// Copying dinit services
+			exe("cp support/dinit/eruption-audio-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
+			exe("cp support/dinit/eruption-fx-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
+			exe("cp support/dinit/eruption-process-monitor " + filepath.Join(homeDir, ".config/dinit.d/"))
+		} else {
+			logInfo("Skipping Installation of eruption since it is already installed")
+		}
+
 		// Copy configuration files
 		logInfo("Copying configuration files ...")
 		copyConfig("etc/sddm.conf.d/default.conf")
@@ -347,6 +368,8 @@ func main() {
 		exe("mkdir -p " + filepath.Join(homeDir, "/.local/share/dinit"))
 		exe("dinitctl enable pipewire")
 		exe("dinitctl enable pipewire-pulse")
+		exe("dinitctl enable eruption-audio-proxy")
+		exe("dinitctl enable eruption-fx-proxy")
 
 		currentUser, _ := user.Current()
 		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/default.conf samurai " + currentUser.Username)
