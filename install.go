@@ -277,7 +277,7 @@ func main() {
 
 		// Install yay packages
 		logInfo("Installing AUR packages ...")
-		exe("yay -S --noconfirm " + strings.Join(yayPackages, " "))
+		exe("yay -S --noconfirm --needed " + strings.Join(yayPackages, " "))
 
 		// Remove unneeded packages
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
@@ -291,7 +291,7 @@ func main() {
 		// Install dinit-userservd
 		if !dinitServiceExists("dinit-userservd") {
 			logInfo("Installing dinit user service ...")
-			exe("mkdir " + filepath.Join(homeDir, "/repos/dinit-userservd"))
+			exe("mkdir -p " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 			exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 			os.Chdir(filepath.Join(homeDir, "/repos/dinit-userservd"))
 			exe("makepkg -si --noconfirm")
@@ -306,12 +306,13 @@ func main() {
 		// Install eruptuion
 		if !isInstalled("eruption") {
 			logInfo("Installing eruption ...")
-			exe("mkdir " + filepath.Join(homeDir, "repos/eruption"))
+			exe("mkdir -p " + filepath.Join(homeDir, "repos/eruption"))
 			exe("git clone --branch no-systemd https://github.com/PucklaJ/eruption.git " + filepath.Join(homeDir, "repos/eruption"))
 			os.Chdir(filepath.Join(homeDir, "repos/eruption"))
 			exe("make")
 			exe("sudo make install")
 			// Copying dinit services
+			exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d"))
 			exe("cp support/dinit/eruption-audio-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
 			exe("cp support/dinit/eruption-fx-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
 			exe("cp support/dinit/eruption-process-monitor " + filepath.Join(homeDir, ".config/dinit.d/"))
@@ -349,7 +350,7 @@ func main() {
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
 		exe("sudo cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua /etc/wireplumber/main.lua.d")
-		// TODO: change line containing "api.alsa.headroom" to 1024
+		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/wireplumber/main.lua.d/50-alsa-config.lua", "--[\"api.alsa.headroom\"]      = 0", "[\"api.alsa.headroom\"]      = 1024")
 
 		// Install go programs
 		os.Chdir(filepath.Join(homeDir, "go/src/github.com/PucklaJ/paswapsink"))
