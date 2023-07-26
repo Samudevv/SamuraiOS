@@ -68,7 +68,6 @@ var yayPackages = []string{
 	"wofi-hg",
 	"wlogout",
 	"swaylock-effects",
-	"openrgb",
 	"wev",
 }
 
