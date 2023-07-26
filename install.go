@@ -312,13 +312,14 @@ func main() {
 			os.Chdir(filepath.Join(homeDir, "repos/eruption"))
 			exe("make")
 			exe("sudo make install")
-
-			exe("sudo dinitctl enable eruption")
-
 			// Copying dinit services
 			exe("cp support/dinit/eruption-audio-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
 			exe("cp support/dinit/eruption-fx-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
 			exe("cp support/dinit/eruption-process-monitor " + filepath.Join(homeDir, ".config/dinit.d/"))
+
+			os.Chdir(curDir)
+			exe("rm -rf " + filepath.Join(homeDir, "repos/eruption"))
+			exe("sudo dinitctl enable eruption")
 		} else {
 			logInfo("Skipping Installation of eruption since it is already installed")
 		}
