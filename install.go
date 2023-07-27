@@ -25,51 +25,58 @@ var packages = []string{
 	"dhcpcd",
 	"wpa_supplicant",
 	"connman-dinit",
-	"go",
 
-	// Packages for good working system
+	// Packages for working graphical system with audio
+	"go",
+	"fish",
 	"pipewire",
-	"wireplumber",
-	"pipewire-jack",
 	"pipewire-pulse",
+	"pipewire-jack",
 	"pipewire-alsa",
+	"wireplumber",
+	"libmpeg2",
+	"sddm-dinit",
+	"hyprland",
+	"polkit-gnome",
+	"man",
+	"git",
+	"dunst",
+	"libnotify",
+	"kitty",
 	"noto-fonts",
 	"noto-fonts-emoji",
 	"noto-fonts-cjk",
-	"hyprland",
-	"kitty",
-	"dunst",
-	"git",
-	"libnotify",
-	"pavucontrol",
-	"pcmanfm",
-	"sddm-dinit",
-	"playerctl",
-	"mpv",
-	"libmpeg2",
-	"polkit-gnome",
-	"fish",
 	"nerd-fonts",
-	"man",
+	"playerctl",
+
+	// For eruption
 	"protobuf-c",
 	"gtksourceview4",
+
+	// Applications
+	"pavucontrol",
+	"pcmanfm",
+	"mpv",
+	"firefox",
 }
 
 var yayPackages = []string{
+	// Packages for working graphical system with audio
 	"xdg-desktop-portal-hyprland-git",
 	"waybar-hyprland-no-systemd",
 	"connman-gtk",
 	"hyprpaper-git",
-	"pamac-aur",
-	"vscodium-bin",
 	"starship-git",
 	"exa-git",
 	"bat-cat-git",
 	"wofi-hg",
 	"wlogout",
 	"swaylock-effects",
-	"openrgb",
 	"wev",
+
+	// Applications
+	"vscodium-bin",
+	"pamac-aur",
 }
 
 func main() {
