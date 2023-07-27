@@ -361,7 +361,7 @@ func main() {
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/hypr/hyprland.conf") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " samurai " + curUser.Username)
 
-		exe("chmod +x " + filepath.Join(homeDir, ".config/gtk-3.0/import_gsettings"))
+		exe("chmod +x " + filepath.Join(homeDir, ".config/gtk-3.0/import-gsettings"))
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
