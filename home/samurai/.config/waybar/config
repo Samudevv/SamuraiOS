@@ -75,9 +75,10 @@
     "spacing": 10
   },
   "clock": {
-    "format": "{:%I:%M %p}",
+    "format": "{:%a %H:%M}",
     "tooltip": true,
-    "tooltip-format": "{: %A, %B %e %Y}"
+    "tooltip-format": "{: %A, %e. %B %Y\n\t\t    %H:%M:%S}",
+    "interval": 1
   },
   "pulseaudio": {
     "format": "{icon} {volume}%",
