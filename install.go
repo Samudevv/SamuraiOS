@@ -73,6 +73,9 @@ var yayPackages = []string{
 	"wlogout",
 	"swaylock-effects",
 	"wev",
+	"dracula-icons-git",
+	"dracula-cursors-git",
+	"dracula-gtk-theme",
 
 	// Applications
 	"vscodium-bin",
@@ -354,6 +357,9 @@ func main() {
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + curUser.Username)
+		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/hypr/hyprland.conf") + " samurai " + curUser.Username)
+
+		exe("chmod +x " + filepath.Join(homeDir, ".config/gtk-3.0/import_gsettings"))
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
