@@ -48,6 +48,7 @@ var packages = []string{
 	"noto-fonts-cjk",
 	"nerd-fonts",
 	"playerctl",
+	"qt5ct",
 
 	// For eruption
 	"protobuf-c",
@@ -358,6 +359,7 @@ func main() {
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/hypr/hyprland.conf") + " samurai " + curUser.Username)
+		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " samurai " + curUser.Username)
 
 		exe("chmod +x " + filepath.Join(homeDir, ".config/gtk-3.0/import_gsettings"))
 
