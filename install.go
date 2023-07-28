@@ -80,7 +80,7 @@ var yayPackages = []string{
 
 	// Applications
 	"vscodium-bin",
-	"pamac-aur",
+	"pamac-all",
 }
 
 func main() {
