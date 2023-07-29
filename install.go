@@ -17,7 +17,7 @@ var packages = []string{
 	"base-devel",
 	"dinit",
 	"elogind-dinit",
-	"linux-zen",
+	"linux-lts",
 	"linux-firmware",
 	"micro",
 	"grub",
