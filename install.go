@@ -83,6 +83,8 @@ var yayPackages = []string{
 	"pamac-aur",
 }
 
+var archPackages = []string{}
+
 func main() {
 	// Determine stage
 	if len(os.Args) != 2 {
@@ -338,15 +340,30 @@ func main() {
 
 		// Copy configuration files
 		logInfo("Copying configuration files ...")
-		copyConfig("etc/sddm.conf.d/default.conf")
 
+		// Copy non contents of repo
+		repoEntries, err := os.ReadDir(curDir)
+		if err != nil {
+			logError(err)
+			os.Exit(1)
+		}
+
+		var repoEntriesStr []string
+		for _, e := range repoEntries {
+			if e.IsDir() && !(e.Name() == "home" || e.Name() == "scripts") {
+				repoEntriesStr = append(repoEntriesStr, e.Name())
+			}
+		}
+
+		exe("sudo cp -r " + strings.Join(repoEntriesStr, " ") + " /")
+
+		// Copy contents of home directory
 		homeEntries, err := os.ReadDir("home/samurai")
 		if err != nil {
 			logError(err)
 			os.Exit(1)
 		}
 
-		// Copy contents of home directory
 		var homeEntriesStr []string
 		for _, h := range homeEntries {
 			homeEntriesStr = append(homeEntriesStr, filepath.Join("home/samurai", h.Name()))
@@ -361,6 +378,8 @@ func main() {
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/hypr/hyprland.conf") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " samurai " + curUser.Username)
 
+		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/default.conf samurai " + curUser.Username)
+
 		exe("chmod +x " + filepath.Join(homeDir, ".config/gtk-3.0/import-gsettings"))
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
@@ -372,6 +391,9 @@ func main() {
 		os.Chdir(filepath.Join(homeDir, "go/src/github.com/PucklaJ/paswapsink"))
 		exe("go install")
 		os.Chdir(curDir)
+
+		// Install packages from arch repos and update repositories
+		exe("sudo pacman -Sy --noconfirm " + strings.Join(archPackages, " "))
 
 		logInfo("Stage 3 Done")
 		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
@@ -387,9 +409,6 @@ func main() {
 		exe("dinitctl enable pipewire-pulse")
 		exe("dinitctl enable eruption-audio-proxy")
 		exe("dinitctl enable eruption-fx-proxy")
-
-		currentUser, _ := user.Current()
-		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/default.conf samurai " + currentUser.Username)
 
 		logInfo("Installation Done")
 
