@@ -49,6 +49,7 @@ var packages = []string{
 	"nerd-fonts",
 	"playerctl",
 	"qt5ct",
+	"gnome-keyring",
 
 	// For eruption
 	"protobuf-c",
@@ -56,7 +57,7 @@ var packages = []string{
 
 	// Applications
 	"pavucontrol",
-	"pcmanfm",
+	"pcmanfm-gtk3",
 	"mpv",
 	"firefox",
 }
@@ -81,6 +82,8 @@ var yayPackages = []string{
 	// Applications
 	"vscodium-bin",
 	"pamac-aur",
+	"mailspring",
+	"teams",
 }
 
 var archPackages = []string{}
