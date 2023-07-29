@@ -393,7 +393,7 @@ func main() {
 		os.Chdir(curDir)
 
 		// Install packages from arch repos and update repositories
-		exe("sudo pacman -Sy --noconfirm " + strings.Join(archPackages, " "))
+		exe("sudo pacman -Sy --noconfirm artix-archlinux-support " + strings.Join(archPackages, " "))
 
 		logInfo("Stage 3 Done")
 		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
