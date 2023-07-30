@@ -50,6 +50,9 @@ var packages = []string{
 	"playerctl",
 	"qt5ct",
 	"gnome-keyring",
+	"grim",
+	"slurp",
+	"wl-clipboard",
 
 	// For eruption
 	"protobuf-c",
@@ -86,7 +89,10 @@ var yayPackages = []string{
 	"teams",
 }
 
-var archPackages = []string{}
+var archPackages = []string{
+	// Packages for working graphical system with audio
+	"swappy",
+}
 
 func main() {
 	// Determine stage
