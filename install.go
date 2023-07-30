@@ -63,6 +63,8 @@ var packages = []string{
 	"pcmanfm-gtk3",
 	"mpv",
 	"firefox",
+	"evince",
+	"eog",
 }
 
 var yayPackages = []string{
