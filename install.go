@@ -369,6 +369,9 @@ func main() {
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
+		logInfo("Clearing pacman cache ...")
+		exe("sudo pacman -Scc --noconfirm")
+
 		// Copy configuration files
 		logInfo("Copying configuration files ...")
 
