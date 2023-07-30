@@ -55,6 +55,7 @@ var packages = []string{
 	"wl-clipboard",
 
 	// For eruption
+	"rust",
 	"protobuf-c",
 	"gtksourceview4",
 
@@ -306,7 +307,9 @@ func main() {
 		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
 		exe("sudo cp etc/pacman.conf /etc/")
 		// Install packages from arch repos and update repositories
-		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support " + strings.Join(archPackages, " "))
+		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
+		exe("sudo pacman-key --populate archlinux")
+		exe("sudo pacman -S --noconfirm --needed " + strings.Join(archPackages, " "))
 
 		// Install dinit-userservd
 		if !dinitServiceExists("dinit-userservd") {
