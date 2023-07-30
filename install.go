@@ -65,6 +65,11 @@ var packages = []string{
 	"firefox",
 	"evince",
 	"eog",
+	"godot",
+	"glade",
+	"texlive",
+	"texlive-langgerman",
+	"biber",
 }
 
 var yayPackages = []string{
@@ -98,6 +103,7 @@ var archPackages = []string{
 	// Applications
 	"libreoffice-still",
 	"libreoffice-still-de",
+	"xmake",
 }
 
 func main() {
