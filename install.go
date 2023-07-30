@@ -427,7 +427,8 @@ func main() {
 		goPrograms, err := os.ReadDir(goDir)
 		for _, gp := range goPrograms {
 			os.Chdir(filepath.Join(goDir, gp.Name()))
-			exe("go install")
+			logInfo("Installing " + gp.Name() + " ...")
+			exe("go install -buildvcs=false")
 		}
 		os.Chdir(curDir)
 
