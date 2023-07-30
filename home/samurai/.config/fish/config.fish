@@ -182,6 +182,7 @@ alias microf="micro (fzf)"
 alias e="$EDITOR"
 alias ef="$EDITOR (fzf)"
 alias code="vscodium"
+alias clipboard="wl-copy"
 
 # Source hidden.fish if it exists
 if test -f (status dirname)/hidden.fish
