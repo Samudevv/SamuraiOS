@@ -77,11 +77,6 @@ var yayPackages = []string{
 	"xdg-desktop-portal-hyprland-git",
 	"waybar-hyprland-no-systemd",
 	"connman-gtk",
-	"hyprpaper-git",
-	"starship-git",
-	"exa-git",
-	"bat-cat-git",
-	"wofi-hg",
 	"wlogout",
 	"swaylock-effects",
 	"wev",
@@ -99,6 +94,11 @@ var yayPackages = []string{
 var archPackages = []string{
 	// Packages for working graphical system with audio
 	"swappy",
+	"hyprpaper",
+	"starship",
+	"exa",
+	"bat",
+	"wofi",
 
 	// Applications
 	"libreoffice-still",
