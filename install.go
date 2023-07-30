@@ -70,6 +70,7 @@ var packages = []string{
 	"glade",
 	"texlive",
 	"texlive-langgerman",
+	"epiphany",
 }
 
 var yayPackages = []string{
