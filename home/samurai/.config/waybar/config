@@ -9,7 +9,7 @@
   "modules-left": [
     "custom/launch_menu",
     "wlr/workspaces",
-    "temperature",
+    "network",
     "pulseaudio",
     "hyprland/window"
   ],
@@ -20,6 +20,7 @@
   "modules-right": [
     "cpu",
     "memory",
+    "temperature",
     "disk",
     "tray"
   ],
@@ -80,10 +81,32 @@
     "tooltip-format": "{: %A, %e. %B %Y\n\t\t    %H:%M:%S}",
     "interval": 1
   },
+  "network": {
+    "interval": 2,
+    "format": " 󰤠",
+    "format-wifi": " {icon}",
+    "format-ethernet": " 󰈀",
+    "format-disconnected": " 󰤮",
+    "format-disabled": " ⛌",
+    "min-length": 3,
+    "tooltip": true,
+    "tooltip-format-wifi": "{essid}  {signalStrength}%\n{bandwidthDownBytes} 󰇚   {bandwidthUpBytes} 󰕒\n{ifname}  {ipaddr}",
+    "tooltip-format-ethernet": "{bandwidthDownBytes} 󰇚   {bandwidthUpBytes} 󰕒\n{ifname}  {ipaddr}",
+    "tooltip-format-disconnected": "Disconnected",
+    "tooltip-format-disabled": "Disabled",
+    "on-click": "connman-gtk",
+    "format-icons": [
+      "󰤯",
+      "󰤟",
+      "󰤢",
+      "󰤥",
+      "󰤨"
+    ]
+  },
   "pulseaudio": {
     "format": "{icon} {volume}%",
     "format-muted": "",
-    "min-length": 6,
+    "min-length": 7,
     "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
     "on-click-right": "pavucontrol",
     "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",

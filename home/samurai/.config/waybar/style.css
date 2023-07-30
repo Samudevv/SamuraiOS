@@ -61,10 +61,10 @@ tooltip label {
 #memory,
 #clock,
 #pulseaudio,
-#network,
 #tray,
 #temperature,
 #workspaces,
+#network,
 #backlight {
     background: #1e1e2e;
     opacity: 0.8;
@@ -77,9 +77,9 @@ tooltip label {
 #clock,
 #tray,
 #custom-lock_screen,
-#temperature,
 #backlight,
 #custom-launch_menu,
+#network,
 #cpu {
     border-radius: 10px 0px 0px 10px;
 }
