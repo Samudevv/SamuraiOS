@@ -92,6 +92,10 @@ var yayPackages = []string{
 var archPackages = []string{
 	// Packages for working graphical system with audio
 	"swappy",
+
+	// Applications
+	"libreoffice-still",
+	"libreoffice-still-de",
 }
 
 func main() {
