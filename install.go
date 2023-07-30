@@ -69,7 +69,6 @@ var packages = []string{
 	"glade",
 	"texlive",
 	"texlive-langgerman",
-	"biber",
 }
 
 var yayPackages = []string{
@@ -104,6 +103,7 @@ var archPackages = []string{
 	"libreoffice-still",
 	"libreoffice-still-de",
 	"xmake",
+	"biber",
 }
 
 func main() {
@@ -298,30 +298,15 @@ func main() {
 		curDir, _ := os.Getwd()
 		curUser, _ := user.Current()
 
-		// Installing yay
-		if !isInstalled("yay") {
-			logInfo("Installing yay ...")
-			exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
-			exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
-			os.Chdir(filepath.Join(homeDir, "/repos/yay"))
-			exe("makepkg -si --noconfirm")
-			exe("rm -rf " + filepath.Join(homeDir, "/repos/yay"))
-		} else {
-			logInfo("Skipping installation of yay since it is already installed")
-		}
-
-		// Install yay packages
-		logInfo("Installing AUR packages ...")
-		exe("yay -S --noconfirm --needed " + strings.Join(yayPackages, " "))
-
-		// Remove unneeded packages
-		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
-		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
-		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
-		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
-
 		// Change shell
 		exe("chsh -s /usr/bin/fish")
+
+		// Install arch repositories
+		logInfo("Installing Arch repositories ...")
+		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
+		exe("sudo cp etc/pacman.conf /etc/")
+		// Install packages from arch repos and update repositories
+		exe("sudo pacman -Sy --noconfirm artix-archlinux-support " + strings.Join(archPackages, " "))
 
 		// Install dinit-userservd
 		if !dinitServiceExists("dinit-userservd") {
@@ -358,6 +343,28 @@ func main() {
 		} else {
 			logInfo("Skipping Installation of eruption since it is already installed")
 		}
+
+		// Installing yay
+		if !isInstalled("yay") {
+			logInfo("Installing yay ...")
+			exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
+			exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
+			os.Chdir(filepath.Join(homeDir, "/repos/yay"))
+			exe("makepkg -si --noconfirm")
+			exe("rm -rf " + filepath.Join(homeDir, "/repos/yay"))
+		} else {
+			logInfo("Skipping installation of yay since it is already installed")
+		}
+
+		// Install yay packages
+		logInfo("Installing AUR packages ...")
+		exe("yay -S --noconfirm --needed " + strings.Join(yayPackages, " "))
+
+		// Remove unneeded packages
+		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
+		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
+		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
+		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
 		// Copy configuration files
 		logInfo("Copying configuration files ...")
@@ -409,12 +416,14 @@ func main() {
 		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/wireplumber/main.lua.d/50-alsa-config.lua", "--[\"api.alsa.headroom\"]      = 0", "[\"api.alsa.headroom\"]      = 1024")
 
 		// Install go programs
-		os.Chdir(filepath.Join(homeDir, "go/src/github.com/PucklaJ/paswapsink"))
-		exe("go install")
+		logInfo("Installing go programs ...")
+		goDir := filepath.Join(homeDir, "go/src/github.com/PucklaJ")
+		goPrograms, err := os.ReadDir(goDir)
+		for _, gp := range goPrograms {
+			os.Chdir(filepath.Join(goDir, gp.Name()))
+			exe("go install")
+		}
 		os.Chdir(curDir)
-
-		// Install packages from arch repos and update repositories
-		exe("sudo pacman -Sy --noconfirm artix-archlinux-support " + strings.Join(archPackages, " "))
 
 		logInfo("Stage 3 Done")
 		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
