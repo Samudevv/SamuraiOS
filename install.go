@@ -294,7 +294,10 @@ func main() {
 		}
 
 		exe("usermod -aG wheel " + userName)
+		// Enable every user in the wheel group to use sudo
 		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# %wheel ALL=(ALL:ALL) ALL", "%wheel ALL=(ALL:ALL) ALL")
+		// Show asteriks when typing sudo password
+		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# Defaults maxseq = 1000", "Defaults env_reset,pwfeedback")
 
 		logInfo("Stage 2 Done")
 		logInfo("Reboot into the new drive and execute \"sudo dinitctl enable connmand\" to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
