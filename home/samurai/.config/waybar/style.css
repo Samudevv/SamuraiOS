@@ -65,6 +65,7 @@ tooltip label {
 #temperature,
 #workspaces,
 #network,
+#bluetooth,
 #backlight {
     background: #1e1e2e;
     opacity: 0.8;

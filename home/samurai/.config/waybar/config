@@ -10,6 +10,7 @@
     "custom/launch_menu",
     "wlr/workspaces",
     "network",
+    "bluetooth",
     "pulseaudio",
     "hyprland/window"
   ],
@@ -102,6 +103,15 @@
       "󰤥",
       "󰤨"
     ]
+  },
+  "bluetooth": {
+    "min-length": 3,
+    "format": "󰂳",
+    "format-disabled": "󰂲",
+    "format-off": "󰂯",
+    "format-on": "",
+    "format-connected": "󰂱",
+    "on-click": "blueman-manager"
   },
   "pulseaudio": {
     "format": "{icon} {volume}%",
