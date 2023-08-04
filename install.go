@@ -95,6 +95,7 @@ var yayPackages = []string{
 	"pamac-aur",
 	"mailspring",
 	"teams",
+	"anki",
 }
 
 var archPackages = []string{
@@ -316,8 +317,17 @@ func main() {
 		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
 		exe("sudo cp etc/pacman.conf /etc/")
 		// Install packages from arch repos and update repositories
-		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
 		exe("sudo pacman-key --populate archlinux")
+
+		// Install chaotic-aur
+		logInfo("Installing chaotic-aur repository ...")
+		exe("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
+		exe("sudo pacman-key --lsign-key 3056513887B78AEB")
+		exe("sudo pacman -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
+		exeArgs("go", "scripts/append.go", "echo [chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
+
+		logInfo("Installing arch packages ...")
+		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(archPackages, " "))
 
 		// Install dinit-userservd
