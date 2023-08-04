@@ -61,7 +61,7 @@ var packages = []string{
 
 	// Applications
 	"pavucontrol",
-	"pcmanfm-gtk3",
+	"thunar",
 	"mpv",
 	"firefox",
 	"evince",
