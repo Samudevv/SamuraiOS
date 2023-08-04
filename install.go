@@ -53,6 +53,11 @@ var packages = []string{
 	"grim",
 	"slurp",
 	"wl-clipboard",
+	"fcitx5",
+	"fcitx5-qt",
+	"fcitx5-gtk",
+	"fcitx5-mozc",
+	"fcitx5-configtool",
 
 	// For eruption
 	"rust",
