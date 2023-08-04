@@ -1,36 +1,24 @@
 {
-    "label": "lock",
-    "action": "swaylock",
-    "text": "Sperren",
-    "keybind": "l"
-}
-{
-    "label": "hibernate",
-    "action": "loginctl hibernate",
-    "text": "Schlafen",
-    "keybind": "h"
-}
-{
-    "label": "logout",
-    "action": "loginctl terminate-user $USER",
-    "text": "Ausloggen",
-    "keybind": "e"
-}
-{
     "label": "shutdown",
     "action": "loginctl poweroff",
-    "text": "Herunterfahren",
+    "text": "",
     "keybind": "s"
-}
-{
-    "label": "suspend",
-    "action": "loginctl suspend",
-    "text": "Ruhen",
-    "keybind": "u"
 }
 {
     "label": "reboot",
     "action": "loginctl reboot",
-    "text": "Neustarten",
+    "text": "",
     "keybind": "r"
+}
+{
+    "label": "logout",
+    "action": "loginctl terminate-user $USER",
+    "text": "",
+    "keybind": "e"
+}
+{
+    "label": "lock",
+    "action": "swaylock",
+    "text": "",
+    "keybind": "l"
 }

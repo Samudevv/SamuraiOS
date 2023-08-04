@@ -1,49 +1,54 @@
 * {
-	background-image: none;
+	outline: none;
+	border: none;
 }
 
 window {
-	background-image: image(url("/home/samurai/.config/wlogout/background.jpg"));
+	background: none;
 }
 
 button {
-	color: #FFFFFF;
-	background-color: #1E1E1E;
-	opacity: 0.8;
-	border-style: solid;
-	border-width: 2px;
+	background-size: 25%;
 	background-repeat: no-repeat;
 	background-position: center;
-	background-size: 25%;
+	background-color: #282a36;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	border-radius: 50%;
+	border: 4px solid #bd93f9;
 }
 
 button:focus,
 button:active,
 button:hover {
-	background-color: #3700B3;
-	outline-style: none;
+	background-color: #bd93f9;
 }
 
-#lock {
-	background-image: image(url("/usr/share/wlogout/icons/lock.png"), url("/usr/local/share/wlogout/icons/lock.png"));
+#shutdown,
+#reboot {
+	margin-right: 30px;
+	margin-left: 440px;
+}
+
+#lock,
+#logout {
+	margin-left: 30px;
+	margin-right: 440px;
+}
+
+#shutdown {
+	background-image: image(url("/usr/share/wlogout/icons/shutdown.png"), url("/usr/local/share/wlogout/icons/shutdown.png"));
+
 }
 
 #logout {
 	background-image: image(url("/usr/share/wlogout/icons/logout.png"), url("/usr/local/share/wlogout/icons/logout.png"));
 }
 
-#suspend {
-	background-image: image(url("/usr/share/wlogout/icons/suspend.png"), url("/usr/local/share/wlogout/icons/suspend.png"));
-}
-
-#hibernate {
-	background-image: image(url("/usr/share/wlogout/icons/hibernate.png"), url("/usr/local/share/wlogout/icons/hibernate.png"));
-}
-
-#shutdown {
-	background-image: image(url("/usr/share/wlogout/icons/shutdown.png"), url("/usr/local/share/wlogout/icons/shutdown.png"));
-}
-
 #reboot {
 	background-image: image(url("/usr/share/wlogout/icons/reboot.png"), url("/usr/local/share/wlogout/icons/reboot.png"));
+}
+
+#lock {
+	background-image: image(url("/usr/share/wlogout/icons/lock.png"), url("/usr/local/share/wlogout/icons/lock.png"));
 }
