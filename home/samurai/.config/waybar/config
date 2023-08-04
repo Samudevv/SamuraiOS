@@ -7,7 +7,7 @@
   "gtk-layer-shell": true,
   "height": 50,
   "modules-left": [
-    "custom/launch_menu",
+    "custom/nice-icon",
     "wlr/workspaces",
     "network",
     "bluetooth",
@@ -19,68 +19,21 @@
     "custom/power_btn"
   ],
   "modules-right": [
+    "tray",
     "cpu",
     "memory",
     "temperature",
-    "disk",
-    "tray"
+    "disk"
   ],
-  "hyprland/window": {
-    "format": "{}"
-  },
-  "custom/launch_menu": {
-    "format": "",
-    "on-click": "notify-send -u critical \"not yet implement\"",
+  "custom/nice-icon": {
+    "format": "",
     "tooltip": false
-  },
-  "custom/power_btn": {
-    "format": "",
-    "on-click": "wlogout",
-    "tooltip": false
-  },
-  "cpu": {
-    "interval": 10,
-    "format": " {usage}%",
-    "max-length": 10,
-    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'"
-  },
-  "disk": {
-    "interval": 60,
-    "format": "󰋊 {percentage_used}%",
-    "path": "/",
-    "tooltip": true,
-    "tooltip-format": "HDD - {used} used out of {total} on {path} ({percentage_used}%)",
-    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'"
-  },
-  "memory": {
-    "interval": 10,
-    "format": " {}%",
-    "max-length": 10,
-    "tooltip": true,
-    "tooltip-format": "Memory - {used:0.1f}GB used",
-    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'"
   },
   "wlr/workspaces": {
     "disable-scroll": true,
+    "active-only": false,
     "all-outputs": true,
-    "on-click": "activate",
-    "persistent_workspaces": {
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-      "5": []
-    }
-  },
-  "tray": {
-    "icon-size": 18,
-    "spacing": 10
-  },
-  "clock": {
-    "format": "{:%a %H:%M}",
-    "tooltip": true,
-    "tooltip-format": "{: %A, %e. %B %Y\n\t\t    %H:%M:%S}",
-    "interval": 1
+    "on-click": "activate"
   },
   "network": {
     "interval": 2,
@@ -136,12 +89,59 @@
       ]
     }
   },
+  "hyprland/window": {
+    "format": " {}",
+    "min-length": 50,
+    "max-length": 50
+  },
+  "clock": {
+    "format": "{:%a %H:%M}",
+    "tooltip": true,
+    "tooltip-format": "{: %A, %e. %B %Y\n\t\t    %H:%M:%S}",
+    "interval": 1
+  },
+  "custom/power_btn": {
+    "format": "",
+    "on-click": "wlogout -b 2",
+    "tooltip": false
+  },
+  "tray": {
+    "icon-size": 20,
+    "spacing": 10
+  },
+  "cpu": {
+    "interval": 1,
+    "format": " {usage}%",
+    "min-length": 5,
+    "max-length": 6,
+    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'"
+  },
+  "memory": {
+    "interval": 1,
+    "format": " {}%",
+    "min-length": 6,
+    "max-length": 6,
+    "tooltip": true,
+    "tooltip-format": "Memory - {used:0.1f}GB used",
+    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'"
+  },
   "temperature": {
+    "interval": 10,
     "thermal-zone": 1,
     "format": " {temperatureC}°C",
     "critical-threshold": 50,
     "format-critical": " {temperatureC}°C",
     "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'",
     "tooltip": false
+  },
+  "disk": {
+    "interval": 10,
+    "format": "󰋊 {percentage_used}%",
+    "min-length": 6,
+    "max-length": 6,
+    "path": "/",
+    "tooltip": true,
+    "tooltip-format": "SSD - {used} used out of {total} on {path} ({percentage_used}%)",
+    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'"
   }
 }
