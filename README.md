@@ -4,6 +4,12 @@ An Artix Linux install script for Samurais 👹 and Ninjas 🥷
 
 This install script is intented to just be used by myself specifically for my PC setup. But if you want you can install it if you can bring it to work on your system.
 
+## Screenshots
+
+![screenshot-1](screenshot-1.png)
+![screenshot-2](screenshot-2.png)
+![screenshot-3](screenshot-3.png)
+
 ## Stage 1
 
 1. Choose keyboard layout
@@ -89,5 +95,5 @@ SOFTWARE.
 
 ## Wallpapers
 
-The Samurai wallpaper used for the main screen was made by Dominik Mayer found on [artstation.com](https://www.artstation.com/artwork/lDG8lY).
+The Samurai wallpaper used for the main screen was made by Dominik Mayer found on [artstation.com](https://www.artstation.com/artwork/lDG8lY).<br>
 The Ghost of Tsushima wallpaper used for the side screen was made by Ömer Tunç found on [alphacoders.com](https://mobile.alphacoders.com/wallpapers/view/897228/Video-Game-Ghost-Of-Tsushima-Phone-Wallpaper)
