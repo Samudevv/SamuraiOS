@@ -294,12 +294,9 @@ func main() {
 		curDir, _ := os.Getwd()
 		curUser, _ := user.Current()
 
-		// Change shell
-		exe("chsh -s /usr/bin/fish")
-
 		// Install arch repositories
 		logInfo("Installing Arch repositories ...")
-		rankmirrors("etc/pacman.d/mirrorlist-arch")
+		sudoRankmirrors("etc/pacman.d/mirrorlist-arch")
 
 		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
 		exe("sudo cp etc/pacman.conf /etc/")
@@ -437,6 +434,9 @@ func main() {
 			exe("go install -buildvcs=false")
 		}
 		os.Chdir(curDir)
+
+		// Change shell
+		exe("chsh -s /usr/bin/fish")
 
 		logInfo("Stage 3 Done")
 		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
