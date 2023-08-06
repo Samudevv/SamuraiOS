@@ -366,6 +366,7 @@ func main() {
 			exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
 			os.Chdir(filepath.Join(homeDir, "/repos/yay"))
 			exe("makepkg -si --noconfirm")
+			os.Chdir(curDir)
 			exe("rm -rf " + filepath.Join(homeDir, "/repos/yay"))
 		} else {
 			logInfo("Skipping installation of yay since it is already installed")
@@ -398,7 +399,7 @@ func main() {
 
 		var repoEntriesStr []string
 		for _, e := range repoEntries {
-			if e.IsDir() && !(e.Name() == "home" || e.Name() == "scripts") {
+			if e.IsDir() && !(e.Name() == "home" || e.Name() == "scripts" || strings.HasPrefix(e.Name(), ".")) {
 				repoEntriesStr = append(repoEntriesStr, e.Name())
 			}
 		}
