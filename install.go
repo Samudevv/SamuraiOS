@@ -295,22 +295,22 @@ func main() {
 		curDir, _ := os.Getwd()
 		curUser, _ := user.Current()
 
+		// Install arch repositories
+		logInfo("Installing Arch repositories ...")
+		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
+		exe("sudo cp etc/pacman.conf /etc/")
+		exe("sudo pacman -S --noconfirm --needed artix-archlinux-support")
+		exe("sudo pacman-key --populate archlinux")
+
 		// Install chaotic-aur
 		logInfo("Installing chaotic-aur repository ...")
 		exe("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
 		exe("sudo pacman-key --lsign-key 3056513887B78AEB")
 		exe("sudo pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
 
-		// Install arch repositories
-		logInfo("Installing Arch repositories ...")
-		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
-		exe("sudo cp etc/pacman.conf /etc/")
-		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
-		exe("sudo pacman-key --populate archlinux")
-
 		// Install packages from arch and chaotic repos and update repositories
 		logInfo("Installing arch chaotic packages ...")
-		exe("sudo pacman -S --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
+		exe("sudo pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
 
 		// Install dinit-userservd
 		if !dinitServiceExists("dinit-userservd") {
