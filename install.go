@@ -300,7 +300,7 @@ func main() {
 
 		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
 		exe("sudo cp etc/pacman.conf /etc/")
-		// Install packages from arch repos and update repositories
+		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
 		exe("sudo pacman-key --populate archlinux")
 
 		// Install chaotic-aur
@@ -311,9 +311,9 @@ func main() {
 		exeArgs("sudo", "go", "scripts/append.go", "echo [chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
 		sudoRankmirrors("/etc/pacman.d/chaotic-mirrorlist")
 
+		// Install packages from arch repos and update repositories
 		logInfo("Installing arch packages ...")
-		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
-		exe("sudo pacman -S --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
+		exe("sudo pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
 
 		// Install dinit-userservd
 		if !dinitServiceExists("dinit-userservd") {
