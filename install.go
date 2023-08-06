@@ -135,7 +135,7 @@ func main() {
 
 		logInfo("Refreshing new mirrorlist ...")
 		// Install rankmirrors and create better mirrorlist
-		exe("pacman -S --noconfirm pacman-contrib")
+		exe("pacman -S --noconfirm --needed pacman-contrib")
 		rankmirrors("world", "/etc/pacman.d/mirrorlist")
 
 		// Install base system
