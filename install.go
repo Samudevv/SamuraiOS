@@ -115,11 +115,9 @@ var applicationPackages = []string{
 
 func main() {
 	// Parse Args
-	var stage int
+	var stage int = 1
 	var allDefault bool
-	if len(os.Args) == 1 {
-		stage = 1
-	} else {
+	if len(os.Args) > 1 {
 		for _, arg := range os.Args[1:] {
 			if arg == "-y" || arg == "--yes" {
 				allDefault = true
