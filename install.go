@@ -71,6 +71,7 @@ var basestrapPackages = []string{
 
 var archChaoticPackages = []string{
 	// Packages for working graphical system with audio
+	"waybar-hyprland-git",
 	"swappy",
 	"hyprpaper",
 	"starship",
@@ -87,10 +88,7 @@ var archChaoticPackages = []string{
 	"dracula-gtk-theme",
 }
 
-var aurPackages = []string{
-	// Packages for working graphical system with audio
-	"waybar-hyprland-no-systemd",
-}
+var aurPackages = []string{}
 
 // Applications can be installed optionally (makes testing faster)
 var applicationPackages = []string{
@@ -361,8 +359,10 @@ func main() {
 		}
 
 		// Install yay packages
-		logInfo("Installing AUR packages ...")
-		exeDontCare("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
+		if len(aurPackages) != 0 {
+			logInfo("Installing AUR packages ...")
+			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
+		}
 
 		// Remove unneeded packages
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
