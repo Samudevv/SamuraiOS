@@ -304,7 +304,7 @@ func main() {
 			"/etc/pacman.d/",
 		)
 		exe("sudo cp etc/pacman.conf /etc/")
-		exe("sudo pacman -S --noconfirm --needed artix-archlinux-support")
+		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
 		exe("sudo pacman-key --populate archlinux")
 
 		// Install chaotic-aur
