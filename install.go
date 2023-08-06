@@ -363,7 +363,7 @@ func main() {
 
 		// Install yay packages
 		logInfo("Installing AUR packages ...")
-		exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
+		exeDontCare("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
 
 		// Remove unneeded packages
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
