@@ -137,7 +137,7 @@ func main() {
 		logInfo("Refreshing new mirrorlist ...")
 		// Install rankmirrors and create better mirrorlist
 		exe("pacman -S --noconfirm --needed pacman-contrib")
-		rankmirrors("world", "/etc/pacman.d/mirrorlist")
+		rankmirrors("/etc/pacman.d/mirrorlist")
 
 		// Install base system
 		logInfo("Installing base packages ...")
@@ -298,7 +298,7 @@ func main() {
 
 		// Install arch repositories
 		logInfo("Installing Arch repositories ...")
-		rankmirrors("core", "etc/pacman.d/mirrorlist-arch")
+		rankmirrors("etc/pacman.d/mirrorlist-arch")
 
 		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
 		exe("sudo cp etc/pacman.conf /etc/")
@@ -311,7 +311,7 @@ func main() {
 		exe("sudo pacman-key --lsign-key 3056513887B78AEB")
 		exe("sudo pacman -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
 		exeArgs("sudo", "go", "scripts/append.go", "echo [chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
-		sudoRankmirrors("chaotic-aur", "/etc/pacman.d/chaotic-mirrorlist")
+		sudoRankmirrors("/etc/pacman.d/chaotic-mirrorlist")
 
 		logInfo("Installing arch packages ...")
 		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
@@ -761,17 +761,17 @@ func backupName(filename string) string {
 	}
 }
 
-func sudoRankmirrors(repoName, mirrorlistPath string) {
+func sudoRankmirrors(mirrorlistPath string) {
 	// Create back up
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("sudo rankmirrors -n 5 -v -r "+repoName+" "+mirrorlistBak, mirrorlistPath+".tmp")
+	exeAppendFile("sudo rankmirrors -n 5 -v "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
 
-func rankmirrors(repoName, mirrorlistPath string) {
+func rankmirrors(mirrorlistPath string) {
 	// Create back up
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("mv", mirrorlistPath, mirrorlistBak)
