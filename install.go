@@ -114,12 +114,19 @@ var applicationPackages = []string{
 }
 
 func main() {
-	// Determine Stage
+	// Parse Args
 	var stage int
+	var allDefault bool
 	if len(os.Args) == 1 {
 		stage = 1
 	} else {
-		stage = parseStage(os.Args[1])
+		for _, arg := range os.Args[1:] {
+			if arg == "-y" || arg == "--yes" {
+				allDefault = true
+			} else {
+				stage = parseStage(os.Args[1])
+			}
+		}
 	}
 
 	if stage == 1 {
@@ -150,9 +157,7 @@ func main() {
 		isUEFI, err := isUEFI()
 		if err != nil {
 			logInfo("Failed to check if the system is UEFI automatically: ", err, " Manual input required.")
-			prompt("Is UEFI yes|no (no)")
-			isUEFIStr := inputWithDefault("no")
-			isUEFI = strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
+			isUEFI = promptWithDefaultYesNo(false, allDefault, "Is UEFI")
 		}
 
 		if isUEFI {
@@ -177,18 +182,15 @@ func main() {
 
 		// set the time zone
 		logInfo("Setting locale ...")
-		prompt("Region (Europe)")
-		region := inputWithDefault("Europe")
-		prompt("City (Vienna)")
-		city := inputWithDefault("Vienna")
+		region := promptWithDefault("Europe", allDefault, "Region")
+		city := promptWithDefault("Vienna", allDefault, "City")
 
 		exe(fmt.Sprint("ln -sf /usr/share/zoneinfo/", region, "/", city, " /etc/localtime"))
 
 		exe("hwclock --systohc")
 
 		// Set locale
-		prompt("Locale (comma seperated) (de_AT.UTF-8, en_GB.UTF-8)")
-		localesStr := inputWithDefault("de_AT.UTF-8, en_GB.UTF-8")
+		localesStr := promptWithDefault("de_AT.UTF-8, en_GB.UTF-8", allDefault, "Locale (comma seperated)")
 		locales := strings.Split(localesStr, ",")
 		for i := 0; i < len(locales); i++ {
 			locales[i] = strings.TrimSpace(locales[i])
@@ -242,9 +244,7 @@ func main() {
 		isUEFI, err := isUEFI()
 		if err != nil {
 			logInfo("Failed to check if the system is UEFI automatically: ", err, " Manual input required.")
-			prompt("Is UEFI yes|no (no)")
-			isUEFIStr := inputWithDefault("no")
-			isUEFI = strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
+			isUEFI = promptWithDefaultYesNo(false, allDefault, "Is UEFI")
 		}
 
 		if isUEFI {
@@ -266,15 +266,13 @@ func main() {
 		logInfo("Enter root password")
 		exe("passwd")
 
-		prompt("Username (ninja)")
-		userName := inputWithDefault("ninja")
+		userName := promptWithDefault("ninja", allDefault, "Username")
 		exe("useradd -m " + userName)
 
 		logInfo("Enter password for ", userName)
 		exe("passwd " + userName)
 
-		prompt("Hostname (samurai)")
-		hostName := inputWithDefault("samurai")
+		hostName := promptWithDefault("samurai", allDefault, "Hostname")
 
 		{
 			hostNameFile, err := os.Create("/etc/hostname")
@@ -472,16 +470,12 @@ func main() {
 
 		logInfo("Installation Done")
 
-		prompt("Remove /SamuraiOS yes|no (yes)")
-		rmSamuraiStr := inputWithDefault("yes")
-		rmSamurai := strings.HasPrefix(strings.ToLower(rmSamuraiStr), "y")
+		rmSamurai := promptWithDefaultYesNo(false, allDefault, "Remove /SamuraiOS")
 		if rmSamurai {
 			exe("sudo rm -rf /SamuraiOS")
 		}
 
-		prompt("Execute \"sudo dinitctl enable sddm\" and launch into hyprland yes|no (yes)")
-		launchHyprStr := inputWithDefault("yes")
-		launchHypr := strings.HasPrefix(strings.ToLower(launchHyprStr), "y")
+		launchHypr := promptWithDefaultYesNo(true, allDefault, "Execute \"sudo dinitctl enable sddm\" and launch into hyprland")
 		if launchHypr {
 			exe("sudo dinitctl enable sddm")
 		}
@@ -499,12 +493,16 @@ func main() {
 		logError("Task not failed successfully")
 		exe("rm -rf /tmp/stage_test")
 
-		prompt("Create which folder (/tmp/another/samurai)")
-		folderName := inputWithDefault("/tmp/another/samurai")
+		folderName := promptWithDefault("/tmp/another/samurai", allDefault, "Create which folder")
 		exe("mkdir -p " + folderName)
 
 		exeAppendFile("echo Hello World", "/tmp/hello_samurai")
 		exe("go run scripts/replace.go /tmp/hello_samurai Hello Greetings")
+
+		createTmpFile := promptWithDefaultYesNo(true, allDefault, "Create /tmp/install_test_os")
+		if createTmpFile {
+			exe("touch /tmp/install_test_os")
+		}
 
 		logInfo("Tests Done")
 	} else {
@@ -693,6 +691,37 @@ func logScript(msg ...any) {
 func prompt(msg ...any) {
 	msgStr := fmt.Sprint(msg...)
 	fmt.Printf("\033[30;47m[PROMPT]\033[0;33m %s: \033[0m", msgStr)
+}
+
+func promptWithDefault(defaultValue string, allDefault bool, msg ...any) string {
+	msgStr := fmt.Sprint(msg...)
+	msgStr = fmt.Sprint(msgStr, " (", defaultValue, ")")
+
+	prompt(msgStr)
+	if allDefault {
+		fmt.Println(defaultValue)
+		return defaultValue
+	}
+
+	value := inputWithDefault(defaultValue)
+	return value
+}
+
+func promptWithDefaultYesNo(defaultValue, allDefault bool, msg ...any) bool {
+	msgStr := fmt.Sprint(msg...)
+	msgStr = fmt.Sprint(msgStr, " yes|no")
+
+	var defaultValueStr string
+	if defaultValue {
+		defaultValueStr = "yes"
+	} else {
+		defaultValueStr = "no"
+	}
+
+	value := promptWithDefault(defaultValueStr, allDefault, msgStr)
+	valueBool := strings.HasPrefix(strings.ToLower(value), "y")
+
+	return valueBool
 }
 
 func isInstalled(program string) bool {
