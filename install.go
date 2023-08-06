@@ -11,7 +11,8 @@ import (
 	"strings"
 )
 
-var packages = []string{
+// Packages that can be installed from the artix repos and the program basestrap
+var basestrapPackages = []string{
 	// Base packages to make the system work
 	"base",
 	"base-devel",
@@ -78,10 +79,15 @@ var packages = []string{
 	"epiphany",
 }
 
-var yayPackages = []string{
+var archChaoticPackages = []string{
 	// Packages for working graphical system with audio
-	"xdg-desktop-portal-hyprland-git",
-	"waybar-hyprland-no-systemd",
+	"swappy",
+	"hyprpaper",
+	"starship",
+	"exa",
+	"bat",
+	"wofi",
+	"xdg-desktop-portal-hyprland",
 	"connman-gtk",
 	"wlogout",
 	"swaylock-effects",
@@ -91,40 +97,29 @@ var yayPackages = []string{
 	"dracula-gtk-theme",
 
 	// Applications
-	"vscodium-bin",
+	"vscodium",
+	"libreoffice-still",
+	"libreoffice-still-de",
+	"xmake",
+	"biber",
 	"pamac-aur",
 	"mailspring",
 	"teams",
 	"anki",
 }
 
-var archPackages = []string{
+var aurPackages = []string{
 	// Packages for working graphical system with audio
-	"swappy",
-	"hyprpaper",
-	"starship",
-	"exa",
-	"bat",
-	"wofi",
-
-	// Applications
-	"libreoffice-still",
-	"libreoffice-still-de",
-	"xmake",
-	"biber",
+	"waybar-hyprland-no-systemd",
 }
 
 func main() {
-	// Determine stage
-	if len(os.Args) != 2 {
-		logError("Invalid Arguments")
-		os.Exit(1)
-	}
-
-	stage, err := strconv.ParseUint(os.Args[1], 10, 64)
-	if err != nil {
-		logError("Failed to parse stage argument: ", err)
-		os.Exit(1)
+	// Determine Stage
+	var stage int
+	if len(os.Args) == 1 {
+		stage = 1
+	} else {
+		stage = parseStage(os.Args[1])
 	}
 
 	if stage == 1 {
@@ -155,9 +150,9 @@ func main() {
 		isUEFIStr := inputWithDefault("no")
 		isUEFI := strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
 		if isUEFI {
-			packages = append(packages, "efibootmgr")
+			basestrapPackages = append(basestrapPackages, "efibootmgr")
 		}
-		exe("basestrap /mnt " + strings.Join(packages, " "))
+		exe("basestrap /mnt " + strings.Join(basestrapPackages, " "))
 
 		// fstabgen
 		exeAppendFile("fstabgen -U /mnt", "/mnt/etc/fstab")
@@ -328,7 +323,7 @@ func main() {
 
 		logInfo("Installing arch packages ...")
 		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
-		exe("sudo pacman -S --noconfirm --needed " + strings.Join(archPackages, " "))
+		exe("sudo pacman -S --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
 
 		// Install dinit-userservd
 		if !dinitServiceExists("dinit-userservd") {
@@ -380,7 +375,7 @@ func main() {
 
 		// Install yay packages
 		logInfo("Installing AUR packages ...")
-		exe("yay -S --noconfirm --needed " + strings.Join(yayPackages, " "))
+		exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
 
 		// Remove unneeded packages
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
@@ -694,4 +689,22 @@ func dinitServiceExists(service string) bool {
 	cmd := exec.Command("sudo", "dinitctl", "status", service)
 	err := cmd.Run()
 	return err == nil
+}
+
+func parseStage(arg string) int {
+	switch strings.ToLower(arg) {
+	case "test":
+		return 255
+	case "apps":
+	case "application":
+	case "applications":
+		return 5
+	default:
+		v, err := strconv.ParseUint(arg, 10, 64)
+		if err != nil {
+			logError("Failed to parse stage argument: ", err)
+			os.Exit(1)
+		}
+		return int(v)
+	}
 }
