@@ -146,9 +146,15 @@ func main() {
 
 		// Install base system
 		logInfo("Installing base packages ...")
-		prompt("Is UEFI yes|no (no)")
-		isUEFIStr := inputWithDefault("no")
-		isUEFI := strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
+
+		isUEFI, err := isUEFI()
+		if err != nil {
+			logInfo("Failed to check if the system is UEFI automatically: ", err, " Manual input required.")
+			prompt("Is UEFI yes|no (no)")
+			isUEFIStr := inputWithDefault("no")
+			isUEFI = strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
+		}
+
 		if isUEFI {
 			basestrapPackages = append(basestrapPackages, "efibootmgr")
 		}
@@ -233,9 +239,13 @@ func main() {
 
 		// Boot Loader
 		logInfo("Installing boot loader (grub) ...")
-		prompt("Is UEFI yes|no (no)")
-		isUEFIStr := inputWithDefault("no")
-		isUEFI := strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
+		isUEFI, err := isUEFI()
+		if err != nil {
+			logInfo("Failed to check if the system is UEFI automatically: ", err, " Manual input required.")
+			prompt("Is UEFI yes|no (no)")
+			isUEFIStr := inputWithDefault("no")
+			isUEFI = strings.HasPrefix(strings.ToLower(isUEFIStr), "y")
+		}
 
 		if isUEFI {
 			exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
@@ -714,4 +724,13 @@ func parseStage(arg string) int {
 		}
 		return int(v)
 	}
+}
+
+func isUEFI() (bool, error) {
+	_, err := os.Stat("/sys/firmware/efi")
+	if err != nil && !os.IsNotExist(err) {
+		return false, err
+	}
+
+	return err == nil, nil
 }
