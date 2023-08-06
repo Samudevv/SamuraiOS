@@ -176,7 +176,12 @@ func main() {
 		logInfo("Stage 1 Done")
 		logInfo("Now using chroot to go into /mnt ...")
 
-		exeArgs("artix-chroot", "/mnt", "/SamuraiOS/scripts/install2.sh")
+		install2 := "artix-chroot /mnt /SamuraiOS/scripts/install2.sh"
+		if allDefault {
+			install2 += " -y"
+		}
+
+		exe(install2)
 	} else if stage == 2 {
 		logInfo("Performing Stage 2 ...")
 
