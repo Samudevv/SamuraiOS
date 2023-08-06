@@ -406,6 +406,10 @@ func main() {
 
 		exe("sudo cp -r " + strings.Join(repoEntriesStr, " ") + " /")
 
+		// Uncomment chaotic-aur
+		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
+		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
+
 		// Copy contents of home directory
 		homeEntries, err := os.ReadDir("home/samurai")
 		if err != nil {
