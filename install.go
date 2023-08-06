@@ -300,7 +300,6 @@ func main() {
 		exeArgs("sudo", "cp",
 			"etc/pacman.d/mirrorlist-arch",
 			"etc/pacman.d/mirrorlist-universe",
-			"etc/pacman.d/chaotic-mirrorlist",
 			"/etc/pacman.d/",
 		)
 		exe("sudo cp etc/pacman.conf /etc/")
@@ -311,7 +310,11 @@ func main() {
 		logInfo("Installing chaotic-aur repository ...")
 		exe("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
 		exe("sudo pacman-key --lsign-key 3056513887B78AEB")
-		exe("sudo pacman --overwrite * --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
+		exe("sudo pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
+
+		// Uncomment chaotic-aur
+		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
+		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
 
 		// Install packages from arch and chaotic repos and update repositories
 		logInfo("Installing arch chaotic packages ...")
