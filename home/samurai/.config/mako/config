@@ -1,0 +1,9 @@
+background-color=#282a36ee
+text-color=#f8f8f2
+font=monospace 14
+border-size=2
+border-color=#bd93f9ee
+border-radius=15
+width=450
+height=200
+progress-color=over #50fa7bee

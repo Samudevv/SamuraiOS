@@ -44,7 +44,7 @@ var basestrapPackages = []string{
 	"polkit-gnome",
 	"man",
 	"git",
-	"dunst",
+	"mako",
 	"libnotify",
 	"kitty",
 	"noto-fonts",
