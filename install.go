@@ -27,6 +27,7 @@ var basestrapPackages = []string{
 	"wpa_supplicant",
 	"connman-dinit",
 	"pacman-contrib",
+	"parallel",
 
 	// Packages for working graphical system with audio
 	"go",
@@ -136,7 +137,7 @@ func main() {
 
 		logInfo("Refreshing new mirrorlist ...")
 		// Install rankmirrors and create better mirrorlist
-		exe("pacman -S --noconfirm --needed pacman-contrib")
+		exe("pacman -S --noconfirm --needed pacman-contrib parallel")
 		rankmirrors("/etc/pacman.d/mirrorlist")
 
 		// Install base system
@@ -766,7 +767,7 @@ func sudoRankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("sudo rankmirrors -n 5 -v "+mirrorlistBak, mirrorlistPath+".tmp")
+	exeAppendFile("sudo rankmirrors -n 5 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
@@ -776,7 +777,7 @@ func rankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("rankmirrors -n 5 -v "+mirrorlistBak, mirrorlistPath+".tmp")
+	exeAppendFile("rankmirrors -n 5 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
