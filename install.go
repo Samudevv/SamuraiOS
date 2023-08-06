@@ -26,6 +26,7 @@ var basestrapPackages = []string{
 	"dhcpcd",
 	"wpa_supplicant",
 	"connman-dinit",
+	"pacman-contrib",
 
 	// Packages for working graphical system with audio
 	"go",
@@ -487,6 +488,9 @@ func main() {
 			exe("touch /tmp/install_test_os")
 		}
 
+		bak := backupName("/etc/pacman.d/mirrorlist")
+		logInfo("Backup: ", bak)
+
 		logInfo("Tests Done")
 	} else {
 		logError("Invalid Stage ", stage)
@@ -748,20 +752,31 @@ func isUEFI(allDefault bool) bool {
 	return err == nil
 }
 
+func backupName(filename string) string {
+	for {
+		filename = filename + ".bak"
+		if _, err := os.Stat(filename); err != nil && os.IsNotExist(err) {
+			return filename
+		}
+	}
+}
+
 func sudoRankmirrors(repoName, mirrorlistPath string) {
 	// Create back up
-	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistPath+".bak")
+	mirrorlistBak := backupName(mirrorlistPath)
+	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("sudo rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistPath+".bak", mirrorlistPath+".tmp")
+	exeAppendFile("sudo rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
 
 func rankmirrors(repoName, mirrorlistPath string) {
 	// Create back up
-	exeArgs("mv", mirrorlistPath, mirrorlistPath+".bak")
+	mirrorlistBak := backupName(mirrorlistPath)
+	exeArgs("mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistPath+".bak", mirrorlistPath+".tmp")
+	exeAppendFile("rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
