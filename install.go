@@ -296,7 +296,6 @@ func main() {
 
 		// Install arch repositories
 		logInfo("Installing Arch repositories ...")
-		sudoRankmirrors("etc/pacman.d/mirrorlist-arch")
 
 		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
 		exe("sudo cp etc/pacman.conf /etc/")
@@ -309,7 +308,6 @@ func main() {
 		exe("sudo pacman-key --lsign-key 3056513887B78AEB")
 		exe("sudo pacman -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
 		exeArgs("sudo", "go", "scripts/append.go", "echo [chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
-		sudoRankmirrors("/etc/pacman.d/chaotic-mirrorlist")
 
 		// Install packages from arch repos and update repositories
 		logInfo("Installing arch packages ...")
