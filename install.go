@@ -776,7 +776,7 @@ func rankmirrors(repoName, mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("rankmirrors -n 5 -v -r "+repoName+" "+mirrorlistBak, mirrorlistPath+".tmp")
+	exeAppendFile("rankmirrors -n 5 -v "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
