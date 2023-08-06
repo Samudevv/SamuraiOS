@@ -28,6 +28,7 @@ var basestrapPackages = []string{
 	"connman-dinit",
 	"pacman-contrib",
 	"parallel",
+	"fzf",
 
 	// Packages for working graphical system with audio
 	"go",

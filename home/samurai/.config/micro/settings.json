@@ -1,7 +1,7 @@
 {
     "aspell.check": "off",
     "autosu": true,
-    "colorscheme": "dukedark-tc",
+    "colorscheme": "dracula",
     "ft:go": {
         "tabstospaces": false
     },

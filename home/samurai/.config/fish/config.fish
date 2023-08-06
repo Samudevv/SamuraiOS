@@ -163,12 +163,14 @@ set -x EDITOR micro
 set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 # set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 set -x FZF_DEFAULT_COMMAND 'find .'
+set -x MICRO_TRUECOLOR 1
 
 alias fishconf="$EDITOR ~/.config/fish/config.fish"
 alias sourcefish="source ~/.config/fish/config.fish"
 alias hiddenconf="$EDITOR ~/.config/fish/hidden.fish"
 alias vimconf="$EDITOR ~/.vimrc"
 alias qtileconf="$EDITOR ~/.config/qtile/config.py"
+alias hyprconf="$EDITOR ~/.config/hypr/hyprland.conf"
 alias gitcheckconf="git config user.name && git config user.email"
 alias gitac="git add -A && git commit -m"
 alias cmd="wine ~/.wine/drive_c/windows/system32/cmd.exe"

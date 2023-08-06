@@ -69,7 +69,7 @@ reboot
 
 13. Do install all applications call `go run install.go 5`
 
-## Dracula Qt5 Theme License
+## Dracula Theme License
 
 The MIT License (MIT)
 
