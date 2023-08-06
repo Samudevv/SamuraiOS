@@ -1,6 +1,8 @@
 # SamuraiOS
 
-An Artix Linux configuration for Samurais 👹 and Ninjas 🥷
+An Artix Linux install script for Samurais 👹 and Ninjas 🥷
+
+This install script is intented to just be used by myself specifically for my PC setup. But if you want you can install it if you can bring it to work on your system.
 
 ## Stage 1
 
@@ -35,39 +37,31 @@ connmanctl> quit
 pacman -Sy go git
 ```
 
-1. Execute `go run stage.go 1`
+6. Execute `go run install.go 1`
+*The -y or --yes flag can be used to use all default values at the prompts*
 
-## Stage 2
-
-7. Execute `go run stage.go 2`
-
-8. Make user able to use `sudo`
+7.  Reboot
 ```
-EDITOR=micro visudo # Uncomment the line with '%wheel ALL=(ALL:ALL) ALL'
-```
-
-9.  Reboot
-```
-exit
-umount -R /mnt
 reboot
 ```
 
 ## Stage 3
 
-1.  After logging in execute `sudo dinitctl enable connmand`
+8.  After logging in execute `sudo dinitctl enable connmand` and reconnect to the internet
 
-2. Execute `go run stage.go 3`
+9. Execute `go run install.go 3`
 
-3.  Logout
+10.  Logout
 
 ## Stage 4
 
-12. After logging in again execute `go run stage.go 4`
+11. After logging in again execute `go run install.go 4`
 
-13. Execute `sudo dinitctl enable sddm` to launch into hyprland
+12. Base Installation is Done
 
-14. Done
+## Stage 5
+
+13. Do install all applications call `go run install.go 5`
 
 ## Dracula Qt5 Theme License
 
