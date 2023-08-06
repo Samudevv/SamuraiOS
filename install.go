@@ -62,6 +62,8 @@ var basestrapPackages = []string{
 	"fcitx5-mozc",
 	"fcitx5-configtool",
 	"pavucontrol",
+	"qt5-wayland",
+	"qt6-wayland",
 
 	// For eruption
 	"rust",
@@ -111,6 +113,7 @@ var applicationPackages = []string{
 	"mailspring",
 	"teams",
 	"anki",
+	"openrgb",
 }
 
 func main() {
@@ -466,6 +469,8 @@ func main() {
 		logInfo("Performing Stage 5 ...")
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
+
+		logInfo("Stage 5 Done")
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
