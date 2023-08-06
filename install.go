@@ -595,7 +595,7 @@ func exeAppendFile(command, filename string) {
 		args = words[1:]
 	}
 
-	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0770)
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0744)
 	if err != nil {
 		logError("Failed to open \"", filename, "\" for \"", command, "\": ", err)
 		os.Exit(1)
