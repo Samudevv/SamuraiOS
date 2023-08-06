@@ -306,7 +306,7 @@ func main() {
 		logInfo("Installing chaotic-aur repository ...")
 		exe("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
 		exe("sudo pacman-key --lsign-key 3056513887B78AEB")
-		exe("sudo pacman -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
+		exe("sudo pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
 		exeArgs("sudo", "go", "scripts/append.go", "echo [chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
 
 		// Install packages from arch repos and update repositories
