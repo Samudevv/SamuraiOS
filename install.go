@@ -59,24 +59,12 @@ var basestrapPackages = []string{
 	"fcitx5-gtk",
 	"fcitx5-mozc",
 	"fcitx5-configtool",
+	"pavucontrol",
 
 	// For eruption
 	"rust",
 	"protobuf-c",
 	"gtksourceview4",
-
-	// Applications
-	"pavucontrol",
-	"thunar",
-	"mpv",
-	"firefox",
-	"evince",
-	"eog",
-	"godot",
-	"glade",
-	"texlive",
-	"texlive-langgerman",
-	"epiphany",
 }
 
 var archChaoticPackages = []string{
@@ -95,8 +83,25 @@ var archChaoticPackages = []string{
 	"dracula-icons-git",
 	"dracula-cursors-git",
 	"dracula-gtk-theme",
+}
 
-	// Applications
+var aurPackages = []string{
+	// Packages for working graphical system with audio
+	"waybar-hyprland-no-systemd",
+}
+
+// Applications can be installed optionally (makes testing faster)
+var applicationPackages = []string{
+	"thunar",
+	"mpv",
+	"firefox",
+	"evince",
+	"eog",
+	"godot",
+	"glade",
+	"texlive",
+	"texlive-langgerman",
+	"epiphany",
 	"vscodium",
 	"libreoffice-still",
 	"libreoffice-still-de",
@@ -106,11 +111,6 @@ var archChaoticPackages = []string{
 	"mailspring",
 	"teams",
 	"anki",
-}
-
-var aurPackages = []string{
-	// Packages for working graphical system with audio
-	"waybar-hyprland-no-systemd",
 }
 
 func main() {
@@ -475,6 +475,11 @@ func main() {
 		if launchHypr {
 			exe("sudo dinitctl enable sddm")
 		}
+	} else if stage == 5 {
+		// Application Stage
+		logInfo("Performing Stage 5 ...")
+
+		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
@@ -696,7 +701,9 @@ func parseStage(arg string) int {
 	case "test":
 		return 255
 	case "apps":
+		fallthrough
 	case "application":
+		fallthrough
 	case "applications":
 		return 5
 	default:
