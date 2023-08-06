@@ -767,7 +767,7 @@ func sudoRankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("sudo rankmirrors -n 5 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
+	exeArgs("sudo", "go", "run", "scripts/append.go", "rankmirrors -n 5 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
