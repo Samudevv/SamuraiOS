@@ -752,7 +752,7 @@ func sudoRankmirrors(repoName, mirrorlistPath string) {
 	// Create back up
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistPath+".bak")
 	// rank mirror list
-	exeAppendFile("sudo rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistPath, mirrorlistPath+".tmp")
+	exeAppendFile("sudo rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistPath+".bak", mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
@@ -761,7 +761,7 @@ func rankmirrors(repoName, mirrorlistPath string) {
 	// Create back up
 	exeArgs("mv", mirrorlistPath, mirrorlistPath+".bak")
 	// rank mirror list
-	exeAppendFile("rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistPath, mirrorlistPath+".tmp")
+	exeAppendFile("rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistPath+".bak", mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
