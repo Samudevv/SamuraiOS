@@ -138,29 +138,12 @@ func main() {
 		logInfo("Refreshing new mirrorlist ...")
 		// Install rankmirrors and create better mirrorlist
 		exe("pacman -S --noconfirm pacman-contrib")
-
-		newMirrorlist := exeToString("rankmirrors -n 5 /etc/pacman.d/mirrorlist")
-		{
-			mirrorlist, err := os.Create("/etc/pacman.d/mirrorlist")
-			if err != nil {
-				logError(err)
-				os.Exit(1)
-			}
-
-			mirrorlist.WriteString(newMirrorlist)
-			mirrorlist.Close()
-		}
+		rankmirrors("world", "/etc/pacman.d/mirrorlist")
 
 		// Install base system
 		logInfo("Installing base packages ...")
 
-		isUEFI, err := isUEFI()
-		if err != nil {
-			logInfo("Failed to check if the system is UEFI automatically: ", err, " Manual input required.")
-			isUEFI = promptWithDefaultYesNo(false, allDefault, "Is UEFI")
-		}
-
-		if isUEFI {
+		if isUEFI(allDefault) {
 			basestrapPackages = append(basestrapPackages, "efibootmgr")
 		}
 		exe("basestrap /mnt " + strings.Join(basestrapPackages, " "))
@@ -246,13 +229,7 @@ func main() {
 
 		// Boot Loader
 		logInfo("Installing boot loader (grub) ...")
-		isUEFI, err := isUEFI()
-		if err != nil {
-			logInfo("Failed to check if the system is UEFI automatically: ", err, " Manual input required.")
-			isUEFI = promptWithDefaultYesNo(false, allDefault, "Is UEFI")
-		}
-
-		if isUEFI {
+		if isUEFI(allDefault) {
 			exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
 		} else {
 			exe("lsblk")
@@ -322,6 +299,8 @@ func main() {
 
 		// Install arch repositories
 		logInfo("Installing Arch repositories ...")
+		rankmirrors("core", "etc/pacman.d/mirrorlist-arch")
+
 		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
 		exe("sudo cp etc/pacman.conf /etc/")
 		// Install packages from arch repos and update repositories
@@ -332,7 +311,8 @@ func main() {
 		exe("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
 		exe("sudo pacman-key --lsign-key 3056513887B78AEB")
 		exe("sudo pacman -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
-		exeArgs("go", "scripts/append.go", "echo [chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
+		exeArgs("sudo", "go", "scripts/append.go", "echo [chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
+		sudoRankmirrors("chaotic-aur", "/etc/pacman.d/chaotic-mirrorlist")
 
 		logInfo("Installing arch packages ...")
 		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
@@ -760,11 +740,30 @@ func parseStage(arg string) int {
 	}
 }
 
-func isUEFI() (bool, error) {
+func isUEFI(allDefault bool) bool {
 	_, err := os.Stat("/sys/firmware/efi")
 	if err != nil && !os.IsNotExist(err) {
-		return false, err
+		logInfo("Failed to check if the system is UEFI automatically: ", err, " Manual input required.")
+		return promptWithDefaultYesNo(false, allDefault, "Is UEFI")
 	}
 
-	return err == nil, nil
+	return err == nil
+}
+
+func sudoRankmirrors(repoName, mirrorlistPath string) {
+	// Create back up
+	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistPath+".bak")
+	// rank mirror list
+	exeAppendFile("sudo rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistPath, mirrorlistPath+".tmp")
+	// Overwrite old mirrorlist
+	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
+}
+
+func rankmirrors(repoName, mirrorlistPath string) {
+	// Create back up
+	exeArgs("mv", mirrorlistPath, mirrorlistPath+".bak")
+	// rank mirror list
+	exeAppendFile("rankmirrors -n 5 -m 3 -v -r "+repoName+" "+mirrorlistPath, mirrorlistPath+".tmp")
+	// Overwrite old mirrorlist
+	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
