@@ -297,7 +297,12 @@ func main() {
 
 		// Install arch repositories
 		logInfo("Installing Arch repositories ...")
-		exe("sudo cp etc/pacman.d/mirrorlist-arch etc/pacman.d/mirrorlist-universe /etc/pacman.d/")
+		exeArgs("sudo", "cp",
+			"etc/pacman.d/mirrorlist-arch",
+			"etc/pacman.d/mirrorlist-universe",
+			"etc/pacman.d/chaotic-mirrorlist",
+			"/etc/pacman.d/",
+		)
 		exe("sudo cp etc/pacman.conf /etc/")
 		exe("sudo pacman -S --noconfirm --needed artix-archlinux-support")
 		exe("sudo pacman-key --populate archlinux")
