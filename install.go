@@ -320,6 +320,7 @@ func main() {
 		// Install dinit-userservd
 		if !dinitServiceExists("dinit-userservd") {
 			logInfo("Installing dinit user service ...")
+			exeDontCare("rm -rf " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 			exe("mkdir -p " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 			exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
 			os.Chdir(filepath.Join(homeDir, "/repos/dinit-userservd"))
@@ -335,6 +336,7 @@ func main() {
 		// Install eruptuion
 		if !isInstalled("eruption") {
 			logInfo("Installing eruption ...")
+			exeDontCare("rm -rf " + filepath.Join(homeDir, "/repos/eruption"))
 			exe("mkdir -p " + filepath.Join(homeDir, "repos/eruption"))
 			exe("git clone --branch no-systemd https://github.com/PucklaJ/eruption.git " + filepath.Join(homeDir, "repos/eruption"))
 			os.Chdir(filepath.Join(homeDir, "repos/eruption"))
@@ -356,6 +358,7 @@ func main() {
 		// Installing yay
 		if !isInstalled("yay") {
 			logInfo("Installing yay ...")
+			exeDontCare("rm -rf " + filepath.Join(homeDir, "/repos/yay"))
 			exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
 			exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
 			os.Chdir(filepath.Join(homeDir, "/repos/yay"))
