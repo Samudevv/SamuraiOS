@@ -68,11 +68,6 @@ tooltip {
     margin-right: 10px;
 }
 
-#temperature.critical {
-    color: #ff5555;
-}
-
-
 #workspaces {
     padding-right: 0px;
     padding-left: 0px;
@@ -108,4 +103,15 @@ tooltip {
 #clock {
     padding-left: 15px;
     padding-right: 0px;
+}
+
+#disk.warning,
+#memory.warning {
+    color: #ffb86c;
+}
+
+#temperature.critical,
+#disk.critical,
+#memory.critical {
+    color: #ff5555;
 }
