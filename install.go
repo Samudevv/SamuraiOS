@@ -65,6 +65,9 @@ var basestrapPackages = []string{
 	"pavucontrol",
 	"qt5-wayland",
 	"qt6-wayland",
+	"bluez-dinit",
+	"blueman",
+	"bluez-utils",
 
 	// For eruption
 	"rust",
@@ -389,7 +392,7 @@ func main() {
 		exe("sudo pacman -Scc --noconfirm")
 
 		// Copy configuration files
-		logInfo("Copying configuration files ...")
+		logInfo("Copying system configuration files ...")
 
 		// Copy non contents of repo
 		repoEntries, err := os.ReadDir(curDir)
@@ -410,6 +413,11 @@ func main() {
 		// Uncomment chaotic-aur
 		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
 		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
+
+		// Start system services
+		exe("sudo dinitctl enable btusb-modprobe")
+
+		logInfo("Copying user configuration files ...")
 
 		// Copy contents of home directory
 		homeEntries, err := os.ReadDir("home/samurai")
@@ -432,8 +440,6 @@ func main() {
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " samurai " + curUser.Username)
 
 		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/default.conf samurai " + curUser.Username)
-
-		exe("chmod +x " + filepath.Join(homeDir, ".config/gtk-3.0/import-gsettings"))
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
