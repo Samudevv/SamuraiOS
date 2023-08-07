@@ -185,6 +185,7 @@ alias e="$EDITOR"
 alias ef="$EDITOR (fzf)"
 alias code="vscodium"
 alias clipboard="wl-copy"
+alias icat="kitty +kitten icat"
 
 # Source hidden.fish if it exists
 if test -f (status dirname)/hidden.fish
