@@ -97,6 +97,10 @@ tooltip {
     border-right: 0px;
 }
 
+#bluetooth {
+    color: #8be9fd;
+}
+
 #network {
     color: #f1fa8c;
 }

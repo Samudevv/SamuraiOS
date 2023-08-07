@@ -1,11 +1,11 @@
-background-color=#282a36ee
+background-color=#282a36cc
 text-color=#f8f8f2
 font=monospace 14
 border-size=2
-border-color=#bd93f9ee
+border-color=#bd93f9cc
 border-radius=15
 width=450
 height=200
-progress-color=over #50fa7bee
+progress-color=over #50fa7bcc
 margin=0,0,0,0
 default-timeout=10000

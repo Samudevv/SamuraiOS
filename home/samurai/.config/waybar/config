@@ -60,11 +60,16 @@
   "bluetooth": {
     "min-length": 3,
     "format": "󰂳",
-    "format-disabled": "󰂲",
-    "format-off": "󰂯",
-    "format-on": "",
+    "format-disabled": "󰤂",
+    "format-off": "󰂲",
+    "format-on": "󰂯",
     "format-connected": "󰂱",
-    "on-click": "blueman-manager"
+    "tooltip": true,
+    "tooltip-format": "{controller_alias}: {controller_address}\n{status}",
+    "tooltip-format-connected": "{controller_alias}: {controller_address}\nverbunden mit\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}: {device_address}",
+    "on-click": "blueman-manager",
+    "on-click-right": "~/.config/waybar/toggle-bluetooth.sh"
   },
   "pulseaudio": {
     "format": "{icon} {volume}%",
