@@ -2,3 +2,4 @@
 # Xsetup - run as root before the login dialog appears
 
 setxkbmap de
+xrandr --output DVI-D-2 --auto --output HDMI-1 --primary --right-of DVI-D-2
