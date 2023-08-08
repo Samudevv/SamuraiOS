@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=Hyprland (DBus)
+Comment=An intelligent dynamic tiling Wayland compositor (executed through dbus-launch)
+Exec=dbus-launch Hyprland
+Type=Application
