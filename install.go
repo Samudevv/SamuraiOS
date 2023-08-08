@@ -68,6 +68,8 @@ var basestrapPackages = []string{
 	"bluez-dinit",
 	"blueman",
 	"bluez-utils",
+	"gifski",
+	"wf-recorder",
 
 	// For eruption
 	"rust",
