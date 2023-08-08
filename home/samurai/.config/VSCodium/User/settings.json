@@ -100,5 +100,7 @@
   },
   "files.trimTrailingWhitespace": true,
   "rust.ignore_deprecation_warning": true,
-  "svg.preview.mode": "svg"
+  "svg.preview.mode": "svg",
+  "terminal.integrated.persistentSessionReviveProcess": "never",
+  "terminal.integrated.enablePersistentSessions": false
 }
