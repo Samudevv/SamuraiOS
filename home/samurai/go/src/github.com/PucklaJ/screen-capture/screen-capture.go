@@ -4,21 +4,22 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 )
 
 func main() {
-	screenCapturePID, err := getScreenCapturePID()
+	wfPID, err := getPID("wf-recorder")
 	if err != nil {
-		notifyError(err)
+		notifyError("wf-recorder: ", err)
 		os.Exit(1)
 	}
 
-	if screenCapturePID != 0 {
+	if wfPID != 0 {
 		var killErr strings.Builder
-		kill := exec.Command("kill", "-s", "SIGINT", strconv.Itoa(screenCapturePID))
+		kill := exec.Command("kill", "-s", "SIGINT", strconv.Itoa(wfPID))
 		kill.Stderr = &killErr
 		if err := kill.Run(); err != nil {
 			notifyError("Failed to execute kill: ", killErr.String())
@@ -70,9 +71,16 @@ func main() {
 			}
 			os.Remove("recording.mp4")
 
-			notify("Recording Done")
+			filename := time.Now().Format("recording-2006-01-02-15:04:05.gif")
+			homeDir, _ := os.UserHomeDir()
+			foldername := filepath.Join(homeDir, "Videos")
+			os.Mkdir(foldername, 0755)
+			newPath := filepath.Join(foldername, filename)
+			mv := exec.Command("mv", "recording.gif", newPath)
+			mv.Run()
+			notify("Recording saved to ", newPath)
 
-			eog := exec.Command("eog", "recording.gif")
+			eog := exec.Command("eog", newPath)
 			eog.Run()
 		} else {
 			notify("Recording Cancelled")
@@ -81,20 +89,17 @@ func main() {
 }
 
 // Returns 0 if no PID can be found
-func getScreenCapturePID() (int, error) {
+func getPID(name string) (int, error) {
 	ps := exec.Command("ps", "-e")
-	grep := exec.Command("grep", "wf-recorder")
-	cut := exec.Command("cut", "-d", " ", "-f1")
+	grep := exec.Command("grep", name)
 
-	var psOut, grepOut, cutOut strings.Builder
+	var psOut, grepOut strings.Builder
 	var errOut strings.Builder
 
 	ps.Stdout = &psOut
 	ps.Stderr = &errOut
 	grep.Stdout = &grepOut
 	grep.Stderr = &errOut
-	cut.Stdout = &cutOut
-	cut.Stderr = &errOut
 
 	if err := ps.Run(); err != nil {
 		return 0, fmt.Errorf("Failed to execute ps: %s", errOut.String())
@@ -107,14 +112,9 @@ func getScreenCapturePID() (int, error) {
 		return 0, nil
 	}
 
-	cutIn := strings.NewReader(grepOut.String())
-	cut.Stdin = cutIn
-
-	if err := cut.Run(); err != nil {
-		return 0, fmt.Errorf("Failed to execute cut: %s", errOut.String())
-	}
-
-	pidStr := strings.TrimSpace(cutOut.String())
+	grepStr := strings.TrimSpace(grepOut.String())
+	grepWords := strings.Split(grepStr, " ")
+	pidStr := grepWords[0]
 
 	pid, err := strconv.ParseUint(pidStr, 10, 64)
 	if err != nil {
