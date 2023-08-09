@@ -127,9 +127,12 @@ var gamingPackages = []string{
 	"wine",
 	"winetricks",
 	"lutris",
+	"steam",
+	"vkd3d",
 	"lib32-libpulse",
 	"lib32-mesa",
 	"lib32-vulkan-radeon",
+	"lib32-dkd3d",
 }
 
 func main() {
