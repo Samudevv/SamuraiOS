@@ -135,6 +135,19 @@ var gamingPackages = []string{
 	"lib32-dkd3d",
 }
 
+var vscodeExtensions = []string{
+	"jeff-hykin.better-cpp-syntax",
+	"xaver.clang-format",
+	"dracula-theme.theme-dracula",
+	"MS-CEINTL.vscode-language-pack-de",
+	"MS-CEINTL.vscode-language-pack-ja",
+	"golang.go",
+	"vscode-icons-team.vscode-icons",
+	"streetsidesoftware.code-spell-checker",
+	"streetsidesoftware.code-spell-checker-german",
+	"ms-python.python",
+}
+
 func main() {
 	// Parse Args
 	var stage int = 1
@@ -506,6 +519,10 @@ func main() {
 		logInfo("Performing Stage 5 ...")
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
+
+		for _, ext := range vscodeExtensions {
+			exe("codium --install-extension " + ext)
+		}
 
 		logInfo("Stage 5 Done")
 	} else if stage == 6 {
