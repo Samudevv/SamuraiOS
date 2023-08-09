@@ -71,6 +71,8 @@ var basestrapPackages = []string{
 	"gifski",
 	"wf-recorder",
 	"swayidle",
+	"htop",
+	"btop",
 
 	// For eruption
 	"rust",

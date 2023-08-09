@@ -120,7 +120,7 @@
     "format": " {usage}%",
     "min-length": 6,
     "max-length": 6,
-    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'"
+    "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'"
   },
   "memory": {
     "interval": 1,
@@ -129,7 +129,7 @@
     "max-length": 6,
     "tooltip": true,
     "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB",
-    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'",
+    "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'",
     "states": {
       "warning": 80,
       "critical": 90
@@ -141,7 +141,7 @@
     "format": "{icon} {temperatureC}°C",
     "critical-threshold": 65,
     "format-critical": " {temperatureC}°C",
-    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'",
+    "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'",
     "tooltip": true,
     "tooltip-format": "{temperatureC} 󰔄\n{temperatureF} 󰔅\n{temperatureK} 󰔆",
     "format-icons": [
@@ -159,7 +159,7 @@
     "path": "/",
     "tooltip": true,
     "tooltip-format": "{used} / {total}\n{free} frei",
-    "on-click": "kitty --start-as=fullscreen --title htop sh -c 'htop'",
+    "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'",
     "states": {
       "warning": 90,
       "critical": 95
