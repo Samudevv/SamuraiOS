@@ -505,6 +505,13 @@ func main() {
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
 
 		logInfo("Stage 5 Done")
+	} else if stage == 6 {
+		// Gaming Stage
+		logInfo("Performing Stage 6 ...")
+
+		exe("sudo pacman -S --noconfirm --needed " + strings.Join(gamingPackages, " "))
+
+		logInfo("Stage 6 Done")
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
@@ -769,6 +776,8 @@ func parseStage(arg string) int {
 		fallthrough
 	case "applications":
 		return 5
+	case "gaming":
+		return 6
 	default:
 		v, err := strconv.ParseUint(arg, 10, 64)
 		if err != nil {
