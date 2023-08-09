@@ -22,19 +22,24 @@ tooltip {
     min-width: 15px;
 }
 
+#workspaces button {
+    border-radius: 20px;
+}
+
+#workspaces button.active {
+    background: #6272a4;
+}
+
 #workspaces button.urgent {
     background: #ff5555;
-    border-radius: 20px;
 }
 
 #workspaces button:hover {
     background: #ff79c6;
-    border-radius: 20px;
 }
 
 #custom-nice-icon,
 #custom-power_btn,
-#window,
 #cpu,
 #disk,
 #memory,
@@ -73,8 +78,7 @@ tooltip {
     padding-left: 0px;
 }
 
-#tray,
-#window {
+#tray {
     border-radius: 15px;
     margin-left: 10px;
     margin-right: 20px;

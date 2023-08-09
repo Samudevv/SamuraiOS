@@ -11,8 +11,7 @@
     "wlr/workspaces",
     "network",
     "bluetooth",
-    "pulseaudio",
-    "hyprland/window"
+    "pulseaudio"
   ],
   "modules-center": [
     "clock",
@@ -32,8 +31,16 @@
   "wlr/workspaces": {
     "disable-scroll": true,
     "active-only": false,
-    "all-outputs": true,
-    "on-click": "activate"
+    "all-outputs": false,
+    "on-click": "activate",
+    "sort-by-number": true,
+    "persistent_workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    }
   },
   "network": {
     "interval": 2,
@@ -94,11 +101,6 @@
         ""
       ]
     }
-  },
-  "hyprland/window": {
-    "format": " {}",
-    "min-length": 50,
-    "max-length": 50
   },
   "clock": {
     "format": "{:%a %H:%M}",
