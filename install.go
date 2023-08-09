@@ -70,6 +70,7 @@ var basestrapPackages = []string{
 	"bluez-utils",
 	"gifski",
 	"wf-recorder",
+	"swayidle",
 
 	// For eruption
 	"rust",
@@ -94,6 +95,7 @@ var archChaoticPackages = []string{
 	"dracula-icons-git",
 	"dracula-cursors-git",
 	"dracula-gtk-theme",
+	"ttf-fantasque-sans-mono",
 }
 
 var aurPackages = []string{}
