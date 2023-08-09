@@ -120,6 +120,16 @@ var applicationPackages = []string{
 	"teams",
 	"anki",
 	"openrgb",
+	"speech-dispatcher",
+}
+
+var gamingPackages = []string{
+	"wine",
+	"winetricks",
+	"lutris",
+	"lib32-libpulse",
+	"lib32-mesa",
+	"lib32-vulkan-radeon",
 }
 
 func main() {
