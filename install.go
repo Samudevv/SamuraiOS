@@ -66,7 +66,6 @@ var basestrapPackages = []string{
 	"qt5-wayland",
 	"qt6-wayland",
 	"bluez-dinit",
-	"blueman",
 	"bluez-utils",
 	"gifski",
 	"wf-recorder",
@@ -99,6 +98,7 @@ var archChaoticPackages = []string{
 	"dracula-cursors-git",
 	"dracula-gtk-theme",
 	"ttf-fantasque-sans-mono",
+	"blueman",
 }
 
 var aurPackages = []string{}
