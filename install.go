@@ -272,13 +272,7 @@ func main() {
 		if isUEFI(allDefault) {
 			exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
 		} else {
-			exe("lsblk")
-			prompt("What is your device? (e.g /dev/sda)")
-			var device string
-			for device == "" {
-				device = input()
-			}
-
+			device := mountedDeviceName()
 			exe("grub-install --recheck " + device)
 		}
 
@@ -561,6 +555,9 @@ func main() {
 
 		bak := backupName("/etc/pacman.d/mirrorlist")
 		logInfo("Backup: ", bak)
+
+		device := mountedDeviceName()
+		logInfo("Device: ", device)
 
 		logInfo("Tests Done")
 	} else {
@@ -852,4 +849,32 @@ func rankmirrors(mirrorlistPath string) {
 	exeAppendFile("rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
+}
+
+func mountedDeviceName() string {
+	dfOut := exeToString("df")
+
+	lines := strings.Split(dfOut, "\n")
+	for _, line := range lines {
+		words := strings.Split(line, " ")
+		if len(words) < 6 {
+			continue
+		}
+
+		partition := words[0]
+		directory := words[5]
+
+		if directory == "/" {
+			return strings.Trim(partition, "0123456789")
+		}
+	}
+
+	logInfo("Failed to get mounted device name automatically. Manual input required.")
+	exe("lsblk")
+	for {
+		prompt("Which device is currently mounted at /mnt (e.g. /dev/sda)?")
+		if device := input(); device != "" {
+			return device
+		}
+	}
 }
