@@ -338,6 +338,9 @@ func main() {
 			"/etc/pacman.d/",
 		)
 		exe("sudo cp etc/pacman.conf /etc/")
+
+		sudoRankmirrors("/etc/pacman.d/mirrorlist-arch")
+
 		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
 		exe("sudo pacman-key --populate archlinux")
 
@@ -539,8 +542,7 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		username := promptWithDefault("ninja", allDefault && userDefault, "Which user")
-		passwordPrompt(username, allDefault && userDefault)
+		sudoRankmirrors("/etc/pacman.d/mirrorlist-arch")
 
 		logInfo("Tests Done")
 	} else {
