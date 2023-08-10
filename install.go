@@ -73,6 +73,7 @@ var basestrapPackages = []string{
 	"swayidle",
 	"htop",
 	"btop",
+	"weston",
 
 	// For eruption
 	"rust",
