@@ -419,9 +419,6 @@ func main() {
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
-		logInfo("Clearing pacman cache ...")
-		exe("sudo pacman -Scc --noconfirm")
-
 		// Copy configuration files
 		logInfo("Copying system configuration files ...")
 
@@ -487,6 +484,9 @@ func main() {
 			exe("go install -buildvcs=false")
 		}
 		os.Chdir(curDir)
+
+		logInfo("Clearing pacman cache ...")
+		exe("sudo pacman -Scc --noconfirm")
 
 		// Change shell
 		exe("chsh -s /usr/bin/fish")
