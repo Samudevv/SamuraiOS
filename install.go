@@ -159,11 +159,14 @@ var vscodeExtensions = []string{
 func main() {
 	// Parse Args
 	var stage int = 1
-	var allDefault bool
+	var allDefault, userDefault bool
+	userDefault = true
 	if len(os.Args) > 1 {
 		for _, arg := range os.Args[1:] {
 			if arg == "-y" || arg == "--yes" {
 				allDefault = true
+			} else if arg == "-u" || arg == "--user" {
+				userDefault = false
 			} else {
 				stage = parseStage(os.Args[1])
 			}
@@ -283,7 +286,7 @@ func main() {
 		logInfo("Enter root password")
 		exe("passwd")
 
-		userName := promptWithDefault("ninja", allDefault, "Username")
+		userName := promptWithDefault("ninja", allDefault && userDefault, "Username")
 		exe("useradd -m " + userName)
 
 		logInfo("Enter password for ", userName)
