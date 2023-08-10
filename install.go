@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -679,7 +680,6 @@ func exeAppendFile(command, filename string) {
 func exeToString(command string) string {
 	words := strings.Split(command, " ")
 	if len(words) == 0 {
-		fmt.Fprintln(os.Stderr, "No Command")
 		logError("No Command")
 		os.Exit(1)
 	}
@@ -704,6 +704,32 @@ func exeToString(command string) string {
 	}
 
 	return builder.String()
+}
+
+func exeToStringSilent(command string) (string, error) {
+	words := strings.Split(command, " ")
+	if len(words) == 0 {
+		return "", errors.New("No Command")
+	}
+
+	var args []string
+	if len(words) > 1 {
+		args = words[1:]
+	}
+
+	var builder strings.Builder
+	var stderr strings.Builder
+
+	cmd := exec.Command(words[0], args...)
+	cmd.Stdout = &builder
+	cmd.Stderr = &stderr
+	cmd.Stdin = os.Stdin
+
+	if err := cmd.Run(); err != nil {
+		return "", fmt.Errorf("\"%s\" failed: %s", command, stderr.String())
+	}
+
+	return builder.String(), nil
 }
 
 func copyConfig(src string) {
@@ -852,20 +878,30 @@ func rankmirrors(mirrorlistPath string) {
 }
 
 func mountedDeviceName() string {
-	dfOut := exeToString("df")
+	dfOut, err := exeToStringSilent("df")
+	if err == nil {
+		lines := strings.Split(dfOut, "\n")
+		for _, line := range lines {
+			words := strings.Split(line, " ")
 
-	lines := strings.Split(dfOut, "\n")
-	for _, line := range lines {
-		words := strings.Split(line, " ")
-		if len(words) < 6 {
-			continue
-		}
+			// Clear empty ones
+			for i := 0; i < len(words); i++ {
+				if words[i] == "" {
+					words = append(words[:i], words[i+1:]...)
+					i--
+				}
+			}
 
-		partition := words[0]
-		directory := words[5]
+			if len(words) < 6 {
+				continue
+			}
 
-		if directory == "/" {
-			return strings.Trim(partition, "0123456789")
+			partition := words[0]
+			directory := words[5]
+
+			if directory == "/" {
+				return strings.Trim(partition, "0123456789")
+			}
 		}
 	}
 
