@@ -30,6 +30,7 @@ var basestrapPackages = []string{
 	"pacman-contrib",
 	"parallel",
 	"fzf",
+	"whois",
 
 	// Packages for working graphical system with audio
 	"go",
@@ -283,14 +284,9 @@ func main() {
 		exe("grub-mkconfig -o /boot/grub/grub.cfg")
 
 		// Passwords, Username and Hostname
-		logInfo("Enter root password")
-		exe("passwd")
-
 		userName := promptWithDefault("ninja", allDefault && userDefault, "Username")
 		exe("useradd -m " + userName)
-
-		logInfo("Enter password for ", userName)
-		exe("passwd " + userName)
+		passwordPrompt(userName, allDefault && userDefault)
 
 		hostName := promptWithDefault("samurai", allDefault, "Hostname")
 
@@ -324,13 +320,15 @@ func main() {
 		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# Defaults maxseq = 1000", "Defaults env_reset,pwfeedback")
 
 		logInfo("Stage 2 Done")
-		logInfo("Reboot into the new drive and execute \"sudo dinitctl enable connmand\" to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
+		logInfo("Reboot into the new drive and execute \"sudo dinitctl enable connmand\" (if you are using wifi) to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
 	} else if stage == 3 {
 		logInfo("Performing Stage 3 ...")
 
 		homeDir, _ := os.UserHomeDir()
 		curDir, _ := os.Getwd()
 		curUser, _ := user.Current()
+
+		exeDontCare("sudo dinitctl enable connmand")
 
 		// Install arch repositories
 		logInfo("Installing Arch repositories ...")
@@ -541,27 +539,8 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		exe("mkdir -p /tmp/stage_test")
-		exe("git clone https://github.com/PucklaJ/SamuraiOS.git /tmp/stage_test")
-		logError("Task not failed successfully")
-		exe("rm -rf /tmp/stage_test")
-
-		folderName := promptWithDefault("/tmp/another/samurai", allDefault, "Create which folder")
-		exe("mkdir -p " + folderName)
-
-		exeAppendFile("echo Hello World", "/tmp/hello_samurai")
-		exe("go run scripts/replace.go /tmp/hello_samurai Hello Greetings")
-
-		createTmpFile := promptWithDefaultYesNo(true, allDefault, "Create /tmp/install_test_os")
-		if createTmpFile {
-			exe("touch /tmp/install_test_os")
-		}
-
-		bak := backupName("/etc/pacman.d/mirrorlist")
-		logInfo("Backup: ", bak)
-
-		device := mountedDeviceName()
-		logInfo("Device: ", device)
+		username := promptWithDefault("ninja", allDefault && userDefault, "Which user")
+		passwordPrompt(username, allDefault && userDefault)
 
 		logInfo("Tests Done")
 	} else {
@@ -915,5 +894,32 @@ func mountedDeviceName() string {
 		if device := input(); device != "" {
 			return device
 		}
+	}
+}
+
+func passwordPrompt(username string, allDefault bool) {
+	var pw string
+	for {
+		pw1 := promptWithDefault("s", allDefault, "Password")
+		pw2 := promptWithDefault("s", allDefault, "Reenter Password")
+
+		if pw1 != pw2 {
+			logError("Passwords do not match. Please enter again!")
+		} else {
+			pw = pw1
+			break
+		}
+	}
+
+	pwCrypt, err := exeToStringSilent("mkpasswd " + pw)
+	if err == nil {
+		exeArgs("usermod", "--password", pwCrypt, "root")
+		exeArgs("usermod", "--password", pwCrypt, username)
+	} else {
+		logInfo("Failed to create password using mkpasswd. passwd is required.")
+		logInfo("Root password")
+		exe("passwd")
+		logInfo("Password for user " + username)
+		exe("passwd " + username)
 	}
 }
