@@ -448,7 +448,7 @@ func main() {
 		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
 
 		// Start system services
-		exe("sudo dinitctl enable btusb-modprobe")
+		exe("sudo dinitctl enable modprobe")
 
 		logInfo("Copying user configuration files ...")
 
