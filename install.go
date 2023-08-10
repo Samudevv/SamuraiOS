@@ -73,6 +73,9 @@ var basestrapPackages = []string{
 	"htop",
 	"btop",
 	"weston",
+	"xdg-desktop-portal-hyprland",
+	"qt5-graphicaleffects",
+	"qt5-quickcontrols2",
 
 	// For eruption
 	"rust",
@@ -89,7 +92,6 @@ var archChaoticPackages = []string{
 	"exa",
 	"bat",
 	"wofi",
-	"xdg-desktop-portal-hyprland",
 	"connman-gtk",
 	"wlogout",
 	"swaylock-effects",
@@ -472,7 +474,7 @@ func main() {
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + curUser.Username)
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " samurai " + curUser.Username)
 
-		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/default.conf samurai " + curUser.Username)
+		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/20-autologin.conf samurai " + curUser.Username)
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
@@ -837,7 +839,7 @@ func sudoRankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeArgs("sudo", "go", "run", "scripts/append.go", "rankmirrors -n 5 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
+	exeArgs("sudo", "go", "run", "scripts/append.go", "rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
@@ -847,7 +849,7 @@ func rankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("rankmirrors -n 5 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
+	exeAppendFile("rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
