@@ -97,3 +97,14 @@ SOFTWARE.
 
 The Samurai wallpaper used for the main screen was made by Dominik Mayer found on [artstation.com](https://www.artstation.com/artwork/lDG8lY).<br>
 The Ghost of Tsushima wallpaper used for the side screen was made by Ömer Tunç found on [alphacoders.com](https://mobile.alphacoders.com/wallpapers/view/897228/Video-Game-Ghost-Of-Tsushima-Phone-Wallpaper)
+
+## Fix Bluetooth
+
+You need to install `bluez-utils-compat`
+
+```
+sudo hciconfig hci0 down
+sudo rmmod btusb
+sudo modprobe btusb
+sudo hciconfig hci0 up
+```
