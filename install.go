@@ -913,6 +913,7 @@ func passwordPrompt(username string, allDefault bool) {
 
 	pwCrypt, err := exeToStringSilent("mkpasswd " + pw)
 	if err == nil {
+		pwCrypt = strings.TrimSpace(pwCrypt)
 		exeArgs("usermod", "--password", pwCrypt, "root")
 		exeArgs("usermod", "--password", pwCrypt, username)
 	} else {
