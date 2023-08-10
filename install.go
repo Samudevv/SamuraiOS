@@ -141,7 +141,7 @@ var gamingPackages = []string{
 	"lib32-libpulse",
 	"lib32-mesa",
 	"lib32-vulkan-radeon",
-	"lib32-dkd3d",
+	"lib32-vkd3d",
 }
 
 var vscodeExtensions = []string{
