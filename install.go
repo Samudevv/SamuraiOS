@@ -157,6 +157,14 @@ var vscodeExtensions = []string{
 	"ms-python.python",
 }
 
+var virtualizationPackages = []string{
+	"virt-install",
+	"libvirt-dinit",
+	"qemu-desktop",
+	"virt-manager",
+	"dnsmasq",
+}
+
 func main() {
 	// Parse Args
 	var stage int = 1
@@ -535,6 +543,30 @@ func main() {
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(gamingPackages, " "))
 
 		logInfo("Stage 6 Done")
+	} else if stage == 7 {
+		// Virtualizazion Stage
+		logInfo("Performing Stage 7 ...")
+
+		exe("sudo pacman -S --noconfirm --needed " + strings.Join(virtualizationPackages, " "))
+
+		exe("sudo dinitctl enable libvirtd")
+		exe("sudo virsh net-start default")
+		exe("sudo virsh net-autostart default")
+
+		curUser, err := user.Current()
+		if err != nil {
+			logError("Failed to get user: ", err)
+			os.Exit(1)
+		}
+
+		exe("sudo usermod -aG libvirt " + curUser.Username)
+		exe("sudo usermod -aG libvirt-qemu " + curUser.Username)
+		exe("sudo usermod -aG kvm " + curUser.Username)
+		exe("sudo usermod -aG input " + curUser.Username)
+		exe("sudo usermod -aG disk " + curUser.Username)
+
+		logInfo("Stage 7 Done")
+		logInfo("Now reboot and everything should be set up")
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
@@ -801,14 +833,12 @@ func parseStage(arg string) int {
 	switch strings.ToLower(arg) {
 	case "test":
 		return 255
-	case "apps":
-		fallthrough
-	case "application":
-		fallthrough
-	case "applications":
+	case "applications", "apps", "application":
 		return 5
 	case "gaming":
 		return 6
+	case "virt", "virtualization":
+		return 7
 	default:
 		v, err := strconv.ParseUint(arg, 10, 64)
 		if err != nil {
