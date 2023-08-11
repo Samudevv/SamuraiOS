@@ -1,0 +1,47 @@
+# GRUB2 gfxmenu pop theme, based on Linux Vimix theme
+# Designed for any resolution
+# Slightly modified version of the Dracula theme
+
+# Global Property
+title-text: "Welcome to SamuraiOS"
+desktop-image: "background.jpg"
+desktop-image-scale-method: "stretch"
+desktop-color: "#282a36"
+terminal-font: "Noto Sans Mono Regular 16"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
+
+# Logo image
+#+ image {
+#	left = 50%-50
+#	top = 50%-50
+#    file = "logo.png"
+#}
+
+# Show the boot menu
++ boot_menu {
+  left = 50%-240
+  top = 40%
+  width = 480
+  height = 30%
+  item_font = "Noto Sans Mono Bold 20"
+  item_color = "#bd93f9"
+  selected_item_color = "#ff79c6"
+  item_height = 32
+  item_spacing = 24
+  selected_item_pixmap_style = "select_*.png"
+}
+
+# Show a countdown message using the label component
++ label {
+  top = 82%
+  left = 35%
+  width = 30%
+  align = "center"
+  id = "__timeout__"
+  text = "Booting in %d seconds"
+  color = "#6272a4"
+}

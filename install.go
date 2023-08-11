@@ -282,12 +282,18 @@ func main() {
 
 		// Boot Loader
 		logInfo("Installing boot loader (grub) ...")
+
 		if isUEFI(allDefault) {
 			exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
 		} else {
 			device := mountedDeviceName()
 			exe("grub-install --recheck " + device)
 		}
+
+		// Copy over the grub configuration
+		exe("mkdir -p /etc/default")
+		exe("cp etc/default/grub /etc/default/")
+		exe("cp -r etc/default/dracula-grub /etc/default/dracula-grub")
 
 		exe("grub-mkconfig -o /boot/grub/grub.cfg")
 
