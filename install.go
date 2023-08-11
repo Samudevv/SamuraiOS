@@ -346,6 +346,7 @@ func main() {
 		curUser, _ := user.Current()
 
 		exeDontCare("sudo dinitctl enable connmand")
+		exeDontCare("sudo dinitctl enable bluetoothd")
 
 		// Install arch repositories
 		logInfo("Installing Arch repositories ...")
