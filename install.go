@@ -216,6 +216,9 @@ func main() {
 		if allDefault {
 			install2 += " -y"
 		}
+		if !userDefault {
+			install2 += " -u"
+		}
 
 		exe(install2)
 	} else if stage == 2 {
