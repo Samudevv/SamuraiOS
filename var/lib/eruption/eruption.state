@@ -1,0 +1,18 @@
+active_slot = 0
+slot_names = [
+    "Profile Slot 1",
+    "Profile Slot 2",
+    "Profile Slot 3",
+    "Profile Slot 4",
+]
+profiles = [
+    "/var/lib/eruption/profiles/solid-wave.profile",
+    "/var/lib/eruption/profiles/red-wave.profile",
+    "/var/lib/eruption/profiles/swirl-perlin.profile",
+    "/var/lib/eruption/profiles/spectrum-analyzer-swirl.profile",
+]
+enable_sfx = false
+brightness = 100
+
+[device_brightness]
+"0x1e7d:0x311a:" = 100

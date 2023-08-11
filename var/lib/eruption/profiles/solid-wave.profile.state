@@ -1,0 +1,66 @@
+{
+  "Dim Zone": [
+    {
+      "name": "opacity",
+      "type": "float",
+      "value": 0.95
+    },
+    {
+      "name": "zone_end",
+      "type": "int",
+      "value": 180
+    },
+    {
+      "name": "zone_start",
+      "type": "int",
+      "value": 144
+    }
+  ],
+  "Macros": [],
+  "Shockwave": [
+    {
+      "name": "color_afterglow",
+      "type": "color",
+      "value": 4281702734
+    },
+    {
+      "name": "color_shockwave",
+      "type": "color",
+      "value": 4283154649
+    },
+    {
+      "name": "color_step_shockwave",
+      "type": "color",
+      "value": 168427520
+    },
+    {
+      "name": "mouse_events",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "shockwave_divisor",
+      "type": "int",
+      "value": 5
+    }
+  ],
+  "Solid Color": [
+    {
+      "name": "color_background",
+      "type": "color",
+      "value": 4284623029
+    }
+  ],
+  "Wave": [
+    {
+      "name": "color_wave",
+      "type": "color",
+      "value": 4291969172
+    },
+    {
+      "name": "opacity",
+      "type": "float",
+      "value": 1.0
+    }
+  ]
+}
