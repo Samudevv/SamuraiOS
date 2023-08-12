@@ -78,6 +78,7 @@ var basestrapPackages = []string{
 	"xdg-desktop-portal-hyprland",
 	"qt5-graphicaleffects",
 	"qt5-quickcontrols2",
+	"cifs-utils",
 
 	// For eruption
 	"rust",
