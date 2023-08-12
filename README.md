@@ -8,7 +8,7 @@ This install script is intented to just be used by myself specifically for my PC
 
 ![screenshot-1](screenshot-1.png)
 ![screenshot-2](screenshot-2.png)
-![screenshot-3](screenshot-3.png)
+![screenshot-3](screenshot-3.gif)
 
 ## Stage 1
 
