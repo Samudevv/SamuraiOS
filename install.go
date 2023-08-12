@@ -495,7 +495,7 @@ func main() {
 
 		// Install go programs
 		logInfo("Installing go programs ...")
-		goDir := filepath.Join(homeDir, "go/src/github.com/PucklaJ")
+		goDir := filepath.Join(homeDir, "go/src/samurai")
 		goPrograms, err := os.ReadDir(goDir)
 		for _, gp := range goPrograms {
 			os.Chdir(filepath.Join(goDir, gp.Name()))
