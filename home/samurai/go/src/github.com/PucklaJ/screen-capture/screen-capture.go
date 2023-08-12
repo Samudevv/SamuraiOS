@@ -32,7 +32,12 @@ func main() {
 		slurp.Stdout = &slurpOut
 		slurp.Stderr = &slurpErr
 		if err := slurp.Run(); err != nil {
-			notifyError("Failed to execute slurp: ", slurpErr.String())
+			slurpErrStr := strings.TrimSpace(slurpErr.String())
+			if slurpErrStr == "selection cancelled" {
+				notify("Recording Cancelled")
+				os.Exit(0)
+			}
+			notifyError("Failed to execute slurp: ", slurpErrStr)
 			os.Exit(1)
 		}
 
@@ -57,7 +62,7 @@ func main() {
 			wf_recorder := exec.Command("wf-recorder", "-g", strings.Join([]string{geoPos, geoSize}, " "))
 			wf_recorder.Stderr = &wfErr
 			if err := wf_recorder.Run(); err != nil {
-				notifyError("Failed to execute wf-recorder: ", wfErr.String())
+				notifyError("Failed to execute wf-recorder: ", strings.TrimSpace(wfErr.String()))
 				os.Exit(1)
 			}
 
@@ -66,7 +71,7 @@ func main() {
 			gifski := exec.Command("gifski", "-o", "recording.gif", "recording.mp4")
 			gifski.Stderr = &gifErr
 			if err := gifski.Run(); err != nil {
-				notifyError("Failed to execute gifski: ", gifErr.String())
+				notifyError("Failed to execute gifski: ", strings.TrimSpace(gifErr.String()))
 				os.Exit(1)
 			}
 			os.Remove("recording.mp4")
