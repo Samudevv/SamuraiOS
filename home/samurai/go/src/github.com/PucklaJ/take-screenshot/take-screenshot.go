@@ -30,7 +30,7 @@ func main() {
 	if !full {
 		var slurpOut strings.Builder
 
-		slurp := exec.Command("slurp", "-d")
+		slurp := exec.Command("samurai-slurp")
 		slurp.Stdout = &slurpOut
 		slurp.Stderr = os.Stderr
 

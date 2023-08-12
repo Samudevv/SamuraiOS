@@ -28,7 +28,7 @@ func main() {
 		notify("Recording Stopped")
 	} else {
 		var slurpOut, slurpErr strings.Builder
-		slurp := exec.Command("slurp")
+		slurp := exec.Command("samurai-slurp")
 		slurp.Stdout = &slurpOut
 		slurp.Stderr = &slurpErr
 		if err := slurp.Run(); err != nil {
