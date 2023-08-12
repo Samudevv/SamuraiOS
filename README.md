@@ -45,6 +45,7 @@ pacman -Sy go git
 
 6. Execute `go run install.go 1`
 *The -y or --yes flag can be used to use all default values at the prompts*
+*Use -u or --user combined with the yes flag to only enter the username and password*
 
 7.  Reboot
 ```
@@ -96,7 +97,8 @@ SOFTWARE.
 ## Wallpapers
 
 The Samurai wallpaper used for the main screen was made by Dominik Mayer found on [artstation.com](https://www.artstation.com/artwork/lDG8lY).<br>
-The Ghost of Tsushima wallpaper used for the side screen was made by Ömer Tunç found on [alphacoders.com](https://mobile.alphacoders.com/wallpapers/view/897228/Video-Game-Ghost-Of-Tsushima-Phone-Wallpaper)
+The Ghost of Tsushima wallpaper used for the side screen was made by Ömer Tunç found on [alphacoders.com](https://mobile.alphacoders.com/wallpapers/view/897228/Video-Game-Ghost-Of-Tsushima-Phone-Wallpaper)<br>
+The Shrine Entrance wallpaper used for the sddm login screen was made by Florent Lebrun found on [artstation.com](https://www.artstation.com/artwork/J9Jzzz)
 
 ## Fix Bluetooth
 
