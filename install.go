@@ -79,6 +79,7 @@ var basestrapPackages = []string{
 	"qt5-graphicaleffects",
 	"qt5-quickcontrols2",
 	"cifs-utils",
+	"webkit2gtk",
 
 	// For eruption
 	"rust",
