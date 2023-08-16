@@ -80,6 +80,9 @@ var basestrapPackages = []string{
 	"qt5-quickcontrols2",
 	"cifs-utils",
 	"webkit2gtk",
+	"clang",
+	"thunar-archive-plugin",
+	"file-roller",
 
 	// For eruption
 	"rust",
@@ -157,6 +160,8 @@ var vscodeExtensions = []string{
 	"streetsidesoftware.code-spell-checker",
 	"streetsidesoftware.code-spell-checker-german",
 	"ms-python.python",
+	"llvm-vs-code-extensions.vscode-clangd",
+	"vadimcn.vscode-lldb",
 }
 
 var virtualizationPackages = []string{
