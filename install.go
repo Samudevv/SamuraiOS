@@ -81,8 +81,7 @@ var basestrapPackages = []string{
 	"cifs-utils",
 	"webkit2gtk",
 	"clang",
-	"thunar-archive-plugin",
-	"file-roller",
+	"man-pages-de",
 
 	// For eruption
 	"rust",
@@ -135,6 +134,8 @@ var applicationPackages = []string{
 	"anki",
 	"openrgb",
 	"speech-dispatcher",
+	"thunar-archive-plugin",
+	"file-roller",
 }
 
 var gamingPackages = []string{
