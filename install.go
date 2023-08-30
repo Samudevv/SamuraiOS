@@ -43,6 +43,7 @@ var basestrapPackages = []string{
 	"libmpeg2",
 	"sddm-dinit",
 	"hyprland",
+	"waybar",
 	"polkit-gnome",
 	"man",
 	"git",
@@ -82,6 +83,7 @@ var basestrapPackages = []string{
 	"webkit2gtk",
 	"clang",
 	"man-pages-de",
+	"keychain",
 
 	// For eruption
 	"rust",
@@ -91,7 +93,6 @@ var basestrapPackages = []string{
 
 var archChaoticPackages = []string{
 	// Packages for working graphical system with audio
-	"waybar-hyprland-git",
 	"swappy",
 	"hyprpaper",
 	"starship",
@@ -163,6 +164,7 @@ var vscodeExtensions = []string{
 	"ms-python.python",
 	"llvm-vs-code-extensions.vscode-clangd",
 	"vadimcn.vscode-lldb",
+	"ms-vscode.hexeditor",
 }
 
 var virtualizationPackages = []string{
