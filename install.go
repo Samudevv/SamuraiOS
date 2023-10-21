@@ -84,6 +84,8 @@ var basestrapPackages = []string{
 	"clang",
 	"man-pages-de",
 	"keychain",
+	"gvfs-mtp",
+	"gvfs-gphoto2",
 
 	// For eruption
 	"rust",
@@ -96,7 +98,7 @@ var archChaoticPackages = []string{
 	"swappy",
 	"hyprpaper",
 	"starship",
-	"exa",
+	"eza",
 	"bat",
 	"wofi",
 	"connman-gtk",
@@ -108,6 +110,7 @@ var archChaoticPackages = []string{
 	"dracula-gtk-theme",
 	"ttf-fantasque-sans-mono",
 	"blueman",
+	"mtpfs",
 }
 
 var aurPackages = []string{}
@@ -123,7 +126,6 @@ var applicationPackages = []string{
 	"glade",
 	"texlive",
 	"texlive-langgerman",
-	"epiphany",
 	"vscodium",
 	"libreoffice-still",
 	"libreoffice-still-de",
@@ -137,6 +139,8 @@ var applicationPackages = []string{
 	"speech-dispatcher",
 	"thunar-archive-plugin",
 	"file-roller",
+	"android-file-transfer",
+	"openconnect",
 }
 
 var gamingPackages = []string{
@@ -165,6 +169,9 @@ var vscodeExtensions = []string{
 	"llvm-vs-code-extensions.vscode-clangd",
 	"vadimcn.vscode-lldb",
 	"ms-vscode.hexeditor",
+	"prince781.vala",
+	"jeanp413.open-remote-ssh",
+	"wmaurer.change-case",
 }
 
 var virtualizationPackages = []string{
@@ -354,6 +361,7 @@ func main() {
 		homeDir, _ := os.UserHomeDir()
 		curDir, _ := os.Getwd()
 		curUser, _ := user.Current()
+		goPath := os.Getenv("GOPATH")
 
 		exeDontCare("sudo dinitctl enable connmand")
 		exeDontCare("sudo dinitctl enable bluetoothd")
@@ -440,6 +448,10 @@ func main() {
 			logInfo("Installing AUR packages ...")
 			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
 		}
+
+		// Install samurai-select
+		exe("go install github.com/PucklaJ/samurai-select@latest")
+		exeArgs("ln", "-s", filepath.Join(goPath, "bin/samurai-select"), filepath.Join(goPath, "bin/smel"))
 
 		// Remove unneeded packages
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")

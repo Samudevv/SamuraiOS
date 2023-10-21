@@ -78,8 +78,6 @@ alias egrep='grep -E --color=auto'
 alias pacman='pacman --color=auto'
 
 # User configs
-# Start ssh-agent through keychain to use ssh keys withoud passphrase
-eval (keychain --quiet --eval --agents ssh id_ed25519)
 
 # Improve performance of command not found
 function __fish_command_not_found_handler --on-event fish_command_not_found
@@ -121,6 +119,7 @@ alias ef="$EDITOR (fzf)"
 alias code="gtk-launch codium-wayland"
 alias clipboard="wl-copy"
 alias icat="kitty +kitten icat"
+alias startkeychain="eval (keychain --eval --agents ssh id_ed25519)"
 
 # Source hidden.fish if it exists
 if test -f (status dirname)/hidden.fish

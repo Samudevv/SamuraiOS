@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -9,6 +10,21 @@ import (
 	"strings"
 	"time"
 )
+
+func getSmelConfig() []string {
+	homeDir, _ := os.UserHomeDir()
+
+	var smelArgs []string
+	smelConf, err := os.Open(filepath.Join(homeDir, ".config/smel"))
+	if err == nil {
+		defer smelConf.Close()
+		scanner := bufio.NewScanner(smelConf)
+		for scanner.Scan() {
+			smelArgs = append(smelArgs, scanner.Text())
+		}
+	}
+	return smelArgs
+}
 
 func main() {
 	wfPID, err := getPID("wf-recorder")
@@ -27,21 +43,23 @@ func main() {
 		}
 		notify("Recording Stopped")
 	} else {
-		var slurpOut, slurpErr strings.Builder
-		slurp := exec.Command("samurai-slurp")
-		slurp.Stdout = &slurpOut
-		slurp.Stderr = &slurpErr
-		if err := slurp.Run(); err != nil {
-			slurpErrStr := strings.TrimSpace(slurpErr.String())
-			if slurpErrStr == "selection cancelled" {
+		smelArgs := getSmelConfig()
+
+		var smelOut, smelErr strings.Builder
+		smel := exec.Command("smel", smelArgs...)
+		smel.Stdout = &smelOut
+		smel.Stderr = &smelErr
+		if err := smel.Run(); err != nil {
+			smelErrStr := strings.TrimSpace(smelErr.String())
+			if smelErrStr == "selection cancelled" {
 				notify("Recording Cancelled")
 				os.Exit(0)
 			}
-			notifyError("Failed to execute slurp: ", slurpErrStr)
+			notifyError("Failed to execute slurp: ", smelErrStr)
 			os.Exit(1)
 		}
 
-		geo := strings.TrimSpace(slurpOut.String())
+		geo := strings.TrimSpace(smelOut.String())
 
 		if len(geo) != 0 {
 			geoWords := strings.Split(geo, " ")
@@ -68,13 +86,13 @@ func main() {
 
 			notify("Converting to GIF ...")
 			var gifErr strings.Builder
-			gifski := exec.Command("gifski", "-o", "recording.gif", "recording.mp4")
+			gifski := exec.Command("gifski", "-o", "recording.gif", "recording.mkv")
 			gifski.Stderr = &gifErr
 			if err := gifski.Run(); err != nil {
 				notifyError("Failed to execute gifski: ", strings.TrimSpace(gifErr.String()))
 				os.Exit(1)
 			}
-			os.Remove("recording.mp4")
+			os.Remove("recording.mkv")
 
 			filename := time.Now().Format("recording-2006-01-02-15:04:05.gif")
 			homeDir, _ := os.UserHomeDir()

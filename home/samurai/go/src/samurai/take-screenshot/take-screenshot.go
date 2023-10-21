@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -8,11 +9,34 @@ import (
 	"time"
 )
 
+const (
+	SelectTypeRegion = iota
+	SelectTypeWindow = iota
+	SelectTypeOutput = iota
+)
+
+func getSmelConfig() []string {
+	homeDir, _ := os.UserHomeDir()
+
+	var smelArgs []string
+	smelConf, err := os.Open(filepath.Join(homeDir, ".config/smel"))
+	if err == nil {
+		defer smelConf.Close()
+		scanner := bufio.NewScanner(smelConf)
+		for scanner.Scan() {
+			smelArgs = append(smelArgs, scanner.Text())
+		}
+	}
+	return smelArgs
+}
+
 func main() {
-	var full bool
+	var selectType int
 	if len(os.Args) > 1 {
-		if strings.ToLower(os.Args[1]) == "full" {
-			full = true
+		if strings.EqualFold(os.Args[1], "full") {
+			selectType = SelectTypeOutput
+		} else if strings.EqualFold(os.Args[1], "window") {
+			selectType = SelectTypeWindow
 		}
 	}
 
@@ -27,27 +51,21 @@ func main() {
 
 	fileName := time.Now().Format("screenshot-2006-01-02-15:04:05.png")
 
-	if !full {
-		var slurpOut strings.Builder
+	smelArgs := []string{
+		"-so",
+		filepath.Join("/tmp", fileName),
+	}
 
-		slurp := exec.Command("samurai-slurp")
-		slurp.Stdout = &slurpOut
-		slurp.Stderr = os.Stderr
+	if selectType == SelectTypeRegion {
+		smelArgs = append(smelArgs, getSmelConfig()...)
 
-		if err = slurp.Run(); err != nil {
+		smel := exec.Command("smel", smelArgs...)
+		smel.Stdout = os.Stdout
+		smel.Stderr = os.Stderr
+		if err = smel.Run(); err != nil {
 			panic(err)
 		}
-
-		geometry := strings.TrimSpace(slurpOut.String())
-
-		grim := exec.Command("grim", "-g", geometry, filepath.Join("/tmp", fileName))
-		grim.Stdout = os.Stdout
-		grim.Stderr = os.Stderr
-
-		if err = grim.Run(); err != nil {
-			panic(err)
-		}
-	} else {
+	} else if selectType == SelectTypeOutput {
 		outputName, err := exec.Command("sh", "-c", "hyprctl activeworkspace | head -n1 | cut -d ' ' -f7 | cut -d ':' -f1").Output()
 		if err != nil {
 			panic(err)
@@ -59,6 +77,18 @@ func main() {
 		if err = grim.Run(); err != nil {
 			panic(err)
 		}
+	} else if selectType == SelectTypeWindow {
+		smelArgs = append(smelArgs, "-r")
+		smelArgs = append(smelArgs, getSmelConfig()...)
+
+		smel := exec.Command("smel", smelArgs...)
+		smel.Stdout = os.Stdout
+		smel.Stderr = os.Stderr
+		if err = smel.Run(); err != nil {
+			panic(err)
+		}
+	} else {
+		panic("Invalid select type")
 	}
 
 	swappy := exec.Command("swappy", "-o", filepath.Join(homeDir, "Bilder", "Screenshots", fileName), "-f", filepath.Join("/tmp", fileName))

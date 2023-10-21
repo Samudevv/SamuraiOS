@@ -104,4 +104,9 @@
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.enablePersistentSessions": false,
   "window.titleBarStyle": "custom",
+  "editor.inlayHints.enabled": "off",
+  "clangd.arguments": [
+    "--header-insertion=never"
+  ],
+  "security.workspace.trust.enabled": false
 }
