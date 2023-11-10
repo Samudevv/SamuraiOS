@@ -172,6 +172,8 @@ var vscodeExtensions = []string{
 	"prince781.vala",
 	"jeanp413.open-remote-ssh",
 	"wmaurer.change-case",
+	"danielgavin.ols",
+	"yzhang.markdown-all-in-one",
 }
 
 var virtualizationPackages = []string{
