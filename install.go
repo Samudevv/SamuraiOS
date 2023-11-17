@@ -87,11 +87,6 @@ var basestrapPackages = []string{
 	"keychain",
 	"gvfs-mtp",
 	"gvfs-gphoto2",
-
-	// For eruption
-	"rust",
-	"protobuf-c",
-	"gtksourceview4",
 }
 
 var archChaoticPackages = []string{
@@ -144,6 +139,11 @@ var applicationPackages = []string{
 	"file-roller",
 	"android-file-transfer",
 	"openconnect",
+
+	// For eruption
+	"rust",
+	"protobuf-c",
+	"gtksourceview4",
 }
 
 var gamingPackages = []string{
@@ -413,27 +413,6 @@ func main() {
 		}
 
 		// Install eruptuion
-		if !isInstalled("eruption") {
-			logInfo("Installing eruption ...")
-			exeDontCare("rm -rf " + filepath.Join(homeDir, "/repos/eruption"))
-			exe("mkdir -p " + filepath.Join(homeDir, "repos/eruption"))
-			exe("git clone --branch no-systemd https://github.com/PucklaJ/eruption.git " + filepath.Join(homeDir, "repos/eruption"))
-			os.Chdir(filepath.Join(homeDir, "repos/eruption"))
-			exe("make")
-			exe("sudo make install")
-			// Copying dinit services
-			exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d"))
-			exe("cp support/dinit/eruption-audio-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
-			exe("cp support/dinit/eruption-fx-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
-			exe("cp support/dinit/eruption-process-monitor " + filepath.Join(homeDir, ".config/dinit.d/"))
-
-			os.Chdir(curDir)
-			exe("rm -rf " + filepath.Join(homeDir, "repos/eruption"))
-			exe("sudo dinitctl enable eruption")
-		} else {
-			logInfo("Skipping Installation of eruption since it is already installed")
-		}
-
 		// Installing yay
 		if !isInstalled("yay") {
 			logInfo("Installing yay ...")
@@ -541,8 +520,6 @@ func main() {
 		exe("mkdir -p " + filepath.Join(homeDir, "/.local/share/dinit"))
 		exe("dinitctl enable pipewire")
 		exe("dinitctl enable pipewire-pulse")
-		exe("dinitctl enable eruption-audio-proxy")
-		exe("dinitctl enable eruption-fx-proxy")
 
 		logInfo("Installation Done")
 
@@ -560,6 +537,30 @@ func main() {
 		logInfo("Performing Stage 5 ...")
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
+
+		if !isInstalled("eruption") {
+			logInfo("Installing eruption ...")
+			exeDontCare("rm -rf " + filepath.Join(homeDir, "/repos/eruption"))
+			exe("mkdir -p " + filepath.Join(homeDir, "repos/eruption"))
+			exe("git clone --branch no-systemd https://github.com/PucklaJ/eruption.git " + filepath.Join(homeDir, "repos/eruption"))
+			os.Chdir(filepath.Join(homeDir, "repos/eruption"))
+			exe("make")
+			exe("sudo make install")
+			// Copying dinit services
+			exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d"))
+			exe("cp support/dinit/eruption-audio-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
+			exe("cp support/dinit/eruption-fx-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
+			exe("cp support/dinit/eruption-process-monitor " + filepath.Join(homeDir, ".config/dinit.d/"))
+
+			os.Chdir(curDir)
+			exe("rm -rf " + filepath.Join(homeDir, "repos/eruption"))
+		} else {
+			logInfo("Skipping Installation of eruption since it is already installed")
+		}
+
+		exeDontCare("sudo dinitctl enable eruption")
+		exeDontCare("dinitctl enable eruption-audio-proxy")
+		exeDontCare("dinitctl enable eruption-fx-proxy")
 
 		for _, ext := range vscodeExtensions {
 			exe("codium --install-extension " + ext)
