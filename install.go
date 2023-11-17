@@ -114,7 +114,9 @@ var archChaoticPackages = []string{
 	"mtpfs",
 }
 
-var aurPackages = []string{}
+var aurPackages = []string{
+	"samurai-select",
+}
 
 // Applications can be installed optionally (makes testing faster)
 var applicationPackages = []string{
@@ -452,10 +454,6 @@ func main() {
 			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
 		}
 
-		// Install samurai-select
-		exe("go install github.com/PucklaJ/samurai-select@latest")
-		exeArgs("ln", "-s", filepath.Join(goPath, "bin/samurai-select"), filepath.Join(goPath, "bin/smel"))
-
 		// Remove unneeded packages
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
@@ -491,7 +489,7 @@ func main() {
 		logInfo("Copying user configuration files ...")
 
 		// Copy contents of home directory
-		homeEntries, err := os.ReadDir("home/samurai")
+		homeEntries, err := os.ReadDir("home/ninja")
 		if err != nil {
 			logError(err)
 			os.Exit(1)
@@ -499,18 +497,15 @@ func main() {
 
 		var homeEntriesStr []string
 		for _, h := range homeEntries {
-			homeEntriesStr = append(homeEntriesStr, filepath.Join("home/samurai", h.Name()))
+			homeEntriesStr = append(homeEntriesStr, filepath.Join("home/ninja", h.Name()))
 		}
 
 		exe("cp -r " + strings.Join(homeEntriesStr, " ") + " " + homeDir)
 		exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d/boot.d"))
 
-		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire") + " samurai " + curUser.Username)
-		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/dinit.d/pipewire-pulse") + " samurai " + curUser.Username)
-		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/wlogout/style.css") + " samurai " + curUser.Username)
-		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " samurai " + curUser.Username)
+		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " ninja " + curUser.Username)
 
-		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/20-autologin.conf samurai " + curUser.Username)
+		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/20-autologin.conf ninja " + curUser.Username)
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
@@ -785,8 +780,8 @@ func copyConfig(src string) {
 
 	homeDir, _ := os.UserHomeDir()
 
-	if strings.HasPrefix(src, "home/samurai") {
-		dst = strings.Replace(src, "home/samurai", homeDir, 1)
+	if strings.HasPrefix(src, "home/ninja") {
+		dst = strings.Replace(src, "home/ninja", homeDir, 1)
 	} else {
 		dst = "/" + src
 	}

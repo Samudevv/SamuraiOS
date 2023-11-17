@@ -1,6 +1,6 @@
 type         = process
 load-options = sub-vars
-logfile      = /home/samurai/.local/share/dinit/pipewire-pulse.log
+logfile      = $HOME/.local/share/dinit/pipewire-pulse.log
 command      = /usr/bin/pipewire-pulse
 restart      = true
 depends-on   = pipewire
