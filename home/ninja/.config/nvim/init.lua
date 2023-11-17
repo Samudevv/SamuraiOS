@@ -14,11 +14,27 @@ local function bootstrap_pckr()
 	vim.opt.rtp:prepend(pckr_path)
 end
 
+local bind = vim.keymap.set
+
 bootstrap_pckr()
 
 require('pckr').add{
-	'Mofiqul/dracula.nvim'
+	'Mofiqul/dracula.nvim',
+	'mg979/vim-visual-multi',
+	'ibhagwan/fzf-lua',
+	'akinsho/bufferline.nvim',
 }
+
+local fzf = require('fzf-lua')
+local bufferline = require('bufferline')
 
 vim.cmd('set number')
 vim.cmd('colorscheme dracula')
+fzf.setup({'fzf-native'})
+vim.opt.termguicolors = true
+bufferline.setup{}
+
+bind('n', '<c-P>', '<cmd>lua require("fzf-lua").git_files()<CR>', { silent = true })
+bind('n', '<Tab>', '<cmd>bnext<CR>',                              { silent = true })
+bind('n', '<c-W>', '<cmd>bd<CR>',                                 { silent = true })
+bind('n', '<c-Q>', '<cmd>q<CR>',                                  { silent = true })
