@@ -22,6 +22,7 @@ var basestrapPackages = []string{
 	"linux-lts",
 	"linux-firmware",
 	"micro",
+	"neovim",
 	"grub",
 	"os-prober",
 	"dhcpcd",
