@@ -10,6 +10,8 @@
 set $alt Mod1
 set $super Mod4
 
+set $terminal foot
+
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
@@ -36,39 +38,59 @@ output * bg /home/johnny/.config/hypr/wallpapers/main.jpg fill
 
 exec /usr/lib/polkit-gnome/polkit-gnome-athentication-agent-1
 exec wireplumber
+exec eruption-process-monitor -c /etc/eruption/process-monitor.conf daemon
 exec mako
 exec hyprpaper
 exec waybar
 exec fcitx5
 exec swayidle -w
 
+exec ~/.config/gtk-3.0/import-gsettings
+
 input * xkb_layout de
+
+client.unfocused #44475A #44475A #44475A #44475A #44475A 
+client.focused   #BD93F9 #BD93F9 #BD93F9 #BD93F9 #BD93F9
+default_border   pixel   2 
+gaps             outer   10
+gaps             inner   5
 
 ### Key bindings
 #
 # Basics:
 #
-    # Start a terminal
-    bindsym $super+Return exec foot
-
-    # Kill focused window
-    bindsym $super+q kill
+    bindsym $super+f            fullscreen
+    # TODO: fakefullscreen
+    bindsym $super+q            kill
+    bindsym $super+v            exec pavucontrol
+    bindsym $super+Return       exec $terminal 
+    bindsym $super+Shift+Return exec thunar
+    bindsym $super+Ctrl+q       exec wlogout -b 2
+    bindsym $super+$alt+q       exit
+    bindsym $super+l            exec swaylock
+    bindsym $super+Shift+s      exec take-screenshot
+    bindsym $super+Shift+r      exec screen-capture
+    bindsym $super+f8           exec toggle-peripheral-brightness
+    bindsym $super+Shift+c      reload
 
     # Start your launcher
+    bindsym $alt+f     exec firefox
     bindsym $alt+space exec wofi
+    bindsym $alt+v     exec gtk-launch codium-wayland
+    bindsym $alt+s     exec firefox --new-window https://music.youtube.com
+    bindsym $alt+t     exec firefox --new-window https://twitch.tv
 
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
+    bindsym Ctrl+Shift+Escape exec $terminal htop
+    bindsym Print             exec take-screenshot full
+
+    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+    bindsym XF86AudioPlay exec playerctl play-pause
+    bindsym XF86AudioNext exec playerctl next
+    bindsym XF86AudioPrev exec playerctl previous
+    bindsym XF86AudioStop exec playerctl stop
+
     floating_modifier $super normal
-
-    # Reload the configuration file
-    bindsym $super+Shift+c reload
-
-    # Exit sway (logs you out of your Wayland session)
-    bindsym $super+Ctrl+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 #
 # Moving around:
 #
@@ -98,24 +120,14 @@ input * xkb_layout de
     bindsym $super+Shift+3 move container to workspace number 3
     bindsym $super+Shift+4 move container to workspace number 4
     bindsym $super+Shift+5 move container to workspace number 5
-    # Note: workspaces can have any name you want, not just numbers.
-    # We just use 1-10 as the default.
-#
-# Layout stuff:
-#
-    # You can "split" the current object of your focus with
-    # $mod+b or $mod+v, for horizontal and vertical splits
-    # respectively.
-    # bindsym $mod+b splith
-    # bindsym $mod+v splitv
-
-    # Switch the current container between different layout styles
-    # bindsym $mod+s layout stacking
-    # bindsym $mod+w layout tabbed
-    # bindsym $mod+e layout toggle split
-
-    # Make the current focus fullscreen
-    bindsym $super+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
     bindsym $super+Shift+space floating toggle
+
+
+    for_window [app_id="^(codium)"]      floating enable
+    for_window [title="^(wlogout)"]      floating enable
+    for_window [title="^(Bild-im-Bild)"] floating enable
+    for_window [title="^(Ersetzen von Dateien bestätigen)"] floating enable
+    for_window [title="^(Dateivorgangsfortschritt)"] floating enable
+    for_window [title="^(file-roller)"] floating enable
