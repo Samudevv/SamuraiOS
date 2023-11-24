@@ -186,7 +186,7 @@ var virtualizationPackages = []string{
 
 func main() {
 	// Parse Args
-	var stage int = 0
+	var stage int = 1
 	var allDefault, userDefault bool
 	userDefault = true
 	if len(os.Args) > 1 {
@@ -201,52 +201,13 @@ func main() {
 		}
 	}
 
-	if stage == 0 {
-		logInfo("Performing Stage 0 ...")
-
-		// Update the system clock
-		exe("timedatectl")
-
-		logInfo("Refreshing new mirrorlist ...")
-		rankmirrors("/etc/pacman.d/mirrorlist")
+	if stage == 1 {
+		logInfo("Performing Stage 1 ...")
 
 		// Enable ParallelDownloads
-		exeArgs("go", "run", "scripts/replace.go", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
+                exeArgs("go", "run", "scripts/replace.go", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
 
-		// Install base system
-		logInfo("Installing base packages ...")
-
-		if isUEFI(allDefault) {
-			pacstrapPackages = append(pacstrapPackages, "efibootmgr")
-		}
-		exe("pacstrap -K /mnt " + strings.Join(pacstrapPackages, " "))
-
-		// fstabgen
-		exeAppendFile("genfstab -U /mnt", "/mnt/etc/fstab")
-
-		// Copying repository into system
-		exe("cp -r . /mnt/SamuraiOS")
-		exe("chmod +x /mnt/SamuraiOS/scripts/install2.sh")
-
-		// chroot into system
-		logInfo("Stage 0 Done")
-		logInfo("Now using chroot to go into /mnt ...")
-
-		install2 := "arch-chroot /mnt /SamuraiOS/scripts/install2.sh"
-		if allDefault {
-			install2 += " -y"
-		}
-		if !userDefault {
-			install2 += " -u"
-		}
-
-		exe(install2)
-	} else if stage == 1 {
-		logInfo("Performing Stage 1 ...")
 		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
-		logInfo("Stage 1 Done")
-	} else if stage == 2 {
-		logInfo("Performing Stage 2 ...")
 
 		// set the time zone
 		logInfo("Setting locale ...")
@@ -363,8 +324,8 @@ func main() {
 		// Show asteriks when typing sudo password
 		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# Defaults maxseq = 1000", "Defaults env_reset,pwfeedback")
 
-		logInfo("Stage 2 Done")
-		logInfo("Reboot into the new drive and execute \"sudo systemctl enable NetworkManager\" (if you are using wifi) to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
+		logInfo("Stage 1 Done")
+		logInfo("Reboot into the new drive and execute \"sudo systemctl enable --now NetworkManager.service\" to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
 	} else if stage == 3 {
 		logInfo("Performing Stage 3 ...")
 
