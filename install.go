@@ -195,7 +195,7 @@ func main() {
 		logInfo("Performing Stage 1 ...")
 
 		// Enable ParallelDownloads
-                exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
+		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
 
 		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
 
@@ -327,14 +327,18 @@ func main() {
 		exeDontCare("sudo systemctl enable --now bluetooth.service")
 
 		// Install chaotic-aur
-		logInfo("Installing chaotic-aur repository ...")
-		exe("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
-		exe("sudo pacman-key --lsign-key 3056513887B78AEB")
-		exe("sudo pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
+		if !chaoticInstalled() {
+			logInfo("Installing chaotic-aur repository ...")
+			exe("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
+			exe("sudo pacman-key --lsign-key 3056513887B78AEB")
+			exe("sudo pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
 
-		// Uncomment chaotic-aur
-		exeArgs("sudo", "go", "run", "scripts/append.go", "echo [chaotic-aur]", "/etc/pacman.conf")
-		exeArgs("sudo", "go", "run", "scripts/append.go", "echo Include = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
+			// Uncomment chaotic-aur
+			exeArgs("sudo", "go", "run", "scripts/append.go", "echo [chaotic-aur]", "/etc/pacman.conf")
+			exeArgs("sudo", "go", "run", "scripts/append.go", "echo Include = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
+		} else {
+			logInfo("Skipping installation of chaotic-aur since it is already installed")
+		}
 
 		// Install packages from arch and chaotic repos and update repositories
 		logInfo("Installing arch chaotic packages ...")
@@ -500,7 +504,11 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		sudoRankmirrors("/etc/pacman.d/mirrorlist-arch")
+		if chaoticInstalled() {
+			logInfo("chaotic-aur installed")
+		} else {
+			logError("chaotic-aur not installed")
+		}
 
 		logInfo("Tests Done")
 	} else {
@@ -802,7 +810,7 @@ func sudoRankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exe("sudo reflector --latest 5 --sort rate --save "+mirrorlistPath+".tmp")
+	exe("sudo reflector --latest 5 --sort rate --save " + mirrorlistPath + ".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
@@ -881,4 +889,12 @@ func passwordPrompt(username string, allDefault bool) {
 		logInfo("Password for user " + username)
 		exe("passwd " + username)
 	}
+}
+
+func chaoticInstalled() bool {
+	cmd := exec.Command("pacman", "-Qk", "chaotic-mirrorlist")
+	if err := cmd.Run(); err != nil {
+		return false
+	}
+	return true
 }
