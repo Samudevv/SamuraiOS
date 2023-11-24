@@ -68,7 +68,7 @@ var basePackages = []string{
 	"pavucontrol",
 	"qt5-wayland",
 	"qt6-wayland",
-	"bluez-dinit",
+	"bluez",
 	"bluez-utils",
 	"gifski",
 	"wf-recorder",
@@ -176,7 +176,7 @@ var vscodeExtensions = []string{
 
 var virtualizationPackages = []string{
 	"virt-install",
-	"libvirt-dinit",
+	"libvirt",
 	"qemu-desktop",
 	"virt-manager",
 	"dnsmasq",
