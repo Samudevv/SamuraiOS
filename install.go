@@ -228,17 +228,17 @@ func main() {
 
 		// chroot into system
 		logInfo("Stage 0 Done")
-		// logInfo("Now using chroot to go into /mnt ...")
+		logInfo("Now using chroot to go into /mnt ...")
 
-		// install2 := "arch-chroot /mnt /SamuraiOS/scripts/install2.sh"
-		// if allDefault {
-		//	install2 += " -y"
-		//}
-		//if !userDefault {
-		//	install2 += " -u"
-		//}
+		install2 := "arch-chroot /mnt /SamuraiOS/scripts/install2.sh"
+		if allDefault {
+			install2 += " -y"
+		}
+		if !userDefault {
+			install2 += " -u"
+		}
 
-		//exe(install2)
+		exe(install2)
 	} else if stage == 1 {
 		logInfo("Performing Stage 1 ...")
 		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
@@ -435,6 +435,9 @@ func main() {
 		// Uncomment chaotic-aur
 		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
 		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
+
+		// Do System Update for multilib
+		exe("sudo pacman -Syu")
 
 		// Start system services
 		// exe("sudo dinitctl enable modprobe")
