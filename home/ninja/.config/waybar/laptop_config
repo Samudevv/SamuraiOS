@@ -1,0 +1,198 @@
+{
+  "layer": "top",
+  "position": "top",
+  "mod": "dock",
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "height": 50,
+  "modules-left": [
+    "custom/nice-icon",
+    "sway/workspaces",
+    "network",
+    "bluetooth",
+    "pulseaudio"
+  ],
+  "modules-center": [
+    "clock",
+    "custom/power_btn"
+  ],
+  "modules-right": [
+    "tray",
+    "cpu",
+    "memory",
+    "temperature",
+    "disk",
+    "battery"
+  ],
+  "custom/nice-icon": {
+    "format": "",
+    "tooltip": false
+  },
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "active-only": false,
+    "all-outputs": false,
+    "on-click": "activate",
+    "sort-by-number": true,
+    "persistent_workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    }
+  },
+  "network": {
+    "interval": 2,
+    "format": " 󰤠",
+    "format-wifi": " {icon}",
+    "format-ethernet": " 󰈀",
+    "format-disconnected": " 󰤮",
+    "format-disabled": " ⛌",
+    "min-length": 3,
+    "tooltip": true,
+    "tooltip-format-wifi": "{essid}  {signalStrength}%\n{bandwidthDownBytes} 󰇚   {bandwidthUpBytes} 󰕒\n{ifname}  {ipaddr}",
+    "tooltip-format-ethernet": "{bandwidthDownBytes} 󰇚   {bandwidthUpBytes} 󰕒\n{ifname}  {ipaddr}",
+    "tooltip-format-disconnected": "Disconnected",
+    "tooltip-format-disabled": "Disabled",
+    "on-click": "connman-gtk",
+    "format-icons": [
+      "󰤯",
+      "󰤟",
+      "󰤢",
+      "󰤥",
+      "󰤨"
+    ]
+  },
+  "bluetooth": {
+    "min-length": 3,
+    "format": "󰂳",
+    "format-disabled": "󰤂",
+    "format-no-controller": "󰤂",
+    "format-off": "󰂲",
+    "format-on": "󰂯",
+    "format-connected": "󰂱",
+    "tooltip": true,
+    "tooltip-format": "{controller_alias}: {controller_address}\n{status}",
+    "tooltip-format-connected": "{controller_alias}: {controller_address}\nverbunden mit\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}: {device_address}",
+    "on-click": "blueman-manager",
+    "on-click-right": "~/.config/waybar/toggle-bluetooth.sh"
+  },
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "",
+    "min-length": 7,
+    "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "on-click-middle": "paswapsink",
+    "on-click-right": "pavucontrol",
+    "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+    "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
+    "scroll-step": 5,
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": [
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  "clock": {
+    "format": "{:%a %H:%M}",
+    "tooltip": true,
+    "tooltip-format": "{: %A, %e. %B %Y\n\t\t    %H:%M:%S}",
+    "interval": 1
+  },
+  "custom/power_btn": {
+    "format": "",
+    "on-click": "wlogout -b 2",
+    "tooltip": false
+  },
+  "tray": {
+    "icon-size": 20,
+    "spacing": 10
+  },
+  "cpu": {
+    "interval": 1,
+    "format": " {usage}%",
+    "min-length": 6,
+    "max-length": 6,
+    "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'"
+  },
+  "memory": {
+    "interval": 1,
+    "format": " {}%",
+    "min-length": 6,
+    "max-length": 6,
+    "tooltip": true,
+    "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB",
+    "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'",
+    "states": {
+      "warning": 80,
+      "critical": 90
+    }
+  },
+  "temperature": {
+    "interval": 10,
+    "thermal-zone": 1,
+    "format": "{icon} {temperatureC}°C",
+    "critical-threshold": 65,
+    "format-critical": " {temperatureC}°C",
+    "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'",
+    "tooltip": true,
+    "tooltip-format": "{temperatureC} 󰔄\n{temperatureF} 󰔅\n{temperatureK} 󰔆",
+    "format-icons": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "disk": {
+    "interval": 10,
+    "format": "󰋊 {percentage_used}%",
+    "min-length": 6,
+    "max-length": 6,
+    "path": "/",
+    "tooltip": true,
+    "tooltip-format": "{used} / {total}\n{free} frei",
+    "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'",
+    "states": {
+      "warning": 90,
+      "critical": 95
+    }
+  },
+  "battery": {
+    "interval": 10,
+    "min-length": 1,
+    "max-length": 1,
+    "format": "{icon}",
+    "format-time": "{H}h {M}min",
+    "tooltip-format": "󰂄 {capacity}%\n󱧥 {time}",
+    "format-icons": [
+      "󰂃",
+      "󰁻",
+      "󰁼",
+      "󰁽",
+      "󰁾",
+      "󰁿",
+      "󰂀",
+      "󰂁",
+      "󰂂",
+      "󰁹"
+    ],
+    "states": {
+      "critical": 5,
+      "warning": 20,
+      "charged": 100,
+      "normal": 89
+    }
+  }
+}

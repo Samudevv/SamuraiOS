@@ -27,7 +27,7 @@ var basestrapPackages = []string{
 	"os-prober",
 	"dhcpcd",
 	"wpa_supplicant",
-	"connman-dinit",
+	"networkmanager-dinit",
 	"pacman-contrib",
 	"parallel",
 	"fzf",
@@ -97,7 +97,7 @@ var archChaoticPackages = []string{
 	"eza",
 	"bat",
 	"wofi",
-	"connman-gtk",
+	"nm-connection-editor",
 	"wlogout",
 	"swaylock-effects",
 	"wev",
@@ -359,7 +359,7 @@ func main() {
 		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# Defaults maxseq = 1000", "Defaults env_reset,pwfeedback")
 
 		logInfo("Stage 2 Done")
-		logInfo("Reboot into the new drive and execute \"sudo dinitctl enable connmand\" (if you are using wifi) to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
+		logInfo("Reboot into the new drive and execute \"sudo dinitctl enable NetworkManager\" (if you are using wifi) to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
 	} else if stage == 3 {
 		logInfo("Performing Stage 3 ...")
 
@@ -368,7 +368,7 @@ func main() {
 		curUser, _ := user.Current()
 		goPath := os.Getenv("GOPATH")
 
-		exeDontCare("sudo dinitctl enable connmand")
+		exeDontCare("sudo dinitctl enable NetworkManager")
 		exeDontCare("sudo dinitctl enable bluetoothd")
 
 		// Install arch repositories
