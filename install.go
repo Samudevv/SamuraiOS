@@ -370,8 +370,8 @@ func main() {
 		curDir, _ := os.Getwd()
 		curUser, _ := user.Current()
 
-		exeDontCare("sudo systemctl enable NetworkManager")
-		exeDontCare("sudo systemctl enable bluetoothd")
+		exeDontCare("sudo systemctl enable NetworkManager.service")
+		exeDontCare("sudo systemctl enable bluetooth.service")
 
 		// Install chaotic-aur
 		logInfo("Installing chaotic-aur repository ...")
