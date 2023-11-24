@@ -26,13 +26,15 @@ var pacstrapPackages = []string{
 	"dhcpcd",
 	"wpa_supplicant",
 	"networkmanager",
-	"pacman-contrib",
-	"parallel",
+	"reflector",
 	"fzf",
 	"whois",
-
-	// Packages for working graphical system with audio
 	"go",
+	"git",
+}
+
+var basePackages = []string{
+	// Packages for working graphical system with audio
 	"fish",
 	"pipewire",
 	"pipewire-pulse",
@@ -45,7 +47,6 @@ var pacstrapPackages = []string{
 	"waybar",
 	"polkit-gnome",
 	"man",
-	"git",
 	"mako",
 	"libnotify",
 	"kitty",
@@ -183,7 +184,7 @@ var virtualizationPackages = []string{
 
 func main() {
 	// Parse Args
-	var stage int = 1
+	var stage int = 0
 	var allDefault, userDefault bool
 	userDefault = true
 	if len(os.Args) > 1 {
@@ -198,15 +199,13 @@ func main() {
 		}
 	}
 
-	if stage == 1 {
-		logInfo("Performing Stage 1 ...")
+	if stage == 0 {
+		logInfo("Performing Stage 0 ...")
 
 		// Update the system clock
 		exe("timedatectl")
 
 		logInfo("Refreshing new mirrorlist ...")
-		// Install rankmirrors and create better mirrorlist
-		exe("pacman -S --noconfirm --needed pacman-contrib parallel")
 		rankmirrors("/etc/pacman.d/mirrorlist")
 
 		// Enable ParallelDownloads
@@ -228,7 +227,7 @@ func main() {
 		exe("chmod +x /mnt/SamuraiOS/scripts/install2.sh")
 
 		// chroot into system
-		logInfo("Stage 1 Done")
+		logInfo("Stage 0 Done")
 		// logInfo("Now using chroot to go into /mnt ...")
 
 		// install2 := "arch-chroot /mnt /SamuraiOS/scripts/install2.sh"
@@ -240,6 +239,10 @@ func main() {
 		//}
 
 		//exe(install2)
+	} else if stage == 1 {
+		logInfo("Performing Stage 1 ...")
+		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
+		logInfo("Stage 1 Done")
 	} else if stage == 2 {
 		logInfo("Performing Stage 2 ...")
 
@@ -843,7 +846,7 @@ func sudoRankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeArgs("sudo", "go", "run", "scripts/append.go", "rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
+	exeArgs("sudo", "go", "run", "scripts/append.go", "reflector --latest 5 --sort rate --save "+mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
@@ -853,7 +856,7 @@ func rankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeAppendFile("rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
+	exe("reflector --latest 5 --sort rate --save " + mirrorlistPath + ".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
