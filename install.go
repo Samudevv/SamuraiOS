@@ -195,7 +195,7 @@ func main() {
 		logInfo("Performing Stage 1 ...")
 
 		// Enable ParallelDownloads
-                exeArgs("go", "run", "scripts/replace.go", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
+                exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
 
 		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
 
