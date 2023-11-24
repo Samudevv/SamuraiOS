@@ -370,8 +370,8 @@ func main() {
 		curDir, _ := os.Getwd()
 		curUser, _ := user.Current()
 
-		exeDontCare("sudo systemctl enable NetworkManager.service")
-		exeDontCare("sudo systemctl enable bluetooth.service")
+		exeDontCare("sudo systemctl enable --now NetworkManager.service")
+		exeDontCare("sudo systemctl enable --now bluetooth.service")
 
 		// Install chaotic-aur
 		logInfo("Installing chaotic-aur repository ...")
@@ -380,8 +380,8 @@ func main() {
 		exe("sudo pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
 
 		// Uncomment chaotic-aur
-		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
-		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
+		exeArgs("sudo", "go", "run", "scripts/append.go", "echo [chaotic-aur]", "/etc/pacman.conf")
+		exeArgs("sudo", "go", "run", "scripts/append.go", "echo Include = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
 
 		// Install packages from arch and chaotic repos and update repositories
 		logInfo("Installing arch chaotic packages ...")
@@ -846,7 +846,7 @@ func sudoRankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exeArgs("sudo", "go", "run", "scripts/append.go", "reflector --latest 5 --sort rate --save "+mirrorlistPath+".tmp")
+	exe("sudo reflector --latest 5 --sort rate --save "+mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
