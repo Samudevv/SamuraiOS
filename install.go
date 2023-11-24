@@ -446,9 +446,9 @@ func main() {
 			exe("sudo rm -rf /SamuraiOS")
 		}
 
-		launchHypr := promptWithDefaultYesNo(true, allDefault, "Execute \"sudo systemctl enable sddm\" and launch into hyprland")
+		launchHypr := promptWithDefaultYesNo(true, allDefault, "Execute \"sudo systemctl enable --now sddm.service\" and launch into hyprland")
 		if launchHypr {
-			exe("sudo systemctl enable sddm")
+			exe("sudo systemctl enable --now sddm.service")
 		}
 
 		logInfo("Stage 3 Done")
