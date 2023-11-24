@@ -215,6 +215,9 @@ func main() {
 		exe("pacman -S --noconfirm --needed pacman-contrib parallel")
 		rankmirrors("/etc/pacman.d/mirrorlist")
 
+		// Enable ParallelDownloads
+		exeArgs("go", "run", "scripts/replace.go", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
+
 		// Install base system
 		logInfo("Installing base packages ...")
 
