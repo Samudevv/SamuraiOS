@@ -92,7 +92,7 @@ set -x CGO_CXXFLAGS '-g -O2 -Wdeprecated-declarations'
 set -x --path PATH $GOPATH/bin $PATH
 
 set -x BROWSER firefox
-set -x EDITOR micro
+set -x EDITOR nvim
 set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 # set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 set -x FZF_DEFAULT_COMMAND 'find .'

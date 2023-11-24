@@ -8,7 +8,7 @@
   "height": 50,
   "modules-left": [
     "custom/nice-icon",
-    "wlr/workspaces",
+    "hyprland/workspaces",
     "network",
     "bluetooth",
     "pulseaudio"
@@ -28,7 +28,7 @@
     "format": "",
     "tooltip": false
   },
-  "wlr/workspaces": {
+  "hyprland/workspaces": {
     "disable-scroll": true,
     "active-only": false,
     "all-outputs": false,
