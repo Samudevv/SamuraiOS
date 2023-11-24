@@ -1,6 +1,6 @@
 #! /bin/sh
 
-set -x
+set -ex
 
 timedatectl
 
@@ -15,7 +15,7 @@ linux-firmware \
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
-printf "#! /bin/sh\ngit clone https://github.com/PucklaJ/SamuraiOS.git -b arch --depth 1\ncd SamuraiOS\ngo run install.go 1" > install0to1.sh
+printf "#! /bin/sh\nset -ex\npacman -Sy --noconfirm --needed go git\ngit clone https://github.com/PucklaJ/SamuraiOS.git -b arch --depth 1\ncd SamuraiOS\ngo run install.go 1" > install0to1.sh
 chmod +x install0to1.sh
 
 cp install0to1.sh /mnt
