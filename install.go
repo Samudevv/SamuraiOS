@@ -12,14 +12,6 @@ import (
 	"strings"
 )
 
-// Packages that can be installed from the artix repos and the program basestrap
-var pacstrapPackages = []string{
-	// Absolute most basic packages to be able to chroot into the mounted filesystem
-	"base",
-	"linux-lts",
-	"linux-firmware",
-}
-
 var basePackages = []string{
 	// Base packages to make the system work
 	"base-devel",
@@ -33,8 +25,6 @@ var basePackages = []string{
 	"reflector",
 	"fzf",
 	"whois",
-	"go",
-	"git",
 
 	// Packages for working graphical system with audio
 	"fish",
