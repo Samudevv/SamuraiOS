@@ -13,12 +13,10 @@ import (
 )
 
 // Packages that can be installed from the artix repos and the program basestrap
-var basestrapPackages = []string{
+var pacstrapPackages = []string{
 	// Base packages to make the system work
 	"base",
 	"base-devel",
-	"dinit",
-	"elogind-dinit",
 	"linux-lts",
 	"linux-firmware",
 	"micro",
@@ -27,7 +25,7 @@ var basestrapPackages = []string{
 	"os-prober",
 	"dhcpcd",
 	"wpa_supplicant",
-	"networkmanager-dinit",
+	"networkmanager",
 	"pacman-contrib",
 	"parallel",
 	"fzf",
@@ -42,7 +40,7 @@ var basestrapPackages = []string{
 	"pipewire-alsa",
 	"wireplumber",
 	"libmpeg2",
-	"sddm-dinit",
+	"sddm",
 	"hyprland",
 	"waybar",
 	"polkit-gnome",
@@ -139,11 +137,7 @@ var applicationPackages = []string{
 	"file-roller",
 	"android-file-transfer",
 	"openconnect",
-
-	// For eruption
-	"rust",
-	"protobuf-c",
-	"gtksourceview4",
+	"eruption",
 }
 
 var gamingPackages = []string{
@@ -208,7 +202,7 @@ func main() {
 		logInfo("Performing Stage 1 ...")
 
 		// Update the system clock
-		exe("dinitctl start ntpd")
+		exe("timedatectl")
 
 		logInfo("Refreshing new mirrorlist ...")
 		// Install rankmirrors and create better mirrorlist
@@ -222,12 +216,12 @@ func main() {
 		logInfo("Installing base packages ...")
 
 		if isUEFI(allDefault) {
-			basestrapPackages = append(basestrapPackages, "efibootmgr")
+			pacstrapPackages = append(pacstrapPackages, "efibootmgr")
 		}
-		exe("basestrap /mnt " + strings.Join(basestrapPackages, " "))
+		exe("pacstrap -K /mnt " + strings.Join(pacstrapPackages, " "))
 
 		// fstabgen
-		exeAppendFile("fstabgen -U /mnt", "/mnt/etc/fstab")
+		exeAppendFile("genfstab -U /mnt", "/mnt/etc/fstab")
 
 		// Copying repository into system
 		exe("cp -r . /mnt/SamuraiOS")
@@ -235,17 +229,17 @@ func main() {
 
 		// chroot into system
 		logInfo("Stage 1 Done")
-		logInfo("Now using chroot to go into /mnt ...")
+		// logInfo("Now using chroot to go into /mnt ...")
 
-		install2 := "artix-chroot /mnt /SamuraiOS/scripts/install2.sh"
-		if allDefault {
-			install2 += " -y"
-		}
-		if !userDefault {
-			install2 += " -u"
-		}
+		// install2 := "arch-chroot /mnt /SamuraiOS/scripts/install2.sh"
+		// if allDefault {
+		//	install2 += " -y"
+		//}
+		//if !userDefault {
+		//	install2 += " -u"
+		//}
 
-		exe(install2)
+		//exe(install2)
 	} else if stage == 2 {
 		logInfo("Performing Stage 2 ...")
 
@@ -308,6 +302,9 @@ func main() {
 		exe("locale-gen")
 		exeAppendFile("echo export LANG=\""+locales[0]+"\"", "/etc/locale.conf")
 
+		keymap := promptWithDefault("de", allDefault, "Keymap")
+		exeAppendFile("echo KEYMAP="+keymap, "/etc/vconsole.conf")
+
 		// Boot Loader
 		logInfo("Installing boot loader (grub) ...")
 
@@ -362,28 +359,16 @@ func main() {
 		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# Defaults maxseq = 1000", "Defaults env_reset,pwfeedback")
 
 		logInfo("Stage 2 Done")
-		logInfo("Reboot into the new drive and execute \"sudo dinitctl enable NetworkManager\" (if you are using wifi) to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
+		logInfo("Reboot into the new drive and execute \"sudo systemctl enable NetworkManager\" (if you are using wifi) to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
 	} else if stage == 3 {
 		logInfo("Performing Stage 3 ...")
 
 		homeDir, _ := os.UserHomeDir()
 		curDir, _ := os.Getwd()
 		curUser, _ := user.Current()
-		goPath := os.Getenv("GOPATH")
 
-		exeDontCare("sudo dinitctl enable NetworkManager")
-		exeDontCare("sudo dinitctl enable bluetoothd")
-
-		// Install arch repositories
-		logInfo("Installing Arch repositories ...")
-		exeArgs("sudo", "cp",
-			"etc/pacman.d/mirrorlist-arch",
-			"etc/pacman.d/mirrorlist-universe",
-			"/etc/pacman.d/",
-		)
-		exe("sudo cp etc/pacman.conf /etc/")
-		exe("sudo pacman -Sy --noconfirm --needed artix-archlinux-support")
-		exe("sudo pacman-key --populate archlinux")
+		exeDontCare("sudo systemctl enable NetworkManager")
+		exeDontCare("sudo systemctl enable bluetoothd")
 
 		// Install chaotic-aur
 		logInfo("Installing chaotic-aur repository ...")
@@ -399,23 +384,6 @@ func main() {
 		logInfo("Installing arch chaotic packages ...")
 		exe("sudo pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
 
-		// Install dinit-userservd
-		if !dinitServiceExists("dinit-userservd") {
-			logInfo("Installing dinit user service ...")
-			exeDontCare("rm -rf " + filepath.Join(homeDir, "/repos/dinit-userservd"))
-			exe("mkdir -p " + filepath.Join(homeDir, "/repos/dinit-userservd"))
-			exe("git clone https://github.com/Xynonners/dinit-userservd.git " + filepath.Join(homeDir, "/repos/dinit-userservd"))
-			os.Chdir(filepath.Join(homeDir, "/repos/dinit-userservd"))
-			exe("makepkg -si --noconfirm")
-			exe("sudo dinitctl enable dinit-userservd")
-			os.Chdir(curDir)
-			exeArgs("sudo", "go", "run", "scripts/append.go", "echo session optional pam_dinit_userservd.so", "/etc/pam.d/system-login")
-			exe("rm -rf " + filepath.Join(homeDir, "/repos/dinit-userservd"))
-		} else {
-			logInfo("Skipping installation of dinit-userservd since it is already installed")
-		}
-
-		// Install eruptuion
 		// Installing yay
 		if !isInstalled("yay") {
 			logInfo("Installing yay ...")
@@ -466,7 +434,7 @@ func main() {
 		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
 
 		// Start system services
-		exe("sudo dinitctl enable modprobe")
+		// exe("sudo dinitctl enable modprobe")
 
 		logInfo("Copying user configuration files ...")
 
@@ -483,7 +451,6 @@ func main() {
 		}
 
 		exe("cp -r " + strings.Join(homeEntriesStr, " ") + " " + homeDir)
-		exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d/boot.d"))
 
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " ninja " + curUser.Username)
 
@@ -511,59 +478,28 @@ func main() {
 		// Change shell
 		exe("chsh -s /usr/bin/fish")
 
-		logInfo("Stage 3 Done")
-		logInfo("Now logout and login again and execute \"cd /SamuraiOS && go run install.go 4\"")
-	} else if stage == 4 {
-		logInfo("Performing Stage 4 ...")
-
-		homeDir, _ := os.UserHomeDir()
-
-		// Activate dinit user services
-		logInfo("Activating dinit user services ...")
-		exe("mkdir -p " + filepath.Join(homeDir, "/.local/share/dinit"))
-		exe("dinitctl enable pipewire")
-		exe("dinitctl enable pipewire-pulse")
-
-		logInfo("Installation Done")
-
 		rmSamurai := promptWithDefaultYesNo(false, allDefault, "Remove /SamuraiOS")
 		if rmSamurai {
 			exe("sudo rm -rf /SamuraiOS")
 		}
 
-		launchHypr := promptWithDefaultYesNo(true, allDefault, "Execute \"sudo dinitctl enable sddm\" and launch into hyprland")
+		launchHypr := promptWithDefaultYesNo(true, allDefault, "Execute \"sudo systemctl enable sddm\" and launch into hyprland")
 		if launchHypr {
-			exe("sudo dinitctl enable sddm")
+			exe("sudo systemctl enable sddm")
 		}
+
+		logInfo("Stage 3 Done")
+		logInfo("Installation Done")
 	} else if stage == 5 {
 		// Application Stage
 		logInfo("Performing Stage 5 ...")
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
 
-		if !isInstalled("eruption") {
-			logInfo("Installing eruption ...")
-			exeDontCare("rm -rf " + filepath.Join(homeDir, "/repos/eruption"))
-			exe("mkdir -p " + filepath.Join(homeDir, "repos/eruption"))
-			exe("git clone --branch no-systemd https://github.com/PucklaJ/eruption.git " + filepath.Join(homeDir, "repos/eruption"))
-			os.Chdir(filepath.Join(homeDir, "repos/eruption"))
-			exe("make")
-			exe("sudo make install")
-			// Copying dinit services
-			exe("mkdir -p " + filepath.Join(homeDir, ".config/dinit.d"))
-			exe("cp support/dinit/eruption-audio-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
-			exe("cp support/dinit/eruption-fx-proxy " + filepath.Join(homeDir, ".config/dinit.d/"))
-			exe("cp support/dinit/eruption-process-monitor " + filepath.Join(homeDir, ".config/dinit.d/"))
-
-			os.Chdir(curDir)
-			exe("rm -rf " + filepath.Join(homeDir, "repos/eruption"))
-		} else {
-			logInfo("Skipping Installation of eruption since it is already installed")
-		}
-
-		exeDontCare("sudo dinitctl enable eruption")
-		exeDontCare("dinitctl enable eruption-audio-proxy")
-		exeDontCare("dinitctl enable eruption-fx-proxy")
+		exeDontCare("systemctl enable --user eruption-audio-proxy.service")
+		exeDontCare("systemctl enable --user eruption-fx-proxy.service")
+		exeDontCare("systemctl enable --user eruption-process-monitor.service")
+		exeDontCare("sudo systemctl enable --now eruption.service")
 
 		for _, ext := range vscodeExtensions {
 			exe("codium --install-extension " + ext)
@@ -583,7 +519,7 @@ func main() {
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(virtualizationPackages, " "))
 
-		exe("sudo dinitctl enable libvirtd")
+		exe("sudo systemctl enable --now libvirtd.service")
 		exe("sudo virsh net-start default")
 		exe("sudo virsh net-autostart default")
 
