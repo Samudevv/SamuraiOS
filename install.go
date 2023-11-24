@@ -14,11 +14,15 @@ import (
 
 // Packages that can be installed from the artix repos and the program basestrap
 var pacstrapPackages = []string{
-	// Base packages to make the system work
+	// Absolute most basic packages to be able to chroot into the mounted filesystem
 	"base",
-	"base-devel",
 	"linux-lts",
 	"linux-firmware",
+}
+
+var basePackages = []string{
+	// Base packages to make the system work
+	"base-devel",
 	"micro",
 	"neovim",
 	"grub",
@@ -31,9 +35,7 @@ var pacstrapPackages = []string{
 	"whois",
 	"go",
 	"git",
-}
 
-var basePackages = []string{
 	// Packages for working graphical system with audio
 	"fish",
 	"pipewire",

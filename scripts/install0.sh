@@ -10,20 +10,7 @@ mv /etc/pacman.d/mirrorlist.tmp /etc/pacman.d/mirrorlist
 
 pacstrap -K /mnt \
 base \
-base-devel \
 linux-lts \
 linux-firmware \
-micro \
-neovim \
-grub \
-os-prober \
-dhcpcd \
-wpa_supplicant \
-networkmanager \
-reflector \
-fzf \
-whois \
-go \
-git
 
 genfstab -U /mnt >> /mnt/etc/fstab
