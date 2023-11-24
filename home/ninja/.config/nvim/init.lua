@@ -38,3 +38,5 @@ bind('n', '<c-P>', '<cmd>lua require("fzf-lua").git_files()<CR>', { silent = tru
 bind('n', '<Tab>', '<cmd>bnext<CR>',                              { silent = true })
 bind('n', '<c-W>', '<cmd>bd<CR>',                                 { silent = true })
 bind('n', '<c-Q>', '<cmd>q<CR>',                                  { silent = true })
+bind('n', '<c-S>', '<cmd>w<CR>',                                  { silent = true })
+
