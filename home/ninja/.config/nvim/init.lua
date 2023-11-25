@@ -24,6 +24,9 @@ bootstrap_pckr()
 local bind = vim.keymap.set
 local c = vim.cmd
 local slt = { silent = true }
+local normal = 'n'
+local all = {'n', 'i', 'v'}
+local pckr = require('pckr')
 
 --  ____  _             _           
 -- |  _ \| |_   _  __ _(_)_ __  ___ 
@@ -32,19 +35,39 @@ local slt = { silent = true }
 -- |_|   |_|\__,_|\__, |_|_| |_|___/
 --                |___/             
 --
-require('pckr').add{
-	'Mofiqul/dracula.nvim',
-	'mg979/vim-visual-multi',
-	'ibhagwan/fzf-lua',
-	'akinsho/bufferline.nvim',
+pckr.add{
+	'Mofiqul/dracula.nvim';
+	'mg979/vim-visual-multi';
+	'ibhagwan/fzf-lua';
+	'akinsho/bufferline.nvim';
+	{'nvim-treesitter/nvim-treesitter', run = function() require('nvim-treesitter.install').update({with_sync = true})() end};
 }
 
 local fzf = require('fzf-lua')
 local bufferline = require('bufferline')
+local treesitter = require('nvim-treesitter.configs')
 
 fzf.setup({'fzf-native'})
 vim.opt.termguicolors = true
 bufferline.setup{}
+treesitter.setup{
+	ensure_installed = {
+		'bash',
+		'bibtex',
+		'c',
+		'cpp',
+		'cmake',
+		'go',
+		'lua',
+		'markdown',
+		'odin',
+	},
+	sync_install = false,
+	auto_install = false,
+	highlight = {
+		enable = true
+	}
+}
 --  _  __          _                         _ 
 -- | |/ /___ _   _| |__   ___   __ _ _ __ __| |
 -- | ' // _ \ | | | '_ \ / _ \ / _` | '__/ _` |
@@ -57,11 +80,11 @@ bufferline.setup{}
 -- | |_) | | | | | (_| | | | | | (_| \__ \
 -- |____/|_|_| |_|\__,_|_|_| |_|\__, |___/
 --                              |___/     
-bind('n', '<c-P>', '<cmd>lua require("fzf-lua").git_files()<CR>', slt)
-bind('n', '<Tab>', '<cmd>bnext<CR>',                              slt)
-bind('n', '<c-W>', '<cmd>bd<CR>',                                 slt)
-bind('n', '<c-Q>', '<cmd>q<CR>',                                  slt)
-bind('n', '<c-S>', '<cmd>w<CR>',                                  slt)
+bind(normal, '<c-P>', fzf.git_files,                                 slt)
+bind(normal, '<Tab>', '<cmd>bnext<CR>',                              slt)
+bind(all,    '<c-W>', '<cmd>bd<CR>',                                 slt)
+bind(all,    '<c-Q>', '<cmd>q<CR>',                                  slt)
+bind(all,    '<c-S>', '<cmd>w<CR>',                                  slt)
 --   ____          _                  
 --  / ___|   _ ___| |_ ___  _ __ ___  
 -- | |  | | | / __| __/ _ \| '_ ` _ \ 
@@ -76,6 +99,7 @@ bind('n', '<c-S>', '<cmd>w<CR>',                                  slt)
 --
 cmd('W write')
 cmd('Q quit')
+cmd('SRC source %')
 --   ____                                          _     
 --  / ___|___  _ __ ___  _ __ ___   __ _ _ __   __| |___ 
 -- | |   / _ \| '_ ` _ \| '_ ` _ \ / _` | '_ \ / _` / __|
