@@ -1,6 +1,6 @@
 # SamuraiOS
 
-An Artix Linux install script for Samurais 👹 and Ninjas 🥷
+An Arch Linux install script for Samurais 👹 and Ninjas 🥷
 
 This install script is intented to just be used by myself specifically for my PC setup. But if you want you can install it if you can bring it to work on your system.
 
@@ -10,7 +10,7 @@ This install script is intented to just be used by myself specifically for my PC
 ![screenshot-2](screenshot-2.png)
 ![screenshot-3](screenshot-3.gif)
 
-## Stage 1
+## Stage 0
 
 1. Choose keyboard layout
 ```
@@ -18,11 +18,22 @@ loadkeys de
 ```
 
 2. Partition the disk and create file system
+```console
+lsblk # Make sure to choose the correct drive
+cfdisk /dev/sda # This is just an example!
+mkfs.ext4 /dev/sda1
+mkswap /dev/sda2 # For swap if necessary
+```
 
-3. Mount partitions
+3. Mount partitions on `/mnt`
+```console
+mount /dev/sda1 /mnt
+mount /dev/sda3 /mnt/boot # For boot partition on UEFI systems
+```
 
 4. Connect to the internet
-```
+```console
+# Ethernet should just work out of the box. If you have need a wifi connection this is how to do it
 # Using wpa_supplicant to connect to the WiFi
 rfkill unblock wifi
 ip link set wlan0 up # Replace wlan0 with the interface name. List all with "ip link show"
@@ -30,45 +41,40 @@ wpa_passphrase 'SSID' > /etc/wpa_supplicant.conf # Replace SSID with the name of
 wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf # Replace wlan0 with your interface
 dhcpcd wlan0 # Here again replace wlan0 with the name of your interface
 
-# Using connmanctl
-connmanctl
-connmanctl> scan wifi
-connmanctl> services
-connmanctl> agent on
-connmanctl> connect wifi_237sdf98734sdf987wfsdf98734_managed_psk
-connmanctl> quit
-```
-5. Install go and git on the host
-```
-pacman -Sy go git
+# Using nmcli with NetworkManager
+rkill unblock wifi # Maybe the wifi needs to be unblocked
+nmcli dev status # To check the state of things
+nmcli radio wifi # To check the sate of wifi
+nmcli radio wifi on # Switch the wifi on
+nmcli dev wifi list # Scan for nearby access points
+nmcli --ask dev wifi connect <SSID> # Connect to the wifi (this needs admin privileges!)
 ```
 
-6. Execute `go run install.go 1`
-*The -y or --yes flag can be used to use all default values at the prompts*
-*Use -u or --user combined with the yes flag to only enter the username and password*
+5. Download `install0.sh` script and execute it
+```
+curl -o install0.sh https://raw.githubusercontent.com/PucklaJ/SamuraiOS/master/scripts/install0.sh
+chmod +x install0.sh
+./install0.sh
+```
 
-7.  Reboot
+6.  Reboot into the new drive
 ```
 reboot
 ```
 
 ## Stage 3
 
-8.  After logging in execute `sudo dinitctl enable connmand` and reconnect to the internet
+7.  After logging in execute `sudo systemctl enable --now NetworkManager.service` and reconnect to the internet
 
-9. Execute `go run install.go 3`
+8. Execute Stage 3
+```
+cd /SamuraiOS
+go run install.go 3
+```
 
-10.  Logout
+## Stage 5 (applications)
 
-## Stage 4
-
-11. After logging in again execute `go run install.go 4`
-
-12. Base Installation is Done
-
-## Stage 5
-
-13. Do install all applications call `go run install.go 5`
+9. To install all applications call `go run install.go apps`
 
 ## Dracula Theme License
 
@@ -101,6 +107,8 @@ The Ghost of Tsushima wallpaper used for the side screen was made by Ömer Tunç
 The Shrine Entrance wallpaper used for the sddm login screen was made by Florent Lebrun found on [artstation.com](https://www.artstation.com/artwork/J9Jzzz)
 
 ## Fix Bluetooth
+
+You may need to call `modprobe btusb` to make bluetooth work. And maybe even to set up a systemd service for that.
 
 You need to install `bluez-utils-compat`
 
