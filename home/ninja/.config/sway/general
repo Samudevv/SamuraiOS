@@ -107,5 +107,12 @@ for_window [title="^(Ersetzen von Dateien bestätigen)"] floating enable
 for_window [title="^(Dateivorgangsfortschritt)"] floating enable
 for_window [title="^(file-roller)"] floating enable
 
-input * xkb_layout de
+input type:keyboard xkb_layout de
+input type:touchpad {
+	tap enabled
+	natural_scroll disabled
+	accel_profile "flat"
+	scroll_factor 0.2
+}
+
 floating_modifier $super normal
