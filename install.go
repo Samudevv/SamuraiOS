@@ -102,7 +102,7 @@ var archChaoticPackages = []string{
 
 var aurPackages = []string{
 	"samurai-select",
-	"odin",
+	"odin-git",
 }
 
 // Applications can be installed optionally (makes testing faster)
