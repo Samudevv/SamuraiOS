@@ -35,7 +35,7 @@
     "all-outputs": false,
     "on-click": "activate",
     "sort-by-number": true,
-    "persistent_workspaces": {
+    "persistent-workspaces": {
       "1": [],
       "2": [],
       "3": [],
