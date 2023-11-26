@@ -105,6 +105,7 @@ if not require_failed then
             'go',
             'lua',
             'odin',
+            'fish',
         },
         sync_install = false,
         auto_install = false,
