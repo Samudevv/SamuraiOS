@@ -26,7 +26,7 @@
     "battery"
   ],
   "custom/nice-icon": {
-    "format": "",
+    "format": "󰣇",
     "tooltip": false,
     "on-click": "wofi"
   },
