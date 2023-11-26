@@ -51,7 +51,6 @@ var basePackages = []string{
 	"qt5ct",
 	"gnome-keyring",
 	"grim",
-	"slurp",
 	"wl-clipboard",
 	"fcitx5",
 	"fcitx5-qt",
@@ -948,6 +947,7 @@ func installOdinfmt() {
 	homeDir, _ := os.UserHomeDir()
 	os.Chdir(filepath.Join(homeDir, "repos"))
 
+	exeDontCare(fmt.Sprint("rm -rf ", filepath.Join(homeDir, "repos/ols")))
 	exe("git clone https://github.com/DanielGavin/ols.git -b master --depth 1")
 	os.Chdir("ols")
 	exe("./odinfmt.sh")
