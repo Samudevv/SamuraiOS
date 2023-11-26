@@ -129,11 +129,13 @@ if not require_failed then
 -- | |_) | | | | | (_| | | | | | (_| \__ \
 -- |____/|_|_| |_|\__,_|_|_| |_|\__, |___/
 --                              |___/
-    bind(normal, '<c-P>', fzf.git_files,                                 slt)
-    bind(normal, '<Tab>', '<cmd>bnext<CR>',                              slt)
-    bind(all,    '<c-W>', '<cmd>bd<CR>',                                 slt)
-    bind(all,    '<c-Q>', '<cmd>q<CR>',                                  slt)
-    bind(all,    '<c-S>', '<cmd>w<CR>',                                  slt)
+    bind(normal, '<c-P>',   function() fzf.files({ cmd = os.getenv('FZF_DEFAULT_COMMAND')}) end, slt)
+    bind(normal, '<S-P>',   fzf.blines,                                                          slt)
+    bind(normal, '<Tab>',   '<cmd>bnext<CR>',                                                    slt)
+    bind(normal, '<S-Tab>', '<cmd>bprevious<CR>',                                                slt)
+    bind(all,    '<c-W>',   '<cmd>bd<CR>',                                                       slt)
+    bind(all,    '<c-Q>',   '<cmd>q<CR>',                                                        slt)
+    bind(all,    '<c-S>',   '<cmd>w<CR>',                                                        slt)
 --   ____          _
 --  / ___|   _ ___| |_ ___  _ __ ___
 -- | |  | | | / __| __/ _ \| '_ ` _ \

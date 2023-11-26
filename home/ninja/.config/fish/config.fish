@@ -97,7 +97,7 @@ set -x BROWSER firefox
 set -x EDITOR nvim
 set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 # set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
-set -x FZF_DEFAULT_COMMAND 'find .'
+set -x FZF_DEFAULT_COMMAND 'find . -type f ! -path "*/.*" -readable'
 set -x MICRO_TRUECOLOR 1
 
 alias fishconf="$EDITOR ~/.config/fish/config.fish"
