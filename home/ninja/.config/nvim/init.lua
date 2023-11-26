@@ -53,9 +53,13 @@ local function cf(pattern, command)
     })
 end
 local function ac(event, func)
-    vim.api.nvim_create_autocmd(event, {
-        callback = func,
-    })
+    opts = {}
+    if type(func) == 'string' then
+        opts['command'] = func
+    else
+        opts['callback'] = func
+    end
+    vim.api.nvim_create_autocmd(event, opts)
 end
 
 bootstrap_pckr()
@@ -84,6 +88,7 @@ pckr.add{
     {'nvim-treesitter/nvim-treesitter', run = function() require('nvim-treesitter.install').update({with_sync = true})() end};
     'cappyzawa/trim.nvim';
     'mhinz/vim-signify';
+    'sbdchd/neoformat';
 }
 
 local fzf = prequire('fzf-lua')
@@ -168,6 +173,8 @@ if not require_failed then
 
     cf(lang_c,  'set shiftwidth=2')
     cf(lang_go, 'set noexpandtab tabstop=4')
+
+    ac('BufWritePre', 'silent! undojoin | Neoformat')
 
     remember_cursor_position()
 end
