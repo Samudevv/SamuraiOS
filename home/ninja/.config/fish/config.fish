@@ -78,6 +78,8 @@ alias egrep='grep -E --color=auto'
 alias pacman='pacman --color=auto'
 
 # User configs
+# Start ssh-agent through keychain to use ssh keys withoud passphrase
+# eval (keychain --quiet --eval --agents ssh id_ed25519)
 
 # Improve performance of command not found
 function __fish_command_not_found_handler --on-event fish_command_not_found
@@ -106,6 +108,7 @@ alias qtileconf="$EDITOR ~/.config/qtile/config.py"
 alias hyprconf="$EDITOR ~/.config/hypr/hyprland.conf"
 alias gitcheckconf="git config user.name && git config user.email"
 alias gitac="git add -A && git commit -m"
+alias gits="git status"
 alias cmd="wine ~/.wine/drive_c/windows/system32/cmd.exe"
 alias go-windows-amd64="GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc go"
 alias pacmanhist="cat /var/log/pacman.log | grep upgraded | less"
