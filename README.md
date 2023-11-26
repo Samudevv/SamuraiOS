@@ -54,7 +54,7 @@ nmcli --ask dev wifi connect <SSID> # Connect to the wifi (this needs admin priv
 ```
 curl -o install0.sh https://raw.githubusercontent.com/PucklaJ/SamuraiOS/master/scripts/install0.sh
 chmod +x install0.sh
-./install0.sh
+./install0.sh # You can add -y|--yes to use all default arguments and -u|--user to just change the user name and password
 ```
 
 6.  Reboot into the new drive

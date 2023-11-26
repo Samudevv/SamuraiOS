@@ -27,7 +27,8 @@
   ],
   "custom/nice-icon": {
     "format": "",
-    "tooltip": false
+    "tooltip": false,
+    "on-click": "wofi"
   },
   "sway/workspaces": {
     "disable-scroll": true,

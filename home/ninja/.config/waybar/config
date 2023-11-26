@@ -26,7 +26,8 @@
   ],
   "custom/nice-icon": {
     "format": "",
-    "tooltip": false
+    "tooltip": false,
+    "on-click": "wofi"
   },
   "hyprland/workspaces": {
     "disable-scroll": true,
