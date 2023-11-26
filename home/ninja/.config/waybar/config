@@ -72,10 +72,12 @@
     "format-off": "󰂲",
     "format-on": "󰂯",
     "format-connected": "󰂱",
+    "format-no-controller": "󰥊",
     "tooltip": true,
     "tooltip-format": "{controller_alias}: {controller_address}\n{status}",
     "tooltip-format-connected": "{controller_alias}: {controller_address}\nverbunden mit\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}: {device_address}",
+    "tooltip-format-no-controller": "Kein Controller",
     "on-click": "blueman-manager",
     "on-click-right": "~/.config/waybar/toggle-bluetooth.sh"
   },
@@ -121,8 +123,8 @@
   "cpu": {
     "interval": 1,
     "format": " {usage}%",
-    "min-length": 6,
-    "max-length": 6,
+    "min-length": 7,
+    "max-length": 7,
     "on-click": "kitty --start-as=fullscreen --title btop sh -c 'btop'"
   },
   "memory": {
