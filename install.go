@@ -102,6 +102,7 @@ var archChaoticPackages = []string{
 
 var aurPackages = []string{
 	"samurai-select",
+	"odin",
 }
 
 // Applications can be installed optionally (makes testing faster)
@@ -370,6 +371,9 @@ func main() {
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
 		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
+		// Install odinfmt
+		installOdinfmt()
+
 		// Copy configuration files
 		logInfo("Copying system configuration files ...")
 
@@ -504,11 +508,7 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		if chaoticInstalled() {
-			logInfo("chaotic-aur installed")
-		} else {
-			logError("chaotic-aur not installed")
-		}
+		installOdinfmt()
 
 		logInfo("Tests Done")
 	} else {
@@ -897,4 +897,24 @@ func chaoticInstalled() bool {
 		return false
 	}
 	return true
+}
+
+func installOdinfmt() {
+	if isInstalled("odinfmt") {
+		logInfo("Skipping installation of odinfmt since it is already installed")
+		return
+	}
+
+	logInfo("Installing odinfmt ...")
+	curDir, _ := os.Getwd()
+	homeDir, _ := os.UserHomeDir()
+	os.Chdir(filepath.Join(homeDir, "repos"))
+
+	exe("git clone https://github.com/DanielGavin/ols.git -b master --depth 1")
+	os.Chdir("ols")
+	exe("./odinfmt.sh")
+	exe("sudo cp odinfmt /usr/bin")
+	os.Chdir(curDir)
+
+	exeArgs("rm", "-rf", filepath.Join(homeDir, "repos/ols"))
 }
