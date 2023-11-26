@@ -49,7 +49,8 @@ tooltip {
 #temperature,
 #workspaces,
 #network,
-#bluetooth {
+#bluetooth,
+#battery {
     background: #282a36;
     opacity: 0.9;
     padding-left: 10px;
@@ -78,7 +79,8 @@ tooltip {
     padding-left: 0px;
 }
 
-#tray {
+#tray,
+#battery {
     border-radius: 15px;
     margin-left: 10px;
     margin-right: 20px;
@@ -110,12 +112,18 @@ tooltip {
 }
 
 #disk.warning,
-#memory.warning {
+#memory.warning,
+#battery.warning {
     color: #ffb86c;
 }
 
 #temperature.critical,
 #disk.critical,
-#memory.critical {
+#memory.critical,
+#battery.critical {
     color: #ff5555;
+}
+
+#battery.charged {
+  color: #50fa7b;
 }

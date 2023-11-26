@@ -22,7 +22,8 @@
     "cpu",
     "memory",
     "temperature",
-    "disk"
+    "disk",
+    "battery"
   ],
   "custom/nice-icon": {
     "format": "",
@@ -168,6 +169,32 @@
     "states": {
       "warning": 90,
       "critical": 95
+    }
+  },
+  "battery": {
+    "interval": 10,
+    "min-length": 1,
+    "max-length": 1,
+    "format": "{icon}",
+    "format-time": "{H}h {M}min",
+    "tooltip-format": "󰂄 {capacity}%\n󱧥 {time}",
+    "format-icons": [
+      "󰂃",
+      "󰁻",
+      "󰁼",
+      "󰁽",
+      "󰁾",
+      "󰁿",
+      "󰂀",
+      "󰂁",
+      "󰂂",
+      "󰁹"
+    ],
+    "states": {
+      "critical": 5,
+      "warning": 20,
+      "charged": 100,
+      "normal": 89
     }
   }
 }
