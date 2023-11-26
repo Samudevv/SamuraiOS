@@ -419,7 +419,7 @@ func main() {
 
 		exe("cp -r " + strings.Join(homeEntriesStr, " ") + " " + homeDir)
 		// Delete neoformat folder because pckr won't install neoformat because it believes that is already installed
-		exe("rm -r" + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat"))
+		exe("rm -r " + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat"))
 
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " ninja " + curUser.Username)
 
