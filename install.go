@@ -103,6 +103,7 @@ var archChaoticPackages = []string{
 var aurPackages = []string{
 	"samurai-select",
 	"odin-git",
+	"aur/dracula-gtk-theme",
 }
 
 // Applications can be installed optionally (makes testing faster)
