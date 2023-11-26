@@ -418,6 +418,8 @@ func main() {
 		}
 
 		exe("cp -r " + strings.Join(homeEntriesStr, " ") + " " + homeDir)
+		// Delete neoformat folder because pckr won't install neoformat because it believes that is already installed
+		exe("rm -r" + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat"))
 
 		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " ninja " + curUser.Username)
 
@@ -460,6 +462,7 @@ func main() {
 	} else if stage == 5 {
 		// Application Stage
 		logInfo("Performing Stage 5 ...")
+		homeDir, _ := os.UserHomeDir()
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
 
@@ -470,6 +473,12 @@ func main() {
 
 		for _, ext := range vscodeExtensions {
 			exe("codium --install-extension " + ext)
+		}
+
+		// Install odin formatter for neoformat
+		logInfo("Installing neovim formatter for odin ...")
+		if ok := promptWithDefaultYesNo(true, allDefault, "You need to start neovim at least once before continuing. Did you do this?"); ok {
+			exe("cp home/ninja/.local/share/nvim/site/pack/pckr/opt/neoformat/autoload/neoformat/formatters/odin.vim " + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat/autoload/neoformat/formatters/"))
 		}
 
 		logInfo("Stage 5 Done")
