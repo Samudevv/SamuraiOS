@@ -94,7 +94,7 @@ var archChaoticPackages = []string{
 	"wev",
 	"dracula-icons-git",
 	"dracula-cursors-git",
-	"dracula-gtk-theme",
+	// "dracula-gtk-theme", This package is currently broken
 	"ttf-fantasque-sans-mono",
 	"blueman",
 	"mtpfs",
