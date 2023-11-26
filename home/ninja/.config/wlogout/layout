@@ -1,12 +1,12 @@
 {
     "label": "shutdown",
-    "action": "loginctl poweroff",
+    "action": "shutdown -h now",
     "text": "",
     "keybind": "s"
 }
 {
     "label": "reboot",
-    "action": "loginctl reboot",
+    "action": "reboot",
     "text": "",
     "keybind": "r"
 }
