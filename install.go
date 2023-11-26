@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var basePackages = []string{
@@ -330,7 +331,7 @@ func main() {
 		// Install chaotic-aur
 		if !chaoticInstalled() {
 			logInfo("Installing chaotic-aur repository ...")
-			exe("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
+			exeRetry("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
 			exe("sudo pacman-key --lsign-key 3056513887B78AEB")
 			exe("sudo pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
 
@@ -508,7 +509,7 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		installOdinfmt()
+		exeRetry("odinfmt")
 
 		logInfo("Tests Done")
 	} else {
@@ -680,6 +681,43 @@ func exeToStringSilent(command string) (string, error) {
 	}
 
 	return builder.String(), nil
+}
+
+func exeRetry(command string) {
+	words := strings.Split(command, " ")
+	if len(words) == 0 {
+		logError("No Command")
+		os.Exit(1)
+	}
+
+	var args []string
+	if len(words) > 1 {
+		args = words[1:]
+	}
+
+	logScript(command)
+
+	var tries int
+
+	for {
+		tries++
+
+		cmd := exec.Command(words[0], args...)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Stdin = os.Stdin
+
+		if err := cmd.Run(); err != nil {
+			logError("failed: ", err, ". Trying again. ", 5-tries, " tries left ...")
+			if tries == 5 {
+				logError("failed 5 times quitting")
+				os.Exit(1)
+			}
+			time.Sleep(500 * time.Millisecond)
+		} else {
+			break
+		}
+	}
 }
 
 func copyConfig(src string) {
