@@ -103,7 +103,7 @@ set -x MICRO_TRUECOLOR 1
 alias fishconf="$EDITOR ~/.config/fish/config.fish"
 alias sourcefish="source ~/.config/fish/config.fish"
 alias hiddenconf="$EDITOR ~/.config/fish/hidden.fish"
-alias vimconf="$EDITOR ~/.vimrc"
+alias nvimconf="$EDITOR ~/.config/nvim/init.lua"
 alias qtileconf="$EDITOR ~/.config/qtile/config.py"
 alias hyprconf="$EDITOR ~/.config/hypr/hyprland.conf"
 alias gitcheckconf="git config user.name && git config user.email"
