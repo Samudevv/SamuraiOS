@@ -30,6 +30,20 @@
     "tooltip": false,
     "on-click": "wofi"
   },
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "active-only": false,
+    "all-outputs": false,
+    "on-click": "activate",
+    "sort-by-number": true,
+    "persistent-workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    }
+  },
   "hyprland/workspaces": {
     "disable-scroll": true,
     "active-only": false,
