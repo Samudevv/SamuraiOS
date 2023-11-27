@@ -90,6 +90,7 @@ tooltip {
     color: #8be9fd;
     margin-left: 10px;
     border-right: 0px;
+    font-size: 24px;
 }
 
 #pulseaudio {
