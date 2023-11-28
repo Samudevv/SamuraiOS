@@ -999,6 +999,8 @@ func addUser(username, password string, allDefault, userDefault bool) {
 	exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " ninja " + userName)
 
 	exe("chsh -s /usr/bin/fish " + userName)
+
+	exeArgs("chown", "-R", userName, homeDir)
 }
 
 func installGoPrograms() {
