@@ -394,9 +394,6 @@ func main() {
 			logInfo("Skipping installation of yay since it is already installed")
 		}
 
-		// Install odinfmt
-		installOdinfmt()
-
 		// Copy configuration files
 		logInfo("Copying system configuration files ...")
 
@@ -438,22 +435,26 @@ func main() {
 			exe("rm -rf /SamuraiOS")
 		}
 
-		exe("systemctl enable sddm.service")
 		exe("userdel installer")
 
 		logInfo("Stage 3 Done")
 		logInfo("Installation Done")
 	} else if stage == 3 {
+		exe("sudo systemctl enable --now sddm.service")
+	} else if stage == 5 {
+		// Application Stage
+		logInfo("Performing Stage 5 ...")
+		homeDir, _ := os.UserHomeDir()
+
 		// Install yay packages
 		if len(aurPackages) != 0 {
 			logInfo("Installing AUR packages ...")
 			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
 		}
 		logInfo("Done")
-	} else if stage == 5 {
-		// Application Stage
-		logInfo("Performing Stage 5 ...")
-		homeDir, _ := os.UserHomeDir()
+
+		// Install odinfmt
+		installOdinfmt()
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
 
@@ -1056,7 +1057,7 @@ func installAURPackage(packageName string) {
 	exe("chown -R installer " + yayDir)
 	exe("sudo -u installer makepkg -s --noconfirm")
 	pkgName := searchPkgName(yayDir)
-	exe("pacman -U " + pkgName)
+	exe("pacman -U --needed --noconfirm " + pkgName)
 	os.Chdir(curDir)
 }
 
