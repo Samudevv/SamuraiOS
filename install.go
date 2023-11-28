@@ -1051,7 +1051,7 @@ func installAURPackage(packageName string) {
 	yayDir := filepath.Join(tmpDir, packageName)
 	exeDontCare("rm -rf " + yayDir)
 	exe("mkdir -p " + yayDir)
-	exe("git clone https://aur.archlinux.org/" + packageName + ".git --depth 1" + yayDir)
+	exe("git clone https://aur.archlinux.org/" + packageName + ".git --depth 1 " + yayDir)
 	os.Chdir(yayDir)
 	exe("chown -R installer " + yayDir)
 	exe("sudo -u installer makepkg -s --noconfirm")
