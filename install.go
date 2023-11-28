@@ -424,7 +424,7 @@ func main() {
 		exe("userdel installer")
 
 		logInfo("Stage 1 Done")
-		logInfo("Now reboot into the system and do the following\n\t1. Partion and mount the home partition\n\t2. Add users\n\t3.Execute `systemctl enable --now sddm.service`")
+		logInfo("Now reboot into the system and do the following\n\t1. Partion and mount the home partition\n\t2. Add users\n\t3. Execute `systemctl enable --now sddm.service`")
 	} else if stage == 2 {
 		// Application Stage
 		logInfo("Performing Stage 2 ...")
