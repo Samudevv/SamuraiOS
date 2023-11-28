@@ -389,7 +389,7 @@ func main() {
 
 		// Installing yay
 		if !isInstalled("yay") {
-			installAURPackage("yay")
+			installAURPackage("yay-bin")
 		} else {
 			logInfo("Skipping installation of yay since it is already installed")
 		}
