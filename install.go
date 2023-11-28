@@ -978,7 +978,7 @@ func installOdinfmt() {
 	exe("git clone https://github.com/DanielGavin/ols.git -b master --depth 1 " + olsDir)
 	os.Chdir(olsDir)
 	exe("./odinfmt.sh")
-	exe("cp odinfmt /usr/bin")
+	exe("sudo cp odinfmt /usr/bin")
 	os.Chdir(curDir)
 }
 
