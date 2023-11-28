@@ -343,11 +343,6 @@ func main() {
 		// Show asteriks when typing sudo password
 		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# Defaults maxseq = 1000", "Defaults env_reset,pwfeedback")
 
-		logInfo("Stage 1 Done")
-		logInfo("Reboot into the new drive and execute \"sudo systemctl enable --now NetworkManager.service\" to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
-
-		logInfo("Performing Stage 3 ...")
-
 		if !userExists("installer") {
 			logInfo("Add user installer")
 			exe("useradd -M -G wheel installer")
@@ -380,16 +375,9 @@ func main() {
 			logInfo("Skipping installation of chaotic-aur since it is already installed")
 		}
 
-		// Install packages from arch and chaotic repos and update repositories
-		logInfo("Installing arch chaotic packages ...")
+		// Install packages from chaotic repos and update repositories
+		logInfo("Installing chaotic packages ...")
 		exe("pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
-
-		// Remove unneeded packages
-		// Probably not relevant anymore
-		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
-		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
-		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
-		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
 		// Installing yay
 		if !isInstalled("yay") {
@@ -417,10 +405,6 @@ func main() {
 
 		exe("cp -r " + strings.Join(repoEntriesStr, " ") + " /")
 
-		// Uncomment chaotic-aur. Not necessary anymore
-		// exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
-		// exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
-
 		// Do System Update for multilib
 		exe("pacman -Syu")
 
@@ -428,8 +412,6 @@ func main() {
 		exe("mkdir -p /etc/wireplumber/main.lua.d")
 		exe("cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua /etc/wireplumber/main.lua.d")
 		exeArgs("go", "run", "scripts/replace.go", "/etc/wireplumber/main.lua.d/50-alsa-config.lua", "--[\"api.alsa.headroom\"]      = 0", "[\"api.alsa.headroom\"]      = 1024")
-
-		// installGoPrograms() TODO: Find a way to install it automatically
 
 		logInfo("Clearing pacman cache ...")
 		exe("pacman -Scc --noconfirm")
@@ -441,10 +423,8 @@ func main() {
 
 		exe("userdel installer")
 
-		logInfo("Stage 3 Done")
-		logInfo("Installation Done")
-	} else if stage == 3 {
-		exe("sudo systemctl enable --now sddm.service")
+		logInfo("Stage 1 Done")
+		logInfo("Now reboot into the system and do the following\n\t1. Partion and mount the home partition\n\t2. Add users\n\t3.Execute `systemctl enable --now sddm.service`")
 	} else if stage == 5 {
 		// Application Stage
 		logInfo("Performing Stage 5 ...")
