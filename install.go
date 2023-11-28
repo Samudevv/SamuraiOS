@@ -335,43 +335,42 @@ func main() {
 
 		logInfo("Stage 1 Done")
 		logInfo("Reboot into the new drive and execute \"sudo systemctl enable --now NetworkManager.service\" to activate the network daemon. After that reconnect to the internet and execute \"cd /SamuraiOS && go run install.go 3\"")
-	} else if stage == 3 {
+
 		logInfo("Performing Stage 3 ...")
 
-		homeDir, _ := os.UserHomeDir()
+		tmpDir := os.TempDir()
 		curDir, _ := os.Getwd()
 
-		exeDontCare("sudo systemctl enable --now NetworkManager.service")
-		exeDontCare("sudo systemctl enable --now bluetooth.service")
+		exeDontCare("systemctl enable bluetooth.service")
 
 		// Install chaotic-aur
 		if !chaoticInstalled() {
 			logInfo("Installing chaotic-aur repository ...")
-			exeRetry("sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
-			exe("sudo pacman-key --lsign-key 3056513887B78AEB")
-			exe("sudo pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
+			exeRetry("pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
+			exe("pacman-key --lsign-key 3056513887B78AEB")
+			exe("pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
 
 			// Uncomment chaotic-aur
-			exeArgs("sudo", "go", "run", "scripts/append.go", "echo [chaotic-aur]", "/etc/pacman.conf")
-			exeArgs("sudo", "go", "run", "scripts/append.go", "echo Include = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
+			exeArgs("go", "run", "scripts/append.go", "echo [chaotic-aur]", "/etc/pacman.conf")
+			exeArgs("go", "run", "scripts/append.go", "echo Include = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
 		} else {
 			logInfo("Skipping installation of chaotic-aur since it is already installed")
 		}
 
 		// Install packages from arch and chaotic repos and update repositories
 		logInfo("Installing arch chaotic packages ...")
-		exe("sudo pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
+		exe("pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
 
 		// Installing yay
 		if !isInstalled("yay") {
 			logInfo("Installing yay ...")
-			exeDontCare("rm -rf " + filepath.Join(homeDir, "/repos/yay"))
-			exe("mkdir -p " + filepath.Join(homeDir, "/repos/yay"))
-			exe("git clone https://aur.archlinux.org/yay.git " + filepath.Join(homeDir, "/repos/yay"))
-			os.Chdir(filepath.Join(homeDir, "/repos/yay"))
+			yayDir := filepath.Join(tmpDir, "yay")
+			exeDontCare("rm -rf " + yayDir)
+			exe("mkdir -p " + yayDir)
+			exe("git clone https://aur.archlinux.org/yay.git " + yayDir)
+			os.Chdir(yayDir)
 			exe("makepkg -si --noconfirm")
 			os.Chdir(curDir)
-			exe("rm -rf " + filepath.Join(homeDir, "/repos/yay"))
 		} else {
 			logInfo("Skipping installation of yay since it is already installed")
 		}
@@ -383,10 +382,11 @@ func main() {
 		}
 
 		// Remove unneeded packages
-		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
-		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
-		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
-		exeDontCare("sudo pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
+		// Probably not relevant anymore
+		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
+		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
+		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
+		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
 
 		// Install odinfmt
 		installOdinfmt()
@@ -408,44 +408,36 @@ func main() {
 			}
 		}
 
-		exe("sudo cp -r " + strings.Join(repoEntriesStr, " ") + " /")
+		exe("cp -r " + strings.Join(repoEntriesStr, " ") + " /")
 
 		// Uncomment chaotic-aur
-		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
-		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
+		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
+		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
 
 		// Do System Update for multilib
-		exe("sudo pacman -Syu")
-
-		// Start system services
-		// exe("sudo dinitctl enable modprobe")
-
-		logInfo("Copying user configuration files ...")
-
-		// exe("sudo go run scripts/replace.go /etc/sddm.conf.d/20-autologin.conf ninja " + curUser.Username) Disable autologin
+		exe("pacman -Syu")
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
-		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
-		exe("sudo cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua /etc/wireplumber/main.lua.d")
-		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/wireplumber/main.lua.d/50-alsa-config.lua", "--[\"api.alsa.headroom\"]      = 0", "[\"api.alsa.headroom\"]      = 1024")
+		exe("mkdir -p /etc/wireplumber/main.lua.d")
+		exe("cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua /etc/wireplumber/main.lua.d")
+		exeArgs("go", "run", "scripts/replace.go", "/etc/wireplumber/main.lua.d/50-alsa-config.lua", "--[\"api.alsa.headroom\"]      = 0", "[\"api.alsa.headroom\"]      = 1024")
 
 		// installGoPrograms() TODO: Find a way to install it automatically
 
 		logInfo("Clearing pacman cache ...")
-		exe("sudo pacman -Scc --noconfirm")
+		exe("pacman -Scc --noconfirm")
 
 		rmSamurai := promptWithDefaultYesNo(false, allDefault, "Remove /SamuraiOS")
 		if rmSamurai {
-			exe("sudo rm -rf /SamuraiOS")
+			exe("rm -rf /SamuraiOS")
 		}
 
-		launchHypr := promptWithDefaultYesNo(true, allDefault, "Execute \"sudo systemctl enable --now sddm.service\" and launch into hyprland")
-		if launchHypr {
-			exe("sudo systemctl enable --now sddm.service")
-		}
+		exe("systemctl enable sddm.service")
 
 		logInfo("Stage 3 Done")
 		logInfo("Installation Done")
+	} else if stage == 3 {
+
 	} else if stage == 5 {
 		// Application Stage
 		logInfo("Performing Stage 5 ...")
@@ -963,17 +955,15 @@ func installOdinfmt() {
 
 	logInfo("Installing odinfmt ...")
 	curDir, _ := os.Getwd()
-	homeDir, _ := os.UserHomeDir()
-	os.Chdir(filepath.Join(homeDir, "repos"))
+	tmpDir := os.TempDir()
+	olsDir := filepath.Join(tmpDir, "ols")
 
-	exeDontCare(fmt.Sprint("rm -rf ", filepath.Join(homeDir, "repos/ols")))
-	exe("git clone https://github.com/DanielGavin/ols.git -b master --depth 1")
-	os.Chdir("ols")
+	exeDontCare("rm -rf " + olsDir)
+	exe("git clone https://github.com/DanielGavin/ols.git -b master --depth 1 " + olsDir)
+	os.Chdir(olsDir)
 	exe("./odinfmt.sh")
-	exe("sudo cp odinfmt /usr/bin")
+	exe("cp odinfmt /usr/bin")
 	os.Chdir(curDir)
-
-	exeArgs("rm", "-rf", filepath.Join(homeDir, "repos/ols"))
 }
 
 func addUser(username, password string, allDefault, userDefault bool) {
