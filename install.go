@@ -340,6 +340,11 @@ func main() {
 
 		logInfo("Add user installer")
 		exe("useradd -M -G wheel installer")
+		pwCrypt, err := exeToStringSilent("mkpasswd installer")
+		if err == nil {
+			pwCrypt = strings.TrimSpace(pwCrypt)
+			exeArgs("usermod", "--password", pwCrypt, "installer")
+		}
 
 		tmpDir := os.TempDir()
 		curDir, _ := os.Getwd()
@@ -364,34 +369,19 @@ func main() {
 		logInfo("Installing arch chaotic packages ...")
 		exe("pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
 
-		// Installing yay
-		if !isInstalled("yay") {
-			logInfo("Installing yay ...")
-			yayDir := filepath.Join(tmpDir, "yay")
-			exeDontCare("rm -rf " + yayDir)
-			exe("mkdir -p " + yayDir)
-			exe("git clone https://aur.archlinux.org/yay-bin.git --depth 1" + yayDir)
-			os.Chdir(yayDir)
-			exe("sudo -u installer makepkg --noconfirm")
-			pkgName := searchPkgName(yayDir)
-			exe("pacman -U " + pkgName)
-			os.Chdir(curDir)
-		} else {
-			logInfo("Skipping installation of yay since it is already installed")
-		}
-
-		// Install yay packages
-		if len(aurPackages) != 0 {
-			logInfo("Installing AUR packages ...")
-			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
-		}
-
 		// Remove unneeded packages
 		// Probably not relevant anymore
 		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-gnome")
 		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-gtk")
 		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-kde")
 		exeDontCare("pacman -Rnsdd --noconfirm xdg-desktop-portal-wlr")
+
+		// Installing yay
+		if !isInstalled("yay") {
+			installAURPackage("yay")
+		} else {
+			logInfo("Skipping installation of yay since it is already installed")
+		}
 
 		// Install odinfmt
 		installOdinfmt()
@@ -415,9 +405,9 @@ func main() {
 
 		exe("cp -r " + strings.Join(repoEntriesStr, " ") + " /")
 
-		// Uncomment chaotic-aur
-		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
-		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
+		// Uncomment chaotic-aur. Not necessary anymore
+		// exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#[chaotic-aur]", "[chaotic-aur]")
+		// exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#Include = /etc/pacman.d/chaotic-mirrorlist", "Include = /etc/pacman.d/chaotic-mirrorlist")
 
 		// Do System Update for multilib
 		exe("pacman -Syu")
@@ -443,7 +433,12 @@ func main() {
 		logInfo("Stage 3 Done")
 		logInfo("Installation Done")
 	} else if stage == 3 {
-
+		// Install yay packages
+		if len(aurPackages) != 0 {
+			logInfo("Installing AUR packages ...")
+			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
+		}
+		logInfo("Done")
 	} else if stage == 5 {
 		// Application Stage
 		logInfo("Performing Stage 5 ...")
@@ -1036,4 +1031,18 @@ func searchPkgName(dirName string) string {
 	}
 
 	return ""
+}
+
+func installAURPackage(packageName string) {
+	logInfo("Installing packageName ...")
+	yayDir := filepath.Join(tmpDir, packageName)
+	exeDontCare("rm -rf " + yayDir)
+	exe("mkdir -p " + yayDir)
+	exe("git clone https://aur.archlinux.org/" + packageName + ".git --depth 1" + yayDir)
+	os.Chdir(yayDir)
+	exe("chown -R installer " + yayDir)
+	exe("sudo -u installer makepkg -s --noconfirm")
+	pkgName := searchPkgName(yayDir)
+	exe("pacman -U " + pkgName)
+	os.Chdir(curDir)
 }
