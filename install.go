@@ -304,6 +304,9 @@ func main() {
 			exe("grub-mkconfig -o /boot/grub/grub.cfg")
 		}
 
+		// Set root password to root
+		passwordPrompt("root", "root", false)
+
 		if addUserDirectly {
 			if !userExists(argUserName) {
 				addUser(argUserName, argPassword, allDefault, userDefault)
@@ -352,9 +355,6 @@ func main() {
 				exeArgs("usermod", "--password", pwCrypt, "installer")
 			}
 		}
-
-		// Set root password to root
-		passwordPrompt("root", "root", false)
 
 		curDir, _ := os.Getwd()
 
