@@ -181,12 +181,29 @@ func main() {
 	var stage int = 1
 	var allDefault, userDefault bool
 	userDefault = true
+	var argUserName, argPassword string
 	if len(os.Args) > 1 {
-		for _, arg := range os.Args[1:] {
+		args := os.Args[1:]
+		for i := 0; i < len(args); i++ {
+			arg := args[i]
 			if arg == "-y" || arg == "--yes" {
 				allDefault = true
 			} else if arg == "-u" || arg == "--user" {
 				userDefault = false
+			} else if arg == "--name" {
+				i++
+				if i == len(args) {
+					logError("Invalid arguments: username required after \"--name\"")
+					os.Exit(1)
+				}
+				argUserName = args[i]
+			} else if arg == "--pass" {
+				i++
+				if i == len(args) {
+					logError("Invalid arguments: password required after \"--pass\"")
+					os.Exit(1)
+				}
+				argPassword = args[i]
 			} else {
 				stage = parseStage(os.Args[1])
 			}
@@ -281,9 +298,14 @@ func main() {
 		exe("grub-mkconfig -o /boot/grub/grub.cfg")
 
 		// Passwords, Username and Hostname
-		userName := promptWithDefault("ninja", allDefault && userDefault, "Username")
+		var userName string
+		if len(argUserName) != 0 {
+			userName = argUserName
+		} else {
+			userName = promptWithDefault("ninja", allDefault && userDefault, "Username")
+		}
 		exe("useradd -m " + userName)
-		passwordPrompt(userName, allDefault && userDefault)
+		passwordPrompt(userName, argPassword, allDefault && userDefault)
 
 		hostName := promptWithDefault("samurai", allDefault, "Hostname")
 
@@ -518,7 +540,13 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		exeRetry("odinfmt")
+		var userName string
+		if len(argUserName) != 0 {
+			userName = argUserName
+		} else {
+			userName = promptWithDefault("ninja", allDefault && userDefault, "Username")
+		}
+		fmt.Println("Your username is", userName)
 
 		logInfo("Tests Done")
 	} else {
@@ -910,17 +938,21 @@ func mountedDeviceName() string {
 	}
 }
 
-func passwordPrompt(username string, allDefault bool) {
+func passwordPrompt(username, argPassword string, allDefault bool) {
 	var pw string
-	for {
-		pw1 := promptWithDefault("s", allDefault, "Password")
-		pw2 := promptWithDefault("s", allDefault, "Reenter Password")
+	if len(argPassword) != 0 {
+		pw = argPassword
+	} else {
+		for {
+			pw1 := promptWithDefault("s", allDefault, "Password")
+			pw2 := promptWithDefault("s", allDefault, "Reenter Password")
 
-		if pw1 != pw2 {
-			logError("Passwords do not match. Please enter again!")
-		} else {
-			pw = pw1
-			break
+			if pw1 != pw2 {
+				logError("Passwords do not match. Please enter again!")
+			} else {
+				pw = pw1
+				break
+			}
 		}
 	}
 

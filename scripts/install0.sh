@@ -4,6 +4,8 @@ set -ex
 
 timedatectl
 
+pacman -Sy --needed --noconfirm reflector arch-install-scripts
+
 mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist.tmp
 mv /etc/pacman.d/mirrorlist.tmp /etc/pacman.d/mirrorlist
