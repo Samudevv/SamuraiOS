@@ -52,7 +52,7 @@ nmcli --ask dev wifi connect <SSID> # Connect to the wifi (this needs admin priv
 
 5. Download `install0.sh` script and execute it
 ```
-curl -sSL https://raw.githubusercontent.com/PucklaJ/SamuraiOS/master/scripts/install0.sh | bash -s # You can add -y|--yes to use all default arguments and -u|--user to just change the user name and password
+curl -sSL https://raw.githubusercontent.com/PucklaJ/SamuraiOS/aarch64/scripts/install0.sh | bash -s # You can add -y|--yes to use all default arguments and -u|--user to just change the user name and password
 ```
 
 6.  Reboot into the new drive
@@ -60,19 +60,19 @@ curl -sSL https://raw.githubusercontent.com/PucklaJ/SamuraiOS/master/scripts/ins
 reboot
 ```
 
-## Stage 3
+## Setup after reboot
 
-7.  After logging in execute `sudo systemctl enable --now NetworkManager.service` and reconnect to the internet
+7. Login as `root` with password `root`.
 
-8. Execute Stage 3
-```
-cd /SamuraiOS
-go run install.go 3
-```
+8. Partition and mount the home partition.
 
-## Stage 5 (applications)
+9. Add users with `go run install.go user`. The password of the first user will be the root password.
 
-9. To install all applications call `go run install.go apps`
+10. Execute `systemctl enable --now sddm.service`
+
+## Stage 2 (applications)
+
+11. To install all applications call `go run install.go apps`
 
 ## Dracula Theme License
 

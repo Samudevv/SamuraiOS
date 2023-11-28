@@ -425,9 +425,9 @@ func main() {
 
 		logInfo("Stage 1 Done")
 		logInfo("Now reboot into the system and do the following\n\t1. Partion and mount the home partition\n\t2. Add users\n\t3.Execute `systemctl enable --now sddm.service`")
-	} else if stage == 5 {
+	} else if stage == 2 {
 		// Application Stage
-		logInfo("Performing Stage 5 ...")
+		logInfo("Performing Stage 2 ...")
 		homeDir, _ := os.UserHomeDir()
 
 		// Install yay packages
@@ -457,17 +457,17 @@ func main() {
 			exe("cp home/ninja/.local/share/nvim/site/pack/pckr/opt/neoformat/autoload/neoformat/formatters/odin.vim " + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat/autoload/neoformat/formatters/"))
 		}
 
-		logInfo("Stage 5 Done")
-	} else if stage == 6 {
+		logInfo("Stage 2 Done")
+	} else if stage == 3 {
 		// Gaming Stage
-		logInfo("Performing Stage 6 ...")
+		logInfo("Performing Gaming Stage ...")
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(gamingPackages, " "))
 
-		logInfo("Stage 6 Done")
-	} else if stage == 7 {
+		logInfo("Gaming Stage Done")
+	} else if stage == 4 {
 		// Virtualizazion Stage
-		logInfo("Performing Stage 7 ...")
+		logInfo("Performing Virtualization Stage ...")
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(virtualizationPackages, " "))
 
@@ -489,11 +489,13 @@ func main() {
 
 		logInfo("Stage 7 Done")
 		logInfo("Now reboot and everything should be set up")
-	} else if stage == 8 {
+	} else if stage == 5 {
+		logInfo("Performing User Stage ...")
+
 		// User Stage to add another user
 		addUser(argUserName, argPassword, allDefault, userDefault)
 
-		logInfo("Stage 8 Done")
+		logInfo("User Stage Done")
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
@@ -799,13 +801,13 @@ func parseStage(arg string) int {
 	case "test":
 		return 255
 	case "applications", "apps", "application":
-		return 5
+		return 2
 	case "gaming":
-		return 6
+		return 3
 	case "virt", "virtualization":
-		return 7
+		return 4
 	case "user":
-		return 8
+		return 5
 	default:
 		v, err := strconv.ParseUint(arg, 10, 64)
 		if err != nil {
