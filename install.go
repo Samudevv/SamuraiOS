@@ -457,8 +457,8 @@ func main() {
 		}
 		logInfo("Done")
 
-		// Install odinfmt
 		installOdinfmt()
+		installGoPrograms()
 
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
 
@@ -514,10 +514,6 @@ func main() {
 		addUser(argUserName, argPassword, allDefault, userDefault)
 
 		logInfo("Stage 8 Done")
-	} else if stage == 9 {
-		installGoPrograms()
-
-		logInfo("Stage 9 Done")
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
@@ -830,8 +826,6 @@ func parseStage(arg string) int {
 		return 7
 	case "user":
 		return 8
-	case "go":
-		return 9
 	default:
 		v, err := strconv.ParseUint(arg, 10, 64)
 		if err != nil {
@@ -1031,6 +1025,10 @@ func installGoPrograms() {
 		os.Exit(1)
 	}
 	for _, gp := range goPrograms {
+		if isInstalled(gp.Name()) {
+			continue
+		}
+
 		os.Chdir(filepath.Join(goDir, gp.Name()))
 		logInfo("Installing " + gp.Name() + " ...")
 		exe("go install -buildvcs=false")
