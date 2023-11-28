@@ -358,8 +358,12 @@ func main() {
 			}
 		}
 
+		// Set root password to root
+		passwordPrompt("root", "root", false)
+
 		curDir, _ := os.Getwd()
 
+		exeDontCare("systemctl enable NetworkManager.service")
 		exeDontCare("systemctl enable bluetooth.service")
 
 		// Install chaotic-aur
