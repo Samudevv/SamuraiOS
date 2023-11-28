@@ -179,7 +179,7 @@ var virtualizationPackages = []string{
 func main() {
 	// Parse Args
 	var stage int = 1
-	var allDefault, userDefault bool
+	var allDefault, userDefault, addUserDirectly bool
 	userDefault = true
 	var argUserName, argPassword string
 	if len(os.Args) > 1 {
@@ -204,6 +204,8 @@ func main() {
 					os.Exit(1)
 				}
 				argPassword = args[i]
+			} else if arg == "--add-user" {
+				addUserDirectly = true
 			} else {
 				stage = parseStage(os.Args[1])
 			}
@@ -297,15 +299,9 @@ func main() {
 
 		exe("grub-mkconfig -o /boot/grub/grub.cfg")
 
-		// Passwords, Username and Hostname
-		var userName string
-		if len(argUserName) != 0 {
-			userName = argUserName
-		} else {
-			userName = promptWithDefault("ninja", allDefault && userDefault, "Username")
+		if addUserDirectly {
+			addUser(argUserName, argPassword, allDefault, userDefault)
 		}
-		exe("useradd -m " + userName)
-		passwordPrompt(userName, argPassword, allDefault && userDefault)
 
 		hostName := promptWithDefault("samurai", allDefault, "Hostname")
 
@@ -332,7 +328,6 @@ func main() {
 			hosts.WriteString("127.0.1.1\t" + hostName + ".localdomain\t" + hostName + "\n")
 		}
 
-		exe("usermod -aG wheel " + userName)
 		// Enable every user in the wheel group to use sudo
 		exeArgs("go", "run", "scripts/replace.go", "/etc/sudoers", "# %wheel ALL=(ALL:ALL) ALL", "%wheel ALL=(ALL:ALL) ALL")
 		// Show asteriks when typing sudo password
@@ -428,41 +423,14 @@ func main() {
 
 		logInfo("Copying user configuration files ...")
 
-		// Copy contents of home directory
-		homeEntries, err := os.ReadDir("home/ninja")
-		if err != nil {
-			logError(err)
-			os.Exit(1)
-		}
-
-		var homeEntriesStr []string
-		for _, h := range homeEntries {
-			homeEntriesStr = append(homeEntriesStr, filepath.Join("home/ninja", h.Name()))
-		}
-
-		exe("cp -r " + strings.Join(homeEntriesStr, " ") + " " + homeDir)
-		// Delete neoformat folder because pckr won't install neoformat because it believes that is already installed
-		exe("rm -r " + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat"))
-
-		exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " ninja " + curUser.Username)
-
-		exe("sudo go run scripts/replace.go /etc/sddm.conf.d/20-autologin.conf ninja " + curUser.Username)
+		// exe("sudo go run scripts/replace.go /etc/sddm.conf.d/20-autologin.conf ninja " + curUser.Username) Disable autologin
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("sudo mkdir -p /etc/wireplumber/main.lua.d")
 		exe("sudo cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua /etc/wireplumber/main.lua.d")
 		exeArgs("sudo", "go", "run", "scripts/replace.go", "/etc/wireplumber/main.lua.d/50-alsa-config.lua", "--[\"api.alsa.headroom\"]      = 0", "[\"api.alsa.headroom\"]      = 1024")
 
-		// Install go programs
-		logInfo("Installing go programs ...")
-		goDir := filepath.Join(homeDir, "go/src/samurai")
-		goPrograms, err := os.ReadDir(goDir)
-		for _, gp := range goPrograms {
-			os.Chdir(filepath.Join(goDir, gp.Name()))
-			logInfo("Installing " + gp.Name() + " ...")
-			exe("go install -buildvcs=false")
-		}
-		os.Chdir(curDir)
+		// installGoPrograms() TODO: Find a way to install it automatically
 
 		logInfo("Clearing pacman cache ...")
 		exe("sudo pacman -Scc --noconfirm")
@@ -536,6 +504,15 @@ func main() {
 
 		logInfo("Stage 7 Done")
 		logInfo("Now reboot and everything should be set up")
+	} else if stage == 8 {
+		// User Stage to add another user
+		addUser(argUsername, argPassword, allDefault, userDefault)
+
+		logInfo("Stage 8 Done")
+	} else if stage == 9 {
+		installGoPrograms()
+
+		logInfo("Stage 9 Done")
 	} else if stage == 255 {
 		// Testing
 		logInfo("Performing Tests ...")
@@ -851,6 +828,10 @@ func parseStage(arg string) int {
 		return 6
 	case "virt", "virtualization":
 		return 7
+	case "user":
+		return 8
+	case "go":
+		return 9
 	default:
 		v, err := strconv.ParseUint(arg, 10, 64)
 		if err != nil {
@@ -997,4 +978,52 @@ func installOdinfmt() {
 	os.Chdir(curDir)
 
 	exeArgs("rm", "-rf", filepath.Join(homeDir, "repos/ols"))
+}
+
+func addUser(username, password string, allDefault, userDefault bool) {
+	var userName string
+	if len(username) != 0 {
+		userName = username
+	} else {
+		userName = promptWithDefault("ninja", allDefault && userDefault, "Username")
+	}
+	exe("useradd -m " + userName)
+	passwordPrompt(userName, password, allDefault && userDefault)
+
+	exe("usermod -aG wheel " + userName)
+
+	homeDir := "/home/" + userName
+
+	// Copy contents of home directory
+	homeEntries, err := os.ReadDir("home/ninja")
+	if err != nil {
+		logError(err)
+		os.Exit(1)
+	}
+
+	var homeEntriesStr []string
+	for _, h := range homeEntries {
+		homeEntriesStr = append(homeEntriesStr, filepath.Join("home/ninja", h.Name()))
+	}
+
+	exe("cp -r " + strings.Join(homeEntriesStr, " ") + " " + homeDir)
+	// Delete neoformat folder because pckr won't install neoformat because it believes that is already installed
+	exe("rm -r " + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat"))
+
+	exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " ninja " + userName)
+}
+
+func installGoPrograms() {
+	homeDir, _ := os.UserHomeDir()
+	curDir, _ := os.Getwd()
+	// Install go programs
+	logInfo("Installing go programs ...")
+	goDir := filepath.Join(homeDir, "go/src/samurai")
+	goPrograms, err := os.ReadDir(goDir)
+	for _, gp := range goPrograms {
+		os.Chdir(filepath.Join(goDir, gp.Name()))
+		logInfo("Installing " + gp.Name() + " ...")
+		exe("go install -buildvcs=false")
+	}
+	os.Chdir(curDir)
 }

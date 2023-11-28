@@ -1,5 +1,7 @@
 #! /bin/sh
 
+echo Installing SamuraiOS with arguments '"' $* '"' ...
+
 set -ex
 
 timedatectl
