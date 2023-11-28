@@ -346,7 +346,6 @@ func main() {
 			exeArgs("usermod", "--password", pwCrypt, "installer")
 		}
 
-		tmpDir := os.TempDir()
 		curDir, _ := os.Getwd()
 
 		exeDontCare("systemctl enable bluetooth.service")
@@ -1034,7 +1033,9 @@ func searchPkgName(dirName string) string {
 }
 
 func installAURPackage(packageName string) {
-	logInfo("Installing packageName ...")
+	logInfo("Installing " + packageName + " ...")
+	tmpDir := os.TempDir()
+	curDir, _ := os.Getwd()
 	yayDir := filepath.Join(tmpDir, packageName)
 	exeDontCare("rm -rf " + yayDir)
 	exe("mkdir -p " + yayDir)
