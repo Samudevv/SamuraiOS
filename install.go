@@ -435,9 +435,6 @@ func main() {
 		logInfo("Clearing pacman cache ...")
 		exe("sudo pacman -Scc --noconfirm")
 
-		// Change shell
-		exe("chsh -s /usr/bin/fish")
-
 		rmSamurai := promptWithDefaultYesNo(false, allDefault, "Remove /SamuraiOS")
 		if rmSamurai {
 			exe("sudo rm -rf /SamuraiOS")
@@ -1011,6 +1008,8 @@ func addUser(username, password string, allDefault, userDefault bool) {
 	exe("rm -r " + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat"))
 
 	exe("go run scripts/replace.go " + filepath.Join(homeDir, "/.config/qt5ct/qt5ct.conf") + " ninja " + userName)
+
+	exe("chsh -s /usr/bin/fish " + userName)
 }
 
 func installGoPrograms() {
