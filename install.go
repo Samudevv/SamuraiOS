@@ -940,7 +940,11 @@ func passwordPrompt(username, argPassword string, allDefault bool) {
 	pwCrypt, err := exeToStringSilent("mkpasswd " + pw)
 	if err == nil {
 		pwCrypt = strings.TrimSpace(pwCrypt)
-		exeArgs("usermod", "--password", pwCrypt, "root")
+		// Set the root password if this is the first user
+		entries, err := os.ReadDir("/home")
+		if username != "root" && err == nil && len(entries) == 0 {
+			exeArgs("usermod", "--password", pwCrypt, username)
+		}
 		exeArgs("usermod", "--password", pwCrypt, username)
 	} else {
 		logInfo("Failed to create password using mkpasswd. passwd is required.")
