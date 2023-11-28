@@ -340,7 +340,6 @@ func main() {
 
 		homeDir, _ := os.UserHomeDir()
 		curDir, _ := os.Getwd()
-		curUser, _ := user.Current()
 
 		exeDontCare("sudo systemctl enable --now NetworkManager.service")
 		exeDontCare("sudo systemctl enable --now bluetooth.service")
@@ -503,7 +502,7 @@ func main() {
 		logInfo("Now reboot and everything should be set up")
 	} else if stage == 8 {
 		// User Stage to add another user
-		addUser(argUsername, argPassword, allDefault, userDefault)
+		addUser(argUserName, argPassword, allDefault, userDefault)
 
 		logInfo("Stage 8 Done")
 	} else if stage == 9 {
@@ -1019,6 +1018,10 @@ func installGoPrograms() {
 	logInfo("Installing go programs ...")
 	goDir := filepath.Join(homeDir, "go/src/samurai")
 	goPrograms, err := os.ReadDir(goDir)
+	if err != nil {
+		logError(err)
+		os.Exit(1)
+	}
 	for _, gp := range goPrograms {
 		os.Chdir(filepath.Join(goDir, gp.Name()))
 		logInfo("Installing " + gp.Name() + " ...")
