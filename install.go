@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"os/user"
@@ -221,11 +222,13 @@ func main() {
 		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
 
 		// set the time zone
-		logInfo("Setting locale ...")
-		region := promptWithDefault("Europe", allDefault, "Region")
-		city := promptWithDefault("Vienna", allDefault, "City")
+		if !fileExists("/etc/localtime") {
+			logInfo("Setting locale ...")
+			region := promptWithDefault("Europe", allDefault, "Region")
+			city := promptWithDefault("Vienna", allDefault, "City")
 
-		exe(fmt.Sprint("ln -sf /usr/share/zoneinfo/", region, "/", city, " /etc/localtime"))
+			exe(fmt.Sprint("ln -sf /usr/share/zoneinfo/", region, "/", city, " /etc/localtime"))
+		}
 
 		exe("hwclock --systohc")
 
@@ -283,40 +286,47 @@ func main() {
 		exeAppendFile("echo KEYMAP="+keymap, "/etc/vconsole.conf")
 
 		// Boot Loader
-		logInfo("Installing boot loader (grub) ...")
+		if !fileExists("/boot/grub/grub.cfg") {
+			logInfo("Installing boot loader (grub) ...")
 
-		if isUEFI(allDefault) {
-			exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
-		} else {
-			device := mountedDeviceName()
-			exe("grub-install --recheck " + device)
-		}
-
-		// Copy over the grub configuration
-		exe("mkdir -p /etc/default")
-		exe("cp etc/default/grub /etc/default/")
-		exe("cp -r etc/default/dracula-grub /etc/default/dracula-grub")
-
-		exe("grub-mkconfig -o /boot/grub/grub.cfg")
-
-		if addUserDirectly {
-			addUser(argUserName, argPassword, allDefault, userDefault)
-		}
-
-		hostName := promptWithDefault("samurai", allDefault, "Hostname")
-
-		{
-			hostNameFile, err := os.Create("/etc/hostname")
-			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
+			if isUEFI(allDefault) {
+				exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
+			} else {
+				device := mountedDeviceName()
+				exe("grub-install --recheck " + device)
 			}
 
-			hostNameFile.WriteString(hostName)
-			hostNameFile.Close()
+			// Copy over the grub configuration
+			exe("mkdir -p /etc/default")
+			exe("cp etc/default/grub /etc/default/")
+			exe("cp -r etc/default/dracula-grub /etc/default/dracula-grub")
+
+			exe("grub-mkconfig -o /boot/grub/grub.cfg")
 		}
 
-		{
+		if addUserDirectly {
+			if !userExists(argUserName) {
+				addUser(argUserName, argPassword, allDefault, userDefault)
+			}
+		}
+
+		if !fileExists("/etc/hostname") {
+			hostName := promptWithDefault("samurai", allDefault, "Hostname")
+
+			{
+				hostNameFile, err := os.Create("/etc/hostname")
+				if err != nil {
+					fmt.Fprintln(os.Stderr, err)
+					os.Exit(1)
+				}
+
+				hostNameFile.WriteString(hostName)
+				hostNameFile.Close()
+			}
+		}
+
+		if !fileExists("/etc/hosts") {
+			hostName := readFileTrim("/etc/hostname")
 			hosts, err := os.Create("/etc/hosts")
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
@@ -338,12 +348,14 @@ func main() {
 
 		logInfo("Performing Stage 3 ...")
 
-		logInfo("Add user installer")
-		exe("useradd -M -G wheel installer")
-		pwCrypt, err := exeToStringSilent("mkpasswd installer")
-		if err == nil {
-			pwCrypt = strings.TrimSpace(pwCrypt)
-			exeArgs("usermod", "--password", pwCrypt, "installer")
+		if !userExists("installer") {
+			logInfo("Add user installer")
+			exe("useradd -M -G wheel installer")
+			pwCrypt, err := exeToStringSilent("mkpasswd installer")
+			if err == nil {
+				pwCrypt = strings.TrimSpace(pwCrypt)
+				exeArgs("usermod", "--password", pwCrypt, "installer")
+			}
 		}
 
 		curDir, _ := os.Getwd()
@@ -505,8 +517,8 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		pkgName := searchPkgName("/tmp/yay")
-		fmt.Println("package name is", pkgName)
+		hostname := readFileTrim("/etc/hostname")
+		fmt.Println("Hostname:", hostname)
 
 		logInfo("Tests Done")
 	} else {
@@ -1046,4 +1058,32 @@ func installAURPackage(packageName string) {
 	pkgName := searchPkgName(yayDir)
 	exe("pacman -U " + pkgName)
 	os.Chdir(curDir)
+}
+
+func fileExists(filePath string) bool {
+	_, err := os.Stat(filePath)
+	return !os.IsNotExist(err)
+}
+
+func userExists(userName string) bool {
+	cmd := exec.Command("id", userName)
+	err := cmd.Run()
+	return err == nil
+}
+
+func readFileTrim(filePath string) string {
+	file, err := os.Open(filePath)
+	if err != nil {
+		logError(err)
+		os.Exit(1)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		logError(err)
+		os.Exit(1)
+	}
+
+	return strings.TrimSpace(string(data))
 }
