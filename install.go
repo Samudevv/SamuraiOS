@@ -338,6 +338,9 @@ func main() {
 
 		logInfo("Performing Stage 3 ...")
 
+		logInfo("Add user installer")
+		exe("useradd -M -G wheel installer")
+
 		tmpDir := os.TempDir()
 		curDir, _ := os.Getwd()
 
@@ -367,9 +370,11 @@ func main() {
 			yayDir := filepath.Join(tmpDir, "yay")
 			exeDontCare("rm -rf " + yayDir)
 			exe("mkdir -p " + yayDir)
-			exe("git clone https://aur.archlinux.org/yay.git " + yayDir)
+			exe("git clone https://aur.archlinux.org/yay-bin.git --depth 1" + yayDir)
 			os.Chdir(yayDir)
-			exe("makepkg -si --noconfirm")
+			exe("sudo -u installer makepkg --noconfirm")
+			pkgName := searchPkgName(yayDir)
+			exe("pacman -U " + pkgName)
 			os.Chdir(curDir)
 		} else {
 			logInfo("Skipping installation of yay since it is already installed")
@@ -433,6 +438,7 @@ func main() {
 		}
 
 		exe("systemctl enable sddm.service")
+		exe("userdel installer")
 
 		logInfo("Stage 3 Done")
 		logInfo("Installation Done")
@@ -505,13 +511,8 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		var userName string
-		if len(argUserName) != 0 {
-			userName = argUserName
-		} else {
-			userName = promptWithDefault("ninja", allDefault && userDefault, "Username")
-		}
-		fmt.Println("Your username is", userName)
+		pkgName := searchPkgName("/tmp/yay")
+		fmt.Println("package name is", pkgName)
 
 		logInfo("Tests Done")
 	} else {
@@ -1020,4 +1021,19 @@ func installGoPrograms() {
 		exe("go install -buildvcs=false")
 	}
 	os.Chdir(curDir)
+}
+
+func searchPkgName(dirName string) string {
+	entries, err := os.ReadDir(dirName)
+	if err != nil {
+		return ""
+	}
+
+	for _, e := range entries {
+		if strings.HasSuffix(e.Name(), ".pkg.tar.zst") {
+			return filepath.Join(dirName, e.Name())
+		}
+	}
+
+	return ""
 }
