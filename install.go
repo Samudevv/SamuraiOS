@@ -86,9 +86,8 @@ var basePackages = []string{
 	"flatpak",
 }
 
-var archChaoticPackages = []string{
+var aurPackages = []string{
 	// Packages for working graphical system with audio
-	"swappy",
 	"hyprpaper",
 	"starship",
 	"eza",
@@ -100,7 +99,6 @@ var archChaoticPackages = []string{
 	"wev",
 	"dracula-icons-git",
 	"dracula-cursors-git",
-	// "dracula-gtk-theme", This package is currently broken
 	"ttf-fantasque-sans-mono",
 	"blueman",
 	"mtpfs",
@@ -112,6 +110,7 @@ var aurPackages = []string{
 	"aur/dracula-cursors-git",
 	"backlight_control",
 	"poweralertd",
+	"spotify",
 }
 
 // Applications can be installed optionally (makes testing faster)
@@ -128,24 +127,18 @@ var applicationPackages = []string{
 	"android-file-transfer",
 	"openconnect",
 	"eruption",
-	"openrgb",
+	"swappy",
 }
 
 var flatpaks = []string{
 	"com.github.tchx84.Flatseal",
-	"com.heroicgameslauncher.hgl",  // x86_64 only
-	"net.lutris.Lutris",            // x86_64 only
-	"net.waterfox.waterfox",        // x86_64 only
 	"org.gnome.Evince",
 	"org.kde.KStyle.Kvantum",
 	"org.godotengine.Godot",
 	"org.gnome.eog",
 	"org.libreoffice.LibreOffice",
-	"com.getmailspring.Mailspring", // x86_64 only
 	"net.ankiweb.Anki",
 	"com.github.IsmaelMartinez.teams_for_linux",
-	"com.spotify.Client",           // x86_64 only
-	"com.valvesoftware.Steam",      // x86_64 only
 	"io.mpv.Mpv",
 	"org.pulseaudio.pavucontrol",
 }
@@ -443,22 +436,17 @@ func main() {
 		logInfo("Performing Stage 2 ...")
 		homeDir, _ := os.UserHomeDir()
 
-		// Install yay packages
-		if len(aurPackages) != 0 {
-			logInfo("Installing AUR packages ...")
-			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
-		}
-		logInfo("Done")
-
 		installOdinfmt()
 		installGoPrograms()
 
-		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
+		allPackages := append(aurPackages, applicationPackages...)
+		exe("yay -S --noconfirm --needed " + strings.Join(allPackages, " "))
 
-		exeDontCare("systemctl enable --user eruption-audio-proxy.service")
-		exeDontCare("systemctl enable --user eruption-fx-proxy.service")
-		exeDontCare("systemctl enable --user eruption-process-monitor.service")
-		exeDontCare("sudo systemctl enable --now eruption.service")
+		// Disable eruption for now
+		// exeDontCare("systemctl enable --user eruption-audio-proxy.service")
+		// exeDontCare("systemctl enable --user eruption-fx-proxy.service")
+		// exeDontCare("systemctl enable --user eruption-process-monitor.service")
+		// exeDontCare("sudo systemctl enable --now eruption.service")
 
 		for _, ext := range vscodeExtensions {
 			exe("codium --install-extension " + ext)
