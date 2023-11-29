@@ -1090,6 +1090,8 @@ func writeExtlinuxConf(mountPath, filePath string) {
 	uuidEnd := strings.IndexRune(uuidAndSuffix, '"')
 	uuid := uuidAndSuffix[:uuidEnd]
 
+	dir := filepath.Dir(filePath)
+	exe("mkdir -p " + dir)
 	file, err := os.Create(filePath)
 	if err != nil {
 		logError(err)
