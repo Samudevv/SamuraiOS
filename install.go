@@ -182,7 +182,7 @@ func main() {
 	var stage int = 1
 	var allDefault, userDefault, addUserDirectly bool
 	userDefault = true
-	var argUserName, argPassword string
+	var argUserName, argPassword, argHostname string
 	if len(os.Args) > 1 {
 		args := os.Args[1:]
 		for i := 0; i < len(args); i++ {
@@ -207,6 +207,12 @@ func main() {
 				argPassword = args[i]
 			} else if arg == "--add-user" {
 				addUserDirectly = true
+			} else if arg == "--host" {
+				i++
+				if i == len(args) {
+					logError("Invalid arguments: hostname required after \"--host\"")
+				}
+				argHostname = args[i]
 			} else {
 				stage = parseStage(os.Args[1])
 			}
@@ -286,23 +292,8 @@ func main() {
 		exeAppendFile("echo KEYMAP="+keymap, "/etc/vconsole.conf")
 
 		// Boot Loader
-		if !fileExists("/boot/grub/grub.cfg") {
-			logInfo("Installing boot loader (grub) ...")
-
-			if isUEFI(allDefault) {
-				exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
-			} else {
-				device := mountedDeviceName("/", false)
-				exe("grub-install --recheck " + device)
-			}
-
-			// Copy over the grub configuration
-			exe("mkdir -p /etc/default")
-			exe("cp etc/default/grub /etc/default/")
-			exe("cp -r etc/default/dracula-grub /etc/default/dracula-grub")
-
-			exe("grub-mkconfig -o /boot/grub/grub.cfg")
-		}
+		writeExtlinuxConf("/", "/boot/extlinux/extlinux.conf")
+		// TODO: Install linux images for extlinux
 
 		// Set root password to root
 		passwordPrompt("root", "root", false)
@@ -314,7 +305,12 @@ func main() {
 		}
 
 		if !fileExists("/etc/hostname") {
-			hostName := promptWithDefault("samurai", allDefault, "Hostname")
+			var hostName string
+			if len(argHostname) != 0 {
+				hostName = argHostname
+			} else {
+				hostName = promptWithDefault(argHostname, allDefault, "Hostname")
+			}
 
 			{
 				hostNameFile, err := os.Create("/etc/hostname")
