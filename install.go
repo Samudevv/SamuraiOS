@@ -88,11 +88,13 @@ var basePackages = []string{
 
 var aurPackages = []string{
 	// Packages for working graphical system with audio
-	"hyprpaper",
-	"wlogout",
 	"swaylock-effects",
 	"dracula-icons-git",
 	"dracula-cursors-git",
+	"dracula-gtk-theme",
+	"vscodium-bin",
+	"pamac-aur",
+	"samurai-select",
 }
 
 // Applications can be installed optionally (makes testing faster)
@@ -108,26 +110,17 @@ var applicationPackages = []string{
 	"glade",
 	"texlive",
 	"texlive-langgerman",
-	"vscodium",
 	"libreoffice-still",
 	"libreoffice-still-de",
 	"xmake",
 	"biber",
-	"pamac-aur",
-	"mailspring",
-	"teams",
-	"anki",
-	"openrgb",
 	"speech-dispatcher",
 	"thunar-archive-plugin",
 	"file-roller",
 	"android-file-transfer",
 	"openconnect",
-	"eruption",
-	"samurai-select",
-	"odin-git",
-	"aur/dracula-gtk-theme",
 	"swappy",
+	"hyprpaper",
 }
 
 var gamingPackages = []string{
@@ -408,7 +401,7 @@ func main() {
 		allPackages := append(aurPackages, applicationPackages...)
 		exe("yay -S --noconfirm --needed " + strings.Join(allPackages, " "))
 
-		installOdinfmt()
+		// installOdinfmt() odin is not compatible with aarch64
 		installGoPrograms()
 
 		// Disable eruption for now
