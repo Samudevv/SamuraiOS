@@ -302,8 +302,9 @@ func main() {
 		exeAppendFile("echo KEYMAP="+keymap, "/etc/vconsole.conf")
 
 		// Boot Loader
-		writeExtlinuxConf("/", "/boot/extlinux/extlinux.conf")
-		// TODO: Install linux images for extlinux
+		if !fileExists("/boot/extlinux/extlinux.conf") {
+			writeExtlinuxConf("/", "/boot/extlinux/extlinux.conf")
+		}
 
 		// Set root password to root
 		passwordPrompt("root", "root", false)
