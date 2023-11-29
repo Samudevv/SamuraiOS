@@ -85,9 +85,8 @@ var basePackages = []string{
 	"sassc",
 }
 
-var archChaoticPackages = []string{
+var aurPackages = []string{
 	// Packages for working graphical system with audio
-	"swappy",
 	"hyprpaper",
 	"starship",
 	"eza",
@@ -99,7 +98,6 @@ var archChaoticPackages = []string{
 	"wev",
 	"dracula-icons-git",
 	"dracula-cursors-git",
-	// "dracula-gtk-theme", This package is currently broken
 	"ttf-fantasque-sans-mono",
 	"blueman",
 	"mtpfs",
@@ -140,7 +138,7 @@ var applicationPackages = []string{
 	"android-file-transfer",
 	"openconnect",
 	"eruption",
-	"spotify",
+	"swappy",
 }
 
 var gamingPackages = []string{
@@ -436,22 +434,17 @@ func main() {
 		logInfo("Performing Stage 2 ...")
 		homeDir, _ := os.UserHomeDir()
 
-		// Install yay packages
-		if len(aurPackages) != 0 {
-			logInfo("Installing AUR packages ...")
-			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
-		}
-		logInfo("Done")
-
 		installOdinfmt()
 		installGoPrograms()
 
-		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
+		allPackages := append(aurPackages, applicationPackages...)
+		exe("yay -S --noconfirm --needed " + strings.Join(allPackages, " "))
 
-		exeDontCare("systemctl enable --user eruption-audio-proxy.service")
-		exeDontCare("systemctl enable --user eruption-fx-proxy.service")
-		exeDontCare("systemctl enable --user eruption-process-monitor.service")
-		exeDontCare("sudo systemctl enable --now eruption.service")
+		// Disable eruption for now
+		// exeDontCare("systemctl enable --user eruption-audio-proxy.service")
+		// exeDontCare("systemctl enable --user eruption-fx-proxy.service")
+		// exeDontCare("systemctl enable --user eruption-process-monitor.service")
+		// exeDontCare("sudo systemctl enable --now eruption.service")
 
 		for _, ext := range vscodeExtensions {
 			exe("codium --install-extension " + ext)
