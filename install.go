@@ -19,8 +19,6 @@ var basePackages = []string{
 	"base-devel",
 	"micro",
 	"neovim",
-	"grub",
-	"os-prober",
 	"dhcpcd",
 	"wpa_supplicant",
 	"networkmanager",
