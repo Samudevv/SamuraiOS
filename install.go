@@ -367,24 +367,6 @@ func main() {
 		exeDontCare("systemctl enable NetworkManager.service")
 		exeDontCare("systemctl enable bluetooth.service")
 
-		// Install chaotic-aur
-		if !chaoticInstalled() {
-			logInfo("Installing chaotic-aur repository ...")
-			exeRetry("pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
-			exe("pacman-key --lsign-key 3056513887B78AEB")
-			exe("pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
-
-			// Uncomment chaotic-aur
-			exeArgs("go", "run", "scripts/append.go", "echo [chaotic-aur]", "/etc/pacman.conf")
-			exeArgs("go", "run", "scripts/append.go", "echo Include = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
-		} else {
-			logInfo("Skipping installation of chaotic-aur since it is already installed")
-		}
-
-		// Install packages from chaotic repos and update repositories
-		logInfo("Installing chaotic packages ...")
-		exe("pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
-
 		// Installing yay
 		if !isInstalled("yay") {
 			installAURPackage("yay-bin")
@@ -410,9 +392,6 @@ func main() {
 		}
 
 		exe("cp -r " + strings.Join(repoEntriesStr, " ") + " /")
-
-		// Do System Update for multilib
-		exe("pacman -Syu")
 
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("mkdir -p /etc/wireplumber/main.lua.d")
