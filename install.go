@@ -306,7 +306,7 @@ func main() {
 			if isUEFI(allDefault) {
 				exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
 			} else {
-				device := mountedDeviceName()
+				device := mountedDeviceName("/", false)
 				exe("grub-install --recheck " + device)
 			}
 
@@ -522,6 +522,22 @@ func main() {
 
 		scriptDir, _ := os.Getwd()
 		compileStyles(filepath.Join(scriptDir, "/home/ninja"))
+
+		writeExtlinuxConf("/", "/tmp/extlinux.conf")
+		file, err := os.Open("/tmp/extlinux.conf")
+		if err != nil {
+			logError(err)
+			os.Exit(1)
+		}
+		defer file.Close()
+
+		data, err := io.ReadAll(file)
+		if err != nil {
+			logError(data)
+			os.Exit(1)
+		}
+
+		fmt.Println(string(data))
 
 		logInfo("Tests Done")
 	} else {
@@ -909,7 +925,7 @@ func rankmirrors(mirrorlistPath string) {
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
 
-func mountedDeviceName() string {
+func mountedDeviceName(path string, fullPartition bool) string {
 	dfOut, err := exeToStringSilent("df")
 	if err == nil {
 		lines := strings.Split(dfOut, "\n")
@@ -931,7 +947,10 @@ func mountedDeviceName() string {
 			partition := words[0]
 			directory := words[5]
 
-			if directory == "/" {
+			if directory == path {
+				if fullPartition {
+					return partition
+				}
 				return strings.Trim(partition, "0123456789")
 			}
 		}
@@ -940,7 +959,7 @@ func mountedDeviceName() string {
 	logInfo("Failed to get mounted device name automatically. Manual input required.")
 	exe("lsblk")
 	for {
-		prompt("Which device is currently mounted at /mnt (e.g. /dev/sda)?")
+		prompt("Which device is currently mounted at " + path + " (e.g. /dev/sda)?")
 		if device := input(); device != "" {
 			return device
 		}
@@ -1138,4 +1157,43 @@ func compileStyles(homeDir string) {
 
 	exe(compileScript)
 	exeEnv(setupDarkScript, "DONT_RESTART=1", "DONT_MODIFY_HOME=1")
+}
+
+const extlinuxConfTemplate = `DEFAULT arch
+MENU TITLE Boot Menu
+PROMPT 0
+TIMEOUT 50
+
+LABEL arch
+MENU LABEL Arch Linux ARM
+LINUX /Image
+INITRD /initramfs-linux.img
+FDT /dtbs/rockchip/rk3399-pinebook-pro.dtb
+APPEND root=UUID=%[1]s rw
+
+LABEL arch-fallback
+MENU LABEL Arch Linux ARM with fallback initramfs
+LINUX /Image
+INITRD /initramfs-linux-fallback.img
+FDT /dtbs/rockchip/rk3399-pinebook-pro.dtb
+APPEND root=UUID=%[1]s rw`
+
+func writeExtlinuxConf(mountPath, filePath string) {
+	logInfo("Generating extlinux config ...")
+	rootDevice := mountedDeviceName(mountPath, true)
+
+	blkid := exeToString("blkid " + rootDevice)
+	uuidStart := strings.IndexRune(blkid, '"')
+	uuidAndSuffix := blkid[uuidStart+1:]
+	uuidEnd := strings.IndexRune(uuidAndSuffix, '"')
+	uuid := uuidAndSuffix[:uuidEnd]
+
+	file, err := os.Create(filePath)
+	if err != nil {
+		logError(err)
+		os.Exit(1)
+	}
+	defer file.Close()
+
+	fmt.Fprintf(file, extlinuxConfTemplate, uuid)
 }
