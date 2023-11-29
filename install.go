@@ -79,29 +79,29 @@ var basePackages = []string{
 	"keychain",
 	"gvfs-mtp",
 	"gvfs-gphoto2",
+	"eza",
+	"bat",
+	"starship",
+	"wofi",
+	"nm-connection-editor",
+	"blueman",
+	"ttf-fantasque-sans-mono",
 }
 
 var aurPackages = []string{
 	// Packages for working graphical system with audio
 	"hyprpaper",
-	"starship",
-	"eza",
-	"bat",
-	"wofi",
-	"nm-connection-editor",
 	"wlogout",
 	"swaylock-effects",
-	"wev",
 	"dracula-icons-git",
 	"dracula-cursors-git",
-	"ttf-fantasque-sans-mono",
-	"blueman",
-	"mtpfs",
 }
 
 // Applications can be installed optionally (makes testing faster)
 var applicationPackages = []string{
 	"thunar",
+	"mtpfs",
+	"wev",
 	"mpv",
 	"firefox",
 	"evince",
