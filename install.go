@@ -495,8 +495,10 @@ func main() {
 			logError(data)
 			os.Exit(1)
 		}
-
 		fmt.Println(string(data))
+
+		pkgName := searchPkgName("/tmp/yay-bin")
+		fmt.Println("\nPackagename:", pkgName)
 
 		logInfo("Tests Done")
 	} else {
@@ -1057,7 +1059,7 @@ func searchPkgName(dirName string) string {
 	}
 
 	for _, e := range entries {
-		if strings.HasSuffix(e.Name(), ".pkg.tar.zst") {
+		if strings.Contains(e.Name(), ".pkg.tar") {
 			return filepath.Join(dirName, e.Name())
 		}
 	}
