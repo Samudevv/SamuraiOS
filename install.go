@@ -87,7 +87,6 @@ var basePackages = []string{
 }
 
 var aurPackages = []string{
-	// Packages for working graphical system with audio
 	"swaylock-effects",
 	"dracula-icons-git",
 	"dracula-cursors-git",
@@ -95,6 +94,8 @@ var aurPackages = []string{
 	"vscodium-bin",
 	"pamac-aur",
 	"samurai-select",
+	"wlogout",
+	"odin-git",
 }
 
 // Applications can be installed optionally (makes testing faster)
@@ -401,7 +402,7 @@ func main() {
 		allPackages := append(aurPackages, applicationPackages...)
 		exe("yay -S --noconfirm --needed " + strings.Join(allPackages, " "))
 
-		// installOdinfmt() odin is not compatible with aarch64
+		installOdinfmt()
 		installGoPrograms()
 
 		// Disable eruption for now
