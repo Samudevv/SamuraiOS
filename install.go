@@ -24,8 +24,6 @@ var basePackages = []string{
 	"dhcpcd",
 	"wpa_supplicant",
 	"networkmanager",
-	"pacman-contrib",
-	"parallel",
 	"fzf",
 	"whois",
 	"sudo",
