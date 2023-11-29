@@ -4,7 +4,7 @@ echo Installing SamuraiOS with arguments '"' $* '"' ...
 
 set -ex
 
-printf "#! /bin/sh\nset -ex\npacman -Sy go git\ngit clone https://github.com/PucklaJ/SamuraiOS.git -b aarch64 --depth 1\ncd SamuraiOS\ngo run install.go 1 $*\n" > install0to1.sh
+printf "#! /bin/sh\nset -ex\npacman -Sy --needed --noconfirm go git\ngit clone https://github.com/PucklaJ/SamuraiOS.git -b aarch64 --depth 1\ncd SamuraiOS\ngo run install.go 1 $*\n" > install0to1.sh
 chmod +x install0to1.sh
 echo Install script contents
 cat install0to1.sh
