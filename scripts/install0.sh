@@ -20,7 +20,7 @@ if [ -e "$arch_arm_tar" ]; then
 else
   echo "Downloading $arch_arm_tar ..."
   wget http://os.archlinuxarm.org/os/$arch_arm_tar
-  wget http://os.archlinuxarm.org/os/$arm_arm_tar.sig
+  wget http://os.archlinuxarm.org/os/$arch_arm_tar.sig
   gpg --keyserver keyserver.ubuntu.com --recv-keys 68B3537F39A313B3E574D06777193F152BDBE6A6
   gpg --verify $arch_arm_tar.sig
 fi
