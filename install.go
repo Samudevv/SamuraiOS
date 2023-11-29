@@ -228,7 +228,7 @@ func main() {
 		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
 
 		rankmirrors("/etc/pacman.d/mirrorlist")
-		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
+		exe("pacman -Syu --noconfirm --needed " + strings.Join(basePackages, " "))
 
 		// set the time zone
 		if !fileExists("/etc/localtime") {
