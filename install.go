@@ -414,11 +414,11 @@ func main() {
 		logInfo("Performing Stage 2 ...")
 		homeDir, _ := os.UserHomeDir()
 
-		installOdinfmt()
-		installGoPrograms()
-
 		allPackages := append(aurPackages, applicationPackages...)
 		exe("yay -S --noconfirm --needed " + strings.Join(allPackages, " "))
+
+		installOdinfmt()
+		installGoPrograms()
 
 		// Disable eruption for now
 		// exeDontCare("systemctl enable --user eruption-audio-proxy.service")
