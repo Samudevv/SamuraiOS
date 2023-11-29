@@ -225,7 +225,9 @@ func main() {
 	if stage == 1 {
 		logInfo("Performing Stage 1 ...")
 
-		exe("userdel -r alarm")
+		if userExists("alarm") {
+			exe("userdel -r alarm")
+		}
 
 		// Enable ParallelDownloads
 		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
