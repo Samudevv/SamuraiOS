@@ -231,6 +231,10 @@ func main() {
 	if stage == 1 {
 		logInfo("Performing Stage 1 ...")
 
+		exe("pacman-key --init")
+		exe("pacman-key --populate archlinuxarm")
+		exe("userdel -r alarm")
+
 		// Enable ParallelDownloads
 		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
 
