@@ -24,9 +24,11 @@ var basePackages = []string{
 	"dhcpcd",
 	"wpa_supplicant",
 	"networkmanager",
-	"reflector",
+	"pacman-contrib",
+	"parallel",
 	"fzf",
 	"whois",
+	"sudo",
 
 	// Packages for working graphical system with audio
 	"fish",
@@ -232,6 +234,7 @@ func main() {
 		// Enable ParallelDownloads
 		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
 
+		rankmirrors("/etc/pacman.d/mirrorlist")
 		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
 
 		// set the time zone
@@ -895,7 +898,7 @@ func sudoRankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exe("sudo reflector --latest 5 --sort rate --save " + mirrorlistPath + ".tmp")
+	exeArgs("sudo", "go", "run", "scripts/append.go", "rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
@@ -905,7 +908,7 @@ func rankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exe("reflector --latest 5 --sort rate --save " + mirrorlistPath + ".tmp")
+	exeAppendFile("rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
