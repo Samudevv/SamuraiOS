@@ -395,6 +395,11 @@ func main() {
 
 		exe("cp -r " + strings.Join(repoEntriesStr, " ") + " /")
 
+		// Install packages from archlinux-pbp
+		exe("pacman-key --keyserver hkps://keys.openpgp.org/ --recv-keys A1EC3C686EF7A9DD232D1563D4D12D6AA6A92769")
+		exe("pacman-key --lsign-key A1EC3C686EF7A9DD232D1563D4D12D6AA6A92769")
+		exe("pacman -Sy ap6256-firmware libdrm-pinebookpro linux-manjaro pinebookpro-audio pinebookpro-post-install")
+
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("mkdir -p /etc/wireplumber/main.lua.d")
 		exe("cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua /etc/wireplumber/main.lua.d")
