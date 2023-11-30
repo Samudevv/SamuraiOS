@@ -42,6 +42,7 @@ var basePackages = []string{
 	"mako",
 	"libnotify",
 	"kitty",
+	"foot",
 	"noto-fonts",
 	"noto-fonts-emoji",
 	"noto-fonts-cjk",
