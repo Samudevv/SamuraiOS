@@ -126,7 +126,7 @@ var applicationPackages = []string{
 	"biber",
 	"pamac-aur",
 	"mailspring",
-	"teams",
+	"teams-for-linux",
 	"anki",
 	"openrgb",
 	"speech-dispatcher",
