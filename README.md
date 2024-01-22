@@ -100,9 +100,11 @@ SOFTWARE.
 
 ## Wallpapers
 
-The Samurai wallpaper used for the main screen was made by Dominik Mayer found on [artstation.com](https://www.artstation.com/artwork/lDG8lY).<br>
-The Ghost of Tsushima wallpaper used for the side screen was made by Ömer Tunç found on [alphacoders.com](https://mobile.alphacoders.com/wallpapers/view/897228/Video-Game-Ghost-Of-Tsushima-Phone-Wallpaper)<br>
 The Shrine Entrance wallpaper used for the sddm login screen was made by Florent Lebrun found on [artstation.com](https://www.artstation.com/artwork/J9Jzzz)
+The Dark Samurai wallpaper used for the main screen was made by Dominik Mayer found on [artstation.com](https://www.artstation.com/artwork/lDG8lY).<br>
+The Dark Ghost of Tsushima wallpaper used for the side screen was made by Ömer Tunç found on [alphacoders.com](https://mobile.alphacoders.com/wallpapers/view/897228/Video-Game-Ghost-Of-Tsushima-Phone-Wallpaper)<br>
+The Light Main Wallpaper was made by jin'cke found on [pinterest.com](https://ar.pinterest.com/pin/99431104299213665/)
+The Light Side Wallpaper was found on [pinterest.com](https://www.pinterest.at/pin/140806221507727/)
 
 ## Fix Bluetooth
 
