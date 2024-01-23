@@ -1,10 +1,17 @@
 #! /bin/sh
 
-set -ex
+set -e
 script_dir=$(dirname $0)
+abs_script_dir=$(readlink -f $script_dir)
 
-rm -f $script_dir/style.css
-ln -sr $script_dir/light_style.css $script_dir/style.css
+ln -sfr $script_dir/light_style.css $script_dir/style.css
+if [ $abs_script_dir != $HOME/.config/waybar ] && [ ! -v DONT_MODIFY_HOME ]; then
+    ln -sfr $script_dir/style.css $HOME/.config/waybar/style.css
+fi
 
-echo Sucessfully setup light style for waybar!
+echo -e $BLUE Restarting waybar ... $RESET
+killall waybar
+waybar &
+
+echo -e $GREEN Sucessfully setup light style for waybar! $RESET
 

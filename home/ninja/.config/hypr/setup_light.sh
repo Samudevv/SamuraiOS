@@ -1,10 +1,20 @@
 #! /bin/sh
 
-set -ex
+set -e
 script_dir=$(dirname $0)
+abs_script_dir=$(readlink -f $script_dir)
 
-rm -f $script_dir/wallpapers/main.jpg
-ln -sr $script_dir/wallpapers/light_main.jpg $script_dir/wallpapers/main.jpg
+ln -sfr $script_dir/wallpapers/light_main.jpg $script_dir/wallpapers/main.jpg
+ln -sfr $script_dir/wallpapers/light_side.jpg $script_dir/wallpapers/side.jpg
 
-rm -f $script_dir/wallpapers/side.jpg
-ln -sr $script_dir/wallpapers/light_side.jpg $script_dir/wallpapers/side.jpg
+if [ $abs_script_dir != $HOME/.config/hypr ] && [ ! -v DONT_MODIFY_HOME ]; then
+    ln -sfr $script_dir/wallpapers/main.jpg $HOME/.config/hypr/wallpapers/main.jpg
+    ln -sfr $script_dir/wallpapers/side.jpg $HOME/.config/hypr/wallpapers/side.jpg
+fi
+
+echo -e $BLUE Restarting hyprpaper ... $RESET
+killall hyprpaper
+hyprpaper &
+
+echo -e $GREEN Successfully setup light theme for hyprpaper $RESET
+
