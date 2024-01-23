@@ -3,11 +3,21 @@
 set -e
 script_dir=$(dirname $0)
 
+generate_setup_other_theme() {
+    echo Generating setup_other_theme.sh for $1
+    printf '#! /bin/sh\nset -e\nscript_dir=$(dirname $0)\n$script_dir/setup_theme.sh '$1 > $script_dir/setup_other_theme.sh
+    chmod +x $script_dir/setup_other_theme.sh
+}
+
+if [[ ! -e $script_dir/setup_other_theme.sh ]]; then
+    generate_setup_other_theme light
+fi
+
 $script_dir/setup_other_theme.sh
 
-if [ $(readlink $script_dir/setup_other_theme.sh) == 'setup_light_theme.sh' ]; then
-    ln -sfr $script_dir/setup_dark_theme.sh $script_dir/setup_other_theme.sh
+if [[ $(cat $script_dir/setup_other_theme.sh) == *"light"* ]]; then
+    generate_setup_other_theme dark
 else
-    ln -sfr $script_dir/setup_light_theme.sh $script_dir/setup_other_theme.sh
+    generate_setup_other_theme light
 fi
 

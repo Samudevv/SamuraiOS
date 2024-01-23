@@ -1,1 +1,0 @@
-setup_light_theme.sh
