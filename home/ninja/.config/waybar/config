@@ -28,7 +28,8 @@
   "custom/nice-icon": {
     "format": "󰣇",
     "tooltip": false,
-    "on-click": "wofi"
+    "on-click": "wofi",
+    "on-click-right": "~/.config/switch_theme.sh"
   },
   "sway/workspaces": {
     "disable-scroll": true,
