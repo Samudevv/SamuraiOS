@@ -12,9 +12,11 @@ if [ $abs_script_dir != $HOME/.config/hypr ] && [ ! -v DONT_MODIFY_HOME ]; then
     ln -sfr $script_dir/wallpapers/side.jpg $HOME/.config/hypr/wallpapers/side.jpg
 fi
 
-echo -e $BLUE Restarting hyprpaper ... $RESET
-killall hyprpaper
-hyprpaper &
+if [ ! -v DONT_RESTART ]; then
+    echo -e $BLUE Restarting hyprpaper ... $RESET
+    killall hyprpaper
+    hyprpaper &
+fi
 
 echo -e $GREEN Successfully setup light theme for hyprpaper $RESET
 

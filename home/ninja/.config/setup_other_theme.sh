@@ -1,1 +1,1 @@
-setup_dark_theme.sh
+setup_light_theme.sh

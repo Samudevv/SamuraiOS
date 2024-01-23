@@ -80,6 +80,7 @@ var basePackages = []string{
 	"keychain",
 	"gvfs-mtp",
 	"gvfs-gphoto2",
+	"sassc",
 }
 
 var archChaoticPackages = []string{
@@ -503,8 +504,8 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		hostname := readFileTrim("/etc/hostname")
-		fmt.Println("Hostname:", hostname)
+		scriptDir, _ := os.Getwd()
+		compileStyles(filepath.Join(scriptDir, "/home/ninja"))
 
 		logInfo("Tests Done")
 	} else {
@@ -712,6 +713,38 @@ func exeRetry(command string) {
 		} else {
 			break
 		}
+	}
+}
+
+func exeEnv(command string, envNameValue ...string) {
+	words := strings.Split(command, " ")
+	if len(words) == 0 {
+		logError("No Command")
+		os.Exit(1)
+	}
+
+	var args []string
+	if len(words) > 1 {
+		args = words[1:]
+	}
+
+	cmd := exec.Command(words[0], args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	cmd.Env = envNameValue
+
+	logScript(
+		fmt.Sprint(
+			strings.Join(envNameValue, " "),
+			" ",
+			command,
+		),
+	)
+
+	if err := cmd.Run(); err != nil {
+		logError("\"", command, "\" failed: ", err)
+		os.Exit(1)
 	}
 }
 
@@ -995,6 +1028,8 @@ func addUser(username, password string, allDefault, userDefault bool) {
 
 	exe("chsh -s /usr/bin/fish " + userName)
 
+	compileStyles(homeDir)
+
 	exeArgs("chown", "-R", userName, homeDir)
 }
 
@@ -1078,4 +1113,13 @@ func readFileTrim(filePath string) string {
 	}
 
 	return strings.TrimSpace(string(data))
+}
+
+func compileStyles(homeDir string) {
+	configDir := filepath.Join(homeDir, ".config")
+	compileScript := filepath.Join(configDir, "compile_style.sh")
+	setupDarkScript := filepath.Join(configDir, "setup_dark_theme.sh")
+
+	exe(compileScript)
+	exeEnv(setupDarkScript, "DONT_RESTART=1", "DONT_MODIFY_HOME=1")
 }

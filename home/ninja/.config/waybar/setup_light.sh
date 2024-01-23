@@ -9,9 +9,11 @@ if [ $abs_script_dir != $HOME/.config/waybar ] && [ ! -v DONT_MODIFY_HOME ]; the
     ln -sfr $script_dir/style.css $HOME/.config/waybar/style.css
 fi
 
-echo -e $BLUE Restarting waybar ... $RESET
-killall waybar
-waybar &
+if [ ! -v DONT_RESTART ]; then
+    echo -e $BLUE Restarting waybar ... $RESET
+    killall waybar
+    waybar &
+fi
 
 echo -e $GREEN Sucessfully setup light style for waybar! $RESET
 
