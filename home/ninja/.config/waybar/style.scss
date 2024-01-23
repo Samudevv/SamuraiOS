@@ -1,0 +1,138 @@
+@import 'colors.scss';
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 18px;
+    font-weight: bold;
+    color: $color_foreground;
+}
+
+window#waybar {
+    background: none;
+}
+
+tooltip {
+    background: $color_background;
+    opacity: 0.8;
+    border-radius: 15px;
+    border: 2px solid $color_purple;
+}
+
+#workspaces button {
+    margin-left: 0px;
+    margin-right: 10px;
+    min-width: 15px;
+}
+
+#workspaces button {
+    border-radius: 20px;
+}
+
+#workspaces button.active {
+    background: $color_comment;
+}
+
+#workspaces button.urgent {
+    background: $color_red;
+}
+
+#workspaces button:hover {
+    background: $color_pink;
+}
+
+#custom-nice-icon,
+#custom-power_btn,
+#cpu,
+#disk,
+#memory,
+#clock,
+#pulseaudio,
+#tray,
+#temperature,
+#workspaces,
+#network,
+#bluetooth,
+#battery {
+    background: $color_background;
+    opacity: 0.9;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#clock,
+#custom-nice-icon,
+#network,
+#cpu {
+    border-radius: 15px 0px 0px 15px;
+}
+
+#custom-power_btn,
+#workspaces,
+#pulseaudio,
+#disk {
+    border-radius: 0px 15px 15px 0px;
+    margin-right: 10px;
+}
+
+#workspaces {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+#tray,
+#battery {
+    border-radius: 15px;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+#custom-nice-icon {
+    color: $color_cyan;
+    margin-left: 10px;
+    border-right: 0px;
+    font-size: 24px;
+}
+
+#pulseaudio {
+    color: $color_green;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+#bluetooth {
+    color: $color_cyan;
+}
+
+#network {
+    color: $color_yellow;
+}
+
+#clock {
+    padding-left: 15px;
+    padding-right: 0px;
+}
+
+#battery {
+    font-size: 24px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#disk.warning,
+#memory.warning,
+#battery.warning {
+    color: $color_orange;
+}
+
+#temperature.critical,
+#disk.critical,
+#memory.critical,
+#battery.critical {
+    color: $color_red;
+}
+
+#battery.charged {
+  color: $color_green;
+}
