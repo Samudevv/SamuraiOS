@@ -1,3 +1,5 @@
+@import '../colors.scss';
+
 * {
     outline: none;
     border: none;
@@ -12,8 +14,8 @@ window {
 }
 
 #input {
-    background-color: #44475a;
-    color: #f8f8f2;
+    background-color: $color_current_line;
+    color: $color_foreground;
     border-radius: 30px;
     margin-top: 40px;
     margin-bottom: 20px;
@@ -43,11 +45,11 @@ window {
 #text {
     font-size: 18px;
     padding-left: 8px;
-    color: #f8f8f2;
+    color: $color_foreground;
 }
 
 #text:selected {
-    color: #44475a;
+    color: $color_current_line;
     font-weight: bolder;
     font-size: 20px;
     background: none;
@@ -58,6 +60,6 @@ window {
 }
 
 #entry:selected {
-    background-color: #50fa7b;
+    background-color: $color_green;
     border-radius: 45px;
 }

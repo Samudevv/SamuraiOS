@@ -12,6 +12,7 @@ echo -e $BLUE Setting up ${theme_type} theme ... $RESET
 
 BLUE=$BLUE GREEN=$GREEN RESET=$RESET $script_dir/waybar/setup_theme.sh $theme_type
 BLUE=$BLUE GREEN=$GREEN RESET=$RESET $script_dir/hypr/setup_theme.sh $theme_type
+BLUE=$BLUE GREEN=$GREEN RESET=$RESET $script_dir/wofi/setup_theme.sh $theme_type
 
 echo -e $GREEN Successfully set up $theme_type theme ... $RESET
 
