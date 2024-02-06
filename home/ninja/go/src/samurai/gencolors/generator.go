@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"io"
+	"strings"
 )
 
 func GenerateSCSS(cols [COLOR_COUNT]color.Color, writer io.Writer) error {
@@ -13,6 +14,27 @@ func GenerateSCSS(cols [COLOR_COUNT]color.Color, writer io.Writer) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func GenerateMako(cols [COLOR_COUNT]color.Color, configTmpl io.Reader, config io.Writer) error {
+	data, err := io.ReadAll(configTmpl)
+	if err != nil {
+		return err
+	}
+
+	contents := string(data)
+
+	for i, c := range cols {
+		str, _ := colorToString(i)
+		contents = strings.ReplaceAll(contents, fmt.Sprint("$color_", str), colorToHex(c))
+	}
+
+	_, err = io.WriteString(config, contents)
+	if err != nil {
+		return err
 	}
 
 	return nil
