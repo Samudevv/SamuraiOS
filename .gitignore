@@ -8,3 +8,5 @@ dark_style.css
 colors.scss
 style.css
 setup_other_theme.sh
+config_light
+config_dark
