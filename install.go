@@ -176,6 +176,8 @@ var virtualizationPackages = []string{
 	"qemu-desktop",
 	"virt-manager",
 	"dnsmasq",
+	"docker",
+	"docker-compose",
 }
 
 func main() {
