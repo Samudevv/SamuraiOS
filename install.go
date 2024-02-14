@@ -476,6 +476,7 @@ func main() {
 		exe("sudo pacman -S --noconfirm --needed " + strings.Join(virtualizationPackages, " "))
 
 		exe("sudo systemctl enable --now libvirtd.service")
+		exe("sudo systemctl enable --now docker.service")
 		exe("sudo virsh net-start default")
 		exe("sudo virsh net-autostart default")
 
@@ -490,6 +491,7 @@ func main() {
 		exe("sudo usermod -aG kvm " + curUser.Username)
 		exe("sudo usermod -aG input " + curUser.Username)
 		exe("sudo usermod -aG disk " + curUser.Username)
+		exe("sudo usermod -aG docker " + curUser.Username)
 
 		logInfo("Stage 7 Done")
 		logInfo("Now reboot and everything should be set up")
