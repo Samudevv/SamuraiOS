@@ -1,6 +1,6 @@
 {
     "label": "shutdown",
-    "action": "shutdown -h now",
+    "action": "systemctl poweroff",
     "text": "",
     "keybind": "s"
 }

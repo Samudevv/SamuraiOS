@@ -107,6 +107,7 @@ var aurPackages = []string{
 	"samurai-select",
 	"odin-git",
 	"aur/dracula-gtk-theme",
+	"aur/dracula-cursors-git",
 }
 
 // Applications can be installed optionally (makes testing faster)
