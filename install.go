@@ -137,6 +137,7 @@ var applicationPackages = []string{
 	"android-file-transfer",
 	"openconnect",
 	"eruption",
+	"spotify",
 }
 
 var gamingPackages = []string{
