@@ -144,6 +144,6 @@ end
 
 if test -n "$KEYCHAIN_SSH_KEYS"
     if status --is-interactive
-        eval (keychain --eval --quit --agents ssh $KEYCHAIN_SSH_KEYS)
+        eval (keychain --eval --quiet --agents ssh $KEYCHAIN_SSH_KEYS)
     end
 end
