@@ -126,7 +126,6 @@ var applicationPackages = []string{
 	"libreoffice-still-de",
 	"xmake",
 	"biber",
-	"pamac-aur",
 	"mailspring",
 	"teams-for-linux",
 	"anki",
