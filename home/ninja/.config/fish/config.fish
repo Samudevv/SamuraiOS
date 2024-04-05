@@ -1,14 +1,14 @@
-﻿## Set values
+# Set values
 # Hide welcome message
 set fish_greeting
-set VIRTUAL_ENV_DISABLE_PROMPT "1"
+set VIRTUAL_ENV_DISABLE_PROMPT 1
 set -x MANPAGER "bat -l man -p"
 set -x LANG de_AT.UTF-8
 
 ## Environment setup
 # Apply .profile: use this to put fish compatible .profile stuff in
 if test -f ~/.fish_profile
-  source ~/.fish_profile
+    source ~/.fish_profile
 end
 
 # Add ~/.local/bin to PATH
@@ -20,36 +20,37 @@ end
 
 ## Starship prompt
 if status --is-interactive
-   source ("/usr/bin/starship" init fish --print-full-init | psub)
+    source ("/usr/bin/starship" init fish --print-full-init | psub)
 end
 
 ## Functions
 # Functions needed for !! and !$ https://github.com/oh-my-fish/plugin-bang-bang
 function __history_previous_command
-  switch (commandline -t)
-  case "!"
-    commandline -t $history[1]; commandline -f repaint
-  case "*"
-    commandline -i !
-  end
+    switch (commandline -t)
+        case "!"
+            commandline -t $history[1]
+            commandline -f repaint
+        case "*"
+            commandline -i !
+    end
 end
 
 function __history_previous_command_arguments
-  switch (commandline -t)
-  case "!"
-    commandline -t ""
-    commandline -f history-token-search-backward
-  case "*"
-    commandline -i '$'
-  end
+    switch (commandline -t)
+        case "!"
+            commandline -t ""
+            commandline -f history-token-search-backward
+        case "*"
+            commandline -i '$'
+    end
 end
 
-if [ "$fish_key_bindings" = fish_vi_key_bindings ];
-  bind -Minsert ! __history_previous_command
-  bind -Minsert '$' __history_previous_command_arguments
+if [ "$fish_key_bindings" = fish_vi_key_bindings ]
+    bind -Minsert ! __history_previous_command
+    bind -Minsert '$' __history_previous_command_arguments
 else
-  bind ! __history_previous_command
-  bind '$' __history_previous_command_arguments
+    bind ! __history_previous_command
+    bind '$' __history_previous_command_arguments
 end
 
 # Fish command history
@@ -60,7 +61,7 @@ end
 ## Useful aliases
 # Replace ls with exa
 alias ls='exa -al --color=always --group-directories-first --icons' # preferred listing
-alias ll='exa -l --color=always --group-directories-first --icons'  # long format
+alias ll='exa -l --color=always --group-directories-first --icons' # long format
 
 # Replace some more things with better alternatives
 alias cat='bat --style header --style rule --style snip --style changes --style header'
@@ -83,15 +84,21 @@ alias pacman='pacman --color=auto'
 
 # Improve performance of command not found
 function __fish_command_not_found_handler --on-event fish_command_not_found
-  echo "fish: Unknown command '$argv'"
+    echo "fish: Unknown command '$argv'"
 end
 
 set -x --path GOPATH ~/go
+if test -d ~/repos/SamuraiOS/home/ninja/go
+    set -x --path GOPATH $GOPATH ~/repos/SamuraiOS/home/ninja/go
+end
 
 set -x CGO_CFLAGS '-g -O2 -Wdeprecated-declarations'
 set -x CGO_CXXFLAGS '-g -O2 -Wdeprecated-declarations'
 
-set -x --path PATH $GOPATH/bin $PATH
+set -x --path PATH \
+    $GOPATH/bin \
+    $HOME/repos/Odin \
+    $PATH
 
 set -x BROWSER firefox
 set -x EDITOR nvim
@@ -105,11 +112,12 @@ alias sourcefish="source ~/.config/fish/config.fish"
 alias hiddenconf="$EDITOR ~/.config/fish/hidden.fish"
 alias nvimconf="$EDITOR ~/.config/nvim/init.lua"
 alias qtileconf="$EDITOR ~/.config/qtile/config.py"
-alias hyprconf="$EDITOR ~/.config/hypr/hyprland.conf"
+alias hyprconf="$EDITOR ~/.config/hypr/general.conf"
 alias gitcheckconf="git config user.name && git config user.email"
 alias gitac="git add -A && git commit -m"
 alias gits="git status"
 alias gitd="git diff"
+alias gitp="git push"
 alias cmd="wine ~/.wine/drive_c/windows/system32/cmd.exe"
 alias go-windows-amd64="GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc go"
 alias pacmanhist="cat /var/log/pacman.log | grep upgraded | less"
@@ -121,11 +129,21 @@ alias microf="micro (fzf)"
 alias e="$EDITOR"
 alias ef="$EDITOR (fzf)"
 alias code="gtk-launch codium-wayland"
-alias clipboard="wl-copy"
+alias clipboard="wl-copy --trim-newline"
 alias icat="kitty +kitten icat"
-alias startkeychain="eval (keychain --eval --agents ssh id_ed25519)"
+alias odindemo="$EDITOR $HOME/repos/Odin/examples/demo/demo.odin"
+
+if [ "$TERM" = xterm-kitty ]
+    alias ssh="kitty +kitten ssh"
+end
 
 # Source hidden.fish if it exists
 if test -f (status dirname)/hidden.fish
     source (status dirname)/hidden.fish
+end
+
+if test -n "$KEYCHAIN_SSH_KEYS"
+    if status --is-interactive
+        eval (keychain --eval --quit --agents ssh $KEYCHAIN_SSH_KEYS)
+    end
 end
