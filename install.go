@@ -91,20 +91,12 @@ var basePackages = []string{
 var aurPackages = []string{
 	"swaylock-effects",
 	"dracula-icons-git",
-	"dracula-cursors-git",
-	"dracula-gtk-theme",
-	"vscodium-bin",
-	"pamac-aur",
-	"samurai-select",
-	"wlogout",
-	"odin-git",
-}
-
-var aurPackages = []string{
-	"samurai-select",
-	"odin-git",
-	"aur/dracula-gtk-theme",
 	"aur/dracula-cursors-git",
+	"aur/dracula-gtk-theme",
+	"vscodium-bin",
+	"wlogout",
+	"samurai-select",
+	"odin-git",
 	"backlight_control",
 	"poweralertd",
 }
