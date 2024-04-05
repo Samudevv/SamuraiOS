@@ -93,22 +93,12 @@ var basePackages = []string{
 var aurPackages = []string{
 	"swaylock-effects",
 	"dracula-icons-git",
-	"dracula-cursors-git",
-	"dracula-gtk-theme",
-	"vscodium-bin",
-	"pamac-aur",
+	"aur/dracula-cursors-git",
+	"aur/dracula-gtk-theme",
 	"samurai-select",
 	"wlogout",
-	"odin-git",
-}
-
-var aurPackages = []string{
-	"samurai-select",
-	"aur/dracula-gtk-theme",
-	"aur/dracula-cursors-git",
 	"backlight_control",
 	"poweralertd",
-	"spotify",
 }
 
 // Applications can be installed optionally (makes testing faster)
