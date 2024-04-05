@@ -18,11 +18,8 @@ var basePackages = []string{
 	// Base packages to make the system work
 	"base-devel",
 	"neovim",
-	"grub",
-	"os-prober",
 	"dhcpcd",
 	"networkmanager",
-	"reflector",
 	"fzf",
 	"whois",
 
@@ -90,40 +87,31 @@ var basePackages = []string{
 	"wev",
 }
 
-var archChaoticPackages = []string{
-	// Packages for working graphical system with audio
-	"wlogout",
-	"swaylock-effects",
-	"dracula-icons-git",
-}
-
 var aurPackages = []string{
 	"samurai-select",
 	"aur/dracula-gtk-theme",
 	"aur/dracula-cursors-git",
 	"backlight_control",
 	"poweralertd",
+	"wlogout",
+	"swaylock-effects",
+	"dracula-icons-git",
 }
 
 // Applications can be installed optionally (makes testing faster)
 var applicationPackages = []string{
 	"thunar",
-	"vscodium",
 	"xmake",
 	"biber",
 	"speech-dispatcher",
 	"thunar-archive-plugin",
 	"file-roller",
 	"openconnect",
-	"eruption",
 	"openrgb",
 }
 
 var flatpaks = []string{
 	"com.github.tchx84.Flatseal",
-	"com.heroicgameslauncher.hgl", // x86_64 only
-	"net.lutris.Lutris",           // x86_64 only
-	"net.waterfox.waterfox",       // x86_64 only
 	"org.gnome.Evince",
 	"org.kde.KStyle.Kvantum",
 	"org.godotengine.Godot",
@@ -131,8 +119,6 @@ var flatpaks = []string{
 	"org.libreoffice.LibreOffice",
 	"net.ankiweb.Anki",
 	"com.github.IsmaelMartinez.teams_for_linux",
-	"com.spotify.Client",      // x86_64 only
-	"com.valvesoftware.Steam", // x86_64 only
 	"io.mpv.Mpv",
 	"org.pulseaudio.pavucontrol",
 	"org.inkscape.Inkscape",
@@ -176,7 +162,7 @@ func main() {
 	var stage int = 1
 	var allDefault, userDefault, addUserDirectly bool
 	userDefault = true
-	var argUserName, argPassword string
+	var argUserName, argPassword, argHostname string
 	if len(os.Args) > 1 {
 		args := os.Args[1:]
 		for i := 0; i < len(args); i++ {
@@ -201,6 +187,12 @@ func main() {
 				argPassword = args[i]
 			} else if arg == "--add-user" {
 				addUserDirectly = true
+			} else if arg == "--host" {
+				i++
+				if i == len(args) {
+					logError("Invalid arguments: hostname required after \"--host\"")
+				}
+				argHostname = args[i]
 			} else {
 				stage = parseStage(os.Args[1])
 			}
@@ -210,10 +202,15 @@ func main() {
 	if stage == 1 {
 		logInfo("Performing Stage 1 ...")
 
+		if userExists("alarm") {
+			exe("userdel -r alarm")
+		}
+
 		// Enable ParallelDownloads
 		exeArgs("go", "run", "scripts/replace.go", "/etc/pacman.conf", "#ParallelDownloads = 5", "ParallelDownloads = 5\nILoveCandy")
 
-		exe("pacman -Sy --noconfirm --needed " + strings.Join(basePackages, " "))
+		rankmirrors("/etc/pacman.d/mirrorlist")
+		exe("pacman -Syu --noconfirm --needed " + strings.Join(basePackages, " "))
 
 		// set the time zone
 		if !fileExists("/etc/localtime") {
@@ -280,22 +277,8 @@ func main() {
 		exeAppendFile("echo KEYMAP="+keymap, "/etc/vconsole.conf")
 
 		// Boot Loader
-		if !fileExists("/boot/grub/grub.cfg") {
-			logInfo("Installing boot loader (grub) ...")
-
-			if isUEFI(allDefault) {
-				exe("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub")
-			} else {
-				device := mountedDeviceName()
-				exe("grub-install --recheck " + device)
-			}
-
-			// Copy over the grub configuration
-			exe("mkdir -p /etc/default")
-			exe("cp etc/default/grub /etc/default/")
-			exe("cp -r etc/default/dracula-grub /etc/default/dracula-grub")
-
-			exe("grub-mkconfig -o /boot/grub/grub.cfg")
+		if !fileExists("/boot/extlinux/extlinux.conf") {
+			writeExtlinuxConf("/", "/boot/extlinux/extlinux.conf")
 		}
 
 		// Set root password to root
@@ -308,7 +291,12 @@ func main() {
 		}
 
 		if !fileExists("/etc/hostname") {
-			hostName := promptWithDefault("samurai", allDefault, "Hostname")
+			var hostName string
+			if len(argHostname) != 0 {
+				hostName = argHostname
+			} else {
+				hostName = promptWithDefault(argHostname, allDefault, "Hostname")
+			}
 
 			{
 				hostNameFile, err := os.Create("/etc/hostname")
@@ -355,24 +343,6 @@ func main() {
 		exeDontCare("systemctl enable NetworkManager.service")
 		exeDontCare("systemctl enable bluetooth.service")
 
-		// Install chaotic-aur
-		if !chaoticInstalled() {
-			logInfo("Installing chaotic-aur repository ...")
-			exeRetry("pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com")
-			exe("pacman-key --lsign-key 3056513887B78AEB")
-			exe("pacman --noconfirm --needed -U https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst")
-
-			// Uncomment chaotic-aur
-			exeArgs("go", "run", "scripts/append.go", "echo [chaotic-aur]", "/etc/pacman.conf")
-			exeArgs("go", "run", "scripts/append.go", "echo Include = /etc/pacman.d/chaotic-mirrorlist", "/etc/pacman.conf")
-		} else {
-			logInfo("Skipping installation of chaotic-aur since it is already installed")
-		}
-
-		// Install packages from chaotic repos and update repositories
-		logInfo("Installing chaotic packages ...")
-		exe("pacman -Sy --noconfirm --needed " + strings.Join(archChaoticPackages, " "))
-
 		// Installing yay
 		if !isInstalled("yay") {
 			installAURPackage("yay-bin")
@@ -399,9 +369,6 @@ func main() {
 
 		exe("cp -r " + strings.Join(repoEntriesStr, " ") + " /")
 
-		// Do System Update for multilib
-		exe("pacman -Syu")
-
 		// Copy wireplumber alsa configuration (Fix for broken headset audio)
 		exe("mkdir -p /etc/wireplumber/main.lua.d")
 		exe("cp /usr/share/wireplumber/main.lua.d/50-alsa-config.lua /etc/wireplumber/main.lua.d")
@@ -424,22 +391,17 @@ func main() {
 		logInfo("Performing Stage 2 ...")
 		homeDir, _ := os.UserHomeDir()
 
-		// Install yay packages
-		if len(aurPackages) != 0 {
-			logInfo("Installing AUR packages ...")
-			exe("yay -S --noconfirm --needed " + strings.Join(aurPackages, " "))
-		}
-		logInfo("Done")
+		allPackages := append(aurPackages, applicationPackages...)
+		exe("yay -S --noconfirm --needed " + strings.Join(allPackages, " "))
 
 		installOdinfmt()
 		installGoPrograms()
 
-		exe("sudo pacman -S --noconfirm --needed " + strings.Join(applicationPackages, " "))
-
-		exeDontCare("systemctl enable --user eruption-audio-proxy.service")
-		exeDontCare("systemctl enable --user eruption-fx-proxy.service")
-		exeDontCare("systemctl enable --user eruption-process-monitor.service")
-		exeDontCare("sudo systemctl enable --now eruption.service")
+		// Disable eruption for now
+		// exeDontCare("systemctl enable --user eruption-audio-proxy.service")
+		// exeDontCare("systemctl enable --user eruption-fx-proxy.service")
+		// exeDontCare("systemctl enable --user eruption-process-monitor.service")
+		// exeDontCare("sudo systemctl enable --now eruption.service")
 
 		for _, ext := range vscodeExtensions {
 			exe("codium --install-extension " + ext)
@@ -494,6 +456,24 @@ func main() {
 
 		scriptDir, _ := os.Getwd()
 		compileStyles(filepath.Join(scriptDir, "/home/ninja"))
+
+		writeExtlinuxConf("/", "/tmp/extlinux.conf")
+		file, err := os.Open("/tmp/extlinux.conf")
+		if err != nil {
+			logError(err)
+			os.Exit(1)
+		}
+		defer file.Close()
+
+		data, err := io.ReadAll(file)
+		if err != nil {
+			logError(data)
+			os.Exit(1)
+		}
+		fmt.Println(string(data))
+
+		pkgName := searchPkgName("/tmp/yay-bin")
+		fmt.Println("\nPackagename:", pkgName)
 
 		logInfo("Tests Done")
 	} else {
@@ -866,7 +846,7 @@ func sudoRankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("sudo", "mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exe("sudo reflector --latest 5 --sort rate --save " + mirrorlistPath + ".tmp")
+	exeArgs("sudo", "go", "run", "scripts/append.go", "rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("sudo", "mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
@@ -876,12 +856,12 @@ func rankmirrors(mirrorlistPath string) {
 	mirrorlistBak := backupName(mirrorlistPath)
 	exeArgs("mv", mirrorlistPath, mirrorlistBak)
 	// rank mirror list
-	exe("reflector --latest 5 --sort rate --save " + mirrorlistPath + ".tmp")
+	exeAppendFile("rankmirrors -n 0 -v -p "+mirrorlistBak, mirrorlistPath+".tmp")
 	// Overwrite old mirrorlist
 	exeArgs("mv", mirrorlistPath+".tmp", mirrorlistPath)
 }
 
-func mountedDeviceName() string {
+func mountedDeviceName(path string, fullPartition bool) string {
 	dfOut, err := exeToStringSilent("df")
 	if err == nil {
 		lines := strings.Split(dfOut, "\n")
@@ -903,7 +883,10 @@ func mountedDeviceName() string {
 			partition := words[0]
 			directory := words[5]
 
-			if directory == "/" {
+			if directory == path {
+				if fullPartition {
+					return partition
+				}
 				return strings.Trim(partition, "0123456789")
 			}
 		}
@@ -912,7 +895,7 @@ func mountedDeviceName() string {
 	logInfo("Failed to get mounted device name automatically. Manual input required.")
 	exe("lsblk")
 	for {
-		prompt("Which device is currently mounted at /mnt (e.g. /dev/sda)?")
+		prompt("Which device is currently mounted at " + path + " (e.g. /dev/sda)?")
 		if device := input(); device != "" {
 			return device
 		}
@@ -1051,7 +1034,7 @@ func searchPkgName(dirName string) string {
 	}
 
 	for _, e := range entries {
-		if strings.HasSuffix(e.Name(), ".pkg.tar.zst") {
+		if strings.Contains(e.Name(), ".pkg.tar") {
 			return filepath.Join(dirName, e.Name())
 		}
 	}
@@ -1110,4 +1093,45 @@ func compileStyles(homeDir string) {
 
 	exe(compileScript)
 	exeEnv(setupDarkScript, "DONT_RESTART=1", "DONT_MODIFY_HOME=1")
+}
+
+const extlinuxConfTemplate = `DEFAULT arch
+MENU TITLE Boot Menu
+PROMPT 0
+TIMEOUT 50
+
+LABEL arch
+MENU LABEL Arch Linux ARM
+LINUX /Image
+INITRD /initramfs-linux.img
+FDT /dtbs/rockchip/rk3399-pinebook-pro.dtb
+APPEND root=UUID=%[1]s rw
+
+LABEL arch-fallback
+MENU LABEL Arch Linux ARM with fallback initramfs
+LINUX /Image
+INITRD /initramfs-linux-fallback.img
+FDT /dtbs/rockchip/rk3399-pinebook-pro.dtb
+APPEND root=UUID=%[1]s rw`
+
+func writeExtlinuxConf(mountPath, filePath string) {
+	logInfo("Generating extlinux config ...")
+	rootDevice := mountedDeviceName(mountPath, true)
+
+	blkid := exeToString("blkid " + rootDevice)
+	uuidStart := strings.IndexRune(blkid, '"')
+	uuidAndSuffix := blkid[uuidStart+1:]
+	uuidEnd := strings.IndexRune(uuidAndSuffix, '"')
+	uuid := uuidAndSuffix[:uuidEnd]
+
+	dir := filepath.Dir(filePath)
+	exe("mkdir -p " + dir)
+	file, err := os.Create(filePath)
+	if err != nil {
+		logError(err)
+		os.Exit(1)
+	}
+	defer file.Close()
+
+	fmt.Fprintf(file, extlinuxConfTemplate, uuid)
 }
