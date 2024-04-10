@@ -17,6 +17,7 @@ exec hyprpaper
 exec waybar
 exec fcitx5
 exec swayidle -w
+exec poweralertd
 
 exec_always ~/.config/gtk-3.0/import-gsettings
 exec_always notify-send '👹 Welcome to SamuraiOS! 🥷'

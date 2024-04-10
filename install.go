@@ -109,6 +109,7 @@ var aurPackages = []string{
 	"aur/dracula-gtk-theme",
 	"aur/dracula-cursors-git",
 	"backlight_control",
+	"poweralertd",
 }
 
 // Applications can be installed optionally (makes testing faster)
