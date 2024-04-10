@@ -108,6 +108,7 @@ var aurPackages = []string{
 	"odin-git",
 	"aur/dracula-gtk-theme",
 	"aur/dracula-cursors-git",
+	"backlight_control",
 }
 
 // Applications can be installed optionally (makes testing faster)
