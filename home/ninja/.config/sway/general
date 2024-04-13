@@ -17,6 +17,7 @@ exec hyprpaper
 exec waybar
 exec fcitx5
 exec swayidle -w
+exec poweralertd
 
 exec_always ~/.config/gtk-3.0/import-gsettings
 exec_always notify-send '👹 Welcome to SamuraiOS! 🥷'
@@ -58,6 +59,8 @@ bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 bindsym XF86AudioStop exec playerctl stop
+bindsym XF86MonBrightnessUp exec backlight_control +10
+bindsym XF86MonBrightnessDown exec backlight_control -10
 
 bindsym $super+Left focus left
 bindsym $super+Down focus down
@@ -101,6 +104,10 @@ gaps             inner   5
 #   \ V  V / | | | | | (_| | (_) \ V  V /| |  | |_| | |  __/\__ \
 #    \_/\_/  |_|_| |_|\__,_|\___/ \_/\_/ |_|   \__,_|_|\___||___/
 #
+for_window [app_id="^(wofi)"] border none
+for_window [app_id="^(foot)"] opacity set 0.8
+for_window [app_id="^(kitty)"] opacity set 0.8
+
 for_window [app_id="^(codium)"]      floating enable
 for_window [title="^(wlogout)"]      floating enable
 for_window [title="^(Bild-im-Bild)"] floating enable
@@ -113,7 +120,7 @@ input type:touchpad {
 	tap enabled
 	natural_scroll disabled
 	accel_profile "flat"
-	scroll_factor 0.2
+	scroll_factor 0.75
 }
 
 floating_modifier $super normal
