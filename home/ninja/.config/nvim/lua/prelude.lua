@@ -60,6 +60,36 @@ function ac(event, func)
     end
     vim.api.nvim_create_autocmd(event, opts)
 end
+function vscode_c(args)
+    if is_vscode then
+        c(args)
+    end
+end
+function vscode_cmd(args)
+    if is_vscode then
+        cmd(args)
+    end
+end
+function vscode_ac(args)
+    if is_vscode then
+        ac(args)
+    end
+end
+function term_c(args)
+    if not is_vscode then
+        c(args)
+    end
+end
+function term_cmd(args)
+    if not is_vscode then
+        cmd(args)
+    end
+end
+function term_ac(event, func)
+    if not is_vscode then
+        ac(event, func)
+    end
+end
 
 bind = vim.keymap.set
 c = vim.cmd
@@ -68,5 +98,6 @@ normal = 'n'
 all = {'n', 'i', 'v'}
 lang_c = {'*.c', '*.cpp', '*.cxx', '*.h', '*.hpp', '*.hxx'}
 lang_go = {'*.go'}
+is_vscode = vim.g.vscode
 
 require("packager")
