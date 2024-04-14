@@ -1,2 +1,0 @@
-type = scripted
-command = modprobe btusb
