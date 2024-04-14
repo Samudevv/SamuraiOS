@@ -34,6 +34,7 @@
     "nner",
     "normalise",
     "Postalveolar",
+    "Pucher",
     "Redistributable",
     "serialised",
     "Serialises",
@@ -108,5 +109,8 @@
   "clangd.arguments": [
     "--header-insertion=never"
   ],
-  "security.workspace.trust.enabled": false
+  "security.workspace.trust.enabled": false,
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  }
 }
