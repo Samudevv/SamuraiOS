@@ -81,6 +81,7 @@ var basePackages = []string{
 	"gvfs-mtp",
 	"gvfs-gphoto2",
 	"sassc",
+	"hyfetch",
 }
 
 var archChaoticPackages = []string{
