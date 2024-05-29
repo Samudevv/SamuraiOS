@@ -189,7 +189,7 @@
   "battery": {
     "interval": 10,
     "min-length": 1,
-    "max-length": 1,
+    "max-length": 2,
     "format": "{icon}",
     "format-time": "{H}h {M}min",
     "tooltip-format": "󰂄 {capacity}%\n󱧥 {time}",

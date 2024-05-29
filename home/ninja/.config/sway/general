@@ -44,7 +44,7 @@ bindsym $super+Shift+s      exec take-screenshot
 bindsym $super+Shift+r      exec screen-capture
 bindsym $super+Shift+c      reload
 
-bindsym $alt+f     exec firefox
+bindsym $alt+f     exec gtk-launch org.gnome.Epiphany
 bindsym $alt+space exec wofi
 bindsym $alt+v     exec gtk-launch codium-wayland
 bindsym $alt+s     exec firefox --new-window https://music.youtube.com
