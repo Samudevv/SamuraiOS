@@ -132,6 +132,8 @@ alias code="gtk-launch codium-wayland"
 alias clipboard="wl-copy --trim-newline"
 alias icat="kitty +kitten icat"
 alias odindemo="$EDITOR $HOME/repos/Odin/examples/demo/demo.odin"
+alias neofetch="hyfetch"
+alias update-mirrors="echo Updating mirrorlist ... && sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak sudo reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist && echo 'Update done!'"
 
 if [ "$TERM" = xterm-kitty ]
     alias ssh="kitty +kitten ssh"
