@@ -1,7 +1,8 @@
 {
   "workbench.iconTheme": "vscode-icons",
   "explorer.sortOrder": "type",
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
+  "editor.trimAutoWhitespace": true,
   "git.enableSmartCommit": true,
   "editor.renderWhitespace": "all",
   "git.confirmSync": false,
@@ -112,5 +113,6 @@
   "security.workspace.trust.enabled": false,
   "extensions.experimental.affinity": {
     "asvetliakov.vscode-neovim": 1
-  }
+  },
+  "editor.autoClosingBrackets": "never"
 }
