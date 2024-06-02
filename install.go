@@ -82,6 +82,7 @@ var basePackages = []string{
 	"gvfs-gphoto2",
 	"sassc",
 	"hyfetch",
+	"flatpak",
 }
 
 var archChaoticPackages = []string{
@@ -117,8 +118,6 @@ var aurPackages = []string{
 var applicationPackages = []string{
 	"thunar",
 	"mpv",
-	"firefox",
-	"evince",
 	"eog",
 	"godot",
 	"glade",
@@ -140,6 +139,15 @@ var applicationPackages = []string{
 	"openconnect",
 	"eruption",
 	"spotify",
+}
+
+var flatpaks = []string{
+	"com.github.tchx84.Flatseal",
+	"com.heroicgameslauncher.hgl",
+	"net.lutris.Lutris",
+	"net.waterfox.waterfox",
+	"org.gnome.Evince",
+	"org.kde.KStyle.Kvantum",
 }
 
 var gamingPackages = []string{
@@ -464,6 +472,9 @@ func main() {
 		if ok := promptWithDefaultYesNo(true, allDefault, "You need to start neovim at least once before continuing. Did you do this?"); ok {
 			exe("cp home/ninja/.local/share/nvim/site/pack/pckr/opt/neoformat/autoload/neoformat/formatters/odin.vim " + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat/autoload/neoformat/formatters/"))
 		}
+
+		logInfo("Installing flatpaks ...")
+		exe("flatpak install " + strings.Join(flatpaks, " "))
 
 		logInfo("Stage 2 Done")
 	} else if stage == 3 {
