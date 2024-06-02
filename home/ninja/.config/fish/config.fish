@@ -100,7 +100,7 @@ set -x --path PATH \
     $HOME/repos/Odin \
     $PATH
 
-set -x BROWSER firefox
+set -x BROWSER flatpak run net.waterfox.waterfox
 set -x EDITOR nvim
 set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 # set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
