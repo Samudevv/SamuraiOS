@@ -100,7 +100,7 @@ set -x --path PATH \
     $HOME/repos/Odin \
     $PATH
 
-set -x BROWSER firefox
+set -x BROWSER flatpak run net.waterfox.waterfox
 set -x EDITOR nvim
 set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 # set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
@@ -113,6 +113,7 @@ alias hiddenconf="$EDITOR ~/.config/fish/hidden.fish"
 alias nvimconf="$EDITOR ~/.config/nvim/init.lua"
 alias qtileconf="$EDITOR ~/.config/qtile/config.py"
 alias hyprconf="$EDITOR ~/.config/hypr/general.conf"
+alias swayconf="$EDITOR ~/.config/sway/general"
 alias gitcheckconf="git config user.name && git config user.email"
 alias gitac="git add -A && git commit -m"
 alias gits="git status"
@@ -132,6 +133,10 @@ alias code="gtk-launch codium-wayland"
 alias clipboard="wl-copy --trim-newline"
 alias icat="kitty +kitten icat"
 alias odindemo="$EDITOR $HOME/repos/Odin/examples/demo/demo.odin"
+alias neofetch="hyfetch"
+alias update-mirrors="echo Updating mirrorlist ... && sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak sudo reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist && echo 'Update done!'"
+alias godot="flatpak run org.godotengine.Godot"
+alias mpv="flatpak run io.mpv.Mpv"
 
 if [ "$TERM" = xterm-kitty ]
     alias ssh="kitty +kitten ssh"

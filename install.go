@@ -57,7 +57,6 @@ var basePackages = []string{
 	"fcitx5-gtk",
 	"fcitx5-mozc",
 	"fcitx5-configtool",
-	"pavucontrol",
 	"qt5-wayland",
 	"qt6-wayland",
 	"bluez",
@@ -79,6 +78,8 @@ var basePackages = []string{
 	"gvfs-mtp",
 	"gvfs-gphoto2",
 	"sassc",
+	"hyfetch",
+	"flatpak",
 	"eza",
 	"bat",
 	"starship",
@@ -86,6 +87,7 @@ var basePackages = []string{
 	"nm-connection-editor",
 	"blueman",
 	"ttf-fantasque-sans-mono",
+	"hyprpaper",
 }
 
 var aurPackages = []string{
@@ -93,10 +95,8 @@ var aurPackages = []string{
 	"dracula-icons-git",
 	"aur/dracula-cursors-git",
 	"aur/dracula-gtk-theme",
-	"vscodium-bin",
 	"wlogout",
 	"samurai-select",
-	"odin-git",
 	"backlight_control",
 	"poweralertd",
 }
@@ -104,18 +104,9 @@ var aurPackages = []string{
 // Applications can be installed optionally (makes testing faster)
 var applicationPackages = []string{
 	"thunar",
-	"mtpfs",
 	"wev",
-	"mpv",
-	"firefox",
-	"evince",
-	"eog",
-	"godot",
-	"glade",
 	"texlive",
 	"texlive-langgerman",
-	"libreoffice-still",
-	"libreoffice-still-de",
 	"xmake",
 	"biber",
 	"speech-dispatcher",
@@ -124,14 +115,25 @@ var applicationPackages = []string{
 	"android-file-transfer",
 	"openconnect",
 	"swappy",
-	"hyprpaper",
+}
+
+var flatpaks = []string{
+	"com.github.tchx84.Flatseal",
+	"org.gnome.Evince",
+	"org.kde.KStyle.Kvantum",
+	"org.godotengine.Godot",
+	"org.gnome.eog",
+	"org.libreoffice.LibreOffice",
+	"net.ankiweb.Anki",
+	"com.github.IsmaelMartinez.teams_for_linux",
+	"io.mpv.Mpv",
+	"org.pulseaudio.pavucontrol",
+>>>>>>> 0133a9914705e4b304837374bb10e80eedd455ba
 }
 
 var gamingPackages = []string{
 	"wine",
 	"winetricks",
-	"lutris",
-	"steam",
 	"vkd3d",
 	"lib32-libpulse",
 	"lib32-mesa",
@@ -158,6 +160,8 @@ var vscodeExtensions = []string{
 	"wmaurer.change-case",
 	"danielgavin.ols",
 	"yzhang.markdown-all-in-one",
+	"asvetliakov.vscode-neovim",
+	"ngtystr.ppm-pgm-viewer-for-vscode",
 }
 
 var virtualizationPackages = []string{
@@ -430,6 +434,10 @@ func main() {
 		if ok := promptWithDefaultYesNo(true, allDefault, "You need to start neovim at least once before continuing. Did you do this?"); ok {
 			exe("cp home/ninja/.local/share/nvim/site/pack/pckr/opt/neoformat/autoload/neoformat/formatters/odin.vim " + filepath.Join(homeDir, ".local/share/nvim/site/pack/pckr/opt/neoformat/autoload/neoformat/formatters/"))
 		}
+
+		logInfo("Installing flatpaks ...")
+		exe("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
+		exe("flatpak install --assumeyes " + strings.Join(flatpaks, " "))
 
 		logInfo("Stage 2 Done")
 	} else if stage == 3 {

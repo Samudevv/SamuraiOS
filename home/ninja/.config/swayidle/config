@@ -1,2 +1,2 @@
-timeout 900 'hyprctl dispatch dpms off && toggle-peripheral-brightness off' resume 'hyprctl dispatch dpms on && toggle-peripheral-brightness on'
+timeout 900 'toggle-peripheral-brightness off' resume 'toggle-peripheral-brightness on'
 timeout 930 'swaylock'

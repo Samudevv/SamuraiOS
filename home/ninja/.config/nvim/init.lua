@@ -10,6 +10,7 @@ require("prelude")
 local plugins = {
     'mg979/vim-visual-multi';
     'cappyzawa/trim.nvim';
+    'sbdchd/neoformat';
 }
 local term_plugins = {
     'Mofiqul/dracula.nvim';
@@ -17,7 +18,6 @@ local term_plugins = {
     'akinsho/bufferline.nvim';
     {'nvim-treesitter/nvim-treesitter', run = function() require('nvim-treesitter.install').update({with_sync = true})() end};
     'mhinz/vim-signify';
-    'sbdchd/neoformat';
 }
 if not is_vscode then
     for _, value in ipairs(term_plugins) do
@@ -36,13 +36,9 @@ end
 
 trim = prequire('trim')
 
-if require_failed then
-    os.exit(0)
-end
-
 if not is_vscode then
-    bufferline.setup{}
-    treesitter.setup{
+    if bufferline then bufferline.setup{} end
+    if treesitter then treesitter.setup{
         ensure_installed = {
             'bash',
             'bibtex',
@@ -59,16 +55,17 @@ if not is_vscode then
         highlight = {
             enable = true
         },
-    }
+    } end
 
-    fzf.setup({'fzf-native'})
+    if fzf then fzf.setup({'fzf-native'}) end
     vim.opt.termguicolors = true
 end
 
-trim.setup{
-    trim_last_line = false,
+if trim then trim.setup{
+    trim_last_line  = false,
     trim_first_line = false,
-}
+    trim_on_write   = false,
+} end
 
 --  _  __          _                         _
 -- | |/ /___ _   _| |__   ___   __ _ _ __ __| |
@@ -91,6 +88,8 @@ end
 bind(normal, '<Tab>',   '<cmd>bnext<CR>',                                                    slt)
 bind(normal, '<S-Tab>', '<cmd>bprevious<CR>',                                                slt)
 bind(all,    '<c-E>',   '<cmd>bd<CR>',                                                       slt)
+bind(normal, 'f',       '<cmd>Neoformat | Trim<CR>',                                         slt)
+bind(normal, 'F',       '<cmd>Neoformat<CR>',                                                slt)
 --   ____          _
 --  / ___|   _ ___| |_ ___  _ __ ___
 -- | |  | | | / __| __/ _ \| '_ ` _ \
@@ -120,10 +119,10 @@ term_c('set list')
 c('set tabstop=8 softtabstop=0')
 c('set shiftwidth=4 smarttab')
 c('set expandtab')
+c('set clipboard+=unnamedplus')
 
 cf(lang_c,  'set shiftwidth=2')
 cf(lang_go, 'set noexpandtab tabstop=4')
-term_ac('BufWritePre', 'silent! undojoin | Neoformat')
 
 if not is_vscode then
     remember_cursor_position()
