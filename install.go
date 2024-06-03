@@ -128,7 +128,6 @@ var flatpaks = []string{
 	"com.github.IsmaelMartinez.teams_for_linux",
 	"io.mpv.Mpv",
 	"org.pulseaudio.pavucontrol",
->>>>>>> 0133a9914705e4b304837374bb10e80eedd455ba
 }
 
 var gamingPackages = []string{
