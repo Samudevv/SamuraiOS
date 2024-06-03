@@ -177,6 +177,8 @@ var vscodeExtensions = []string{
 	"wmaurer.change-case",
 	"danielgavin.ols",
 	"yzhang.markdown-all-in-one",
+	"asvetliakov.vscode-neovim",
+	"ngtystr.ppm-pgm-viewer-for-vscode",
 }
 
 var virtualizationPackages = []string{
