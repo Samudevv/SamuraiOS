@@ -103,7 +103,7 @@
     "min-length": 7,
     "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
     "on-click-middle": "paswapsink",
-    "on-click-right": "pavucontrol",
+    "on-click-right": "flatpak run org.pulseaudio.pavucontrol",
     "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
     "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
     "scroll-step": 5,

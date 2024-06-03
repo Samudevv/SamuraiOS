@@ -59,7 +59,6 @@ var basePackages = []string{
 	"fcitx5-gtk",
 	"fcitx5-mozc",
 	"fcitx5-configtool",
-	"pavucontrol",
 	"qt5-wayland",
 	"qt6-wayland",
 	"bluez",
@@ -107,7 +106,6 @@ var archChaoticPackages = []string{
 
 var aurPackages = []string{
 	"samurai-select",
-	"odin-git",
 	"aur/dracula-gtk-theme",
 	"aur/dracula-cursors-git",
 	"backlight_control",
@@ -117,44 +115,42 @@ var aurPackages = []string{
 // Applications can be installed optionally (makes testing faster)
 var applicationPackages = []string{
 	"thunar",
-	"mpv",
-	"eog",
-	"godot",
-	"glade",
 	"texlive",
 	"texlive-langgerman",
 	"vscodium",
-	"libreoffice-still",
-	"libreoffice-still-de",
 	"xmake",
 	"biber",
-	"mailspring",
-	"teams-for-linux",
-	"anki",
-	"openrgb",
 	"speech-dispatcher",
 	"thunar-archive-plugin",
 	"file-roller",
 	"android-file-transfer",
 	"openconnect",
 	"eruption",
-	"spotify",
+	"openrgb",
 }
 
 var flatpaks = []string{
 	"com.github.tchx84.Flatseal",
-	"com.heroicgameslauncher.hgl",
-	"net.lutris.Lutris",
-	"net.waterfox.waterfox",
+	"com.heroicgameslauncher.hgl",  // x86_64 only
+	"net.lutris.Lutris",            // x86_64 only
+	"net.waterfox.waterfox",        // x86_64 only
 	"org.gnome.Evince",
 	"org.kde.KStyle.Kvantum",
+	"org.godotengine.Godot",
+	"org.gnome.eog",
+	"org.libreoffice.LibreOffice",
+	"com.getmailspring.Mailspring", // x86_64 only
+	"net.ankiweb.Anki",
+	"com.github.IsmaelMartinez.teams_for_linux",
+	"com.spotify.Client",           // x86_64 only
+	"com.valvesoftware.Steam",      // x86_64 only
+	"io.mpv.Mpv",
+	"org.pulseaudio.pavucontrol",
 }
 
 var gamingPackages = []string{
 	"wine",
 	"winetricks",
-	"lutris",
-	"steam",
 	"vkd3d",
 	"lib32-libpulse",
 	"lib32-mesa",
@@ -474,7 +470,8 @@ func main() {
 		}
 
 		logInfo("Installing flatpaks ...")
-		exe("flatpak install " + strings.Join(flatpaks, " "))
+		exe("flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo")
+		exe("flatpak install --assumeyes " + strings.Join(flatpaks, " "))
 
 		logInfo("Stage 2 Done")
 	} else if stage == 3 {
