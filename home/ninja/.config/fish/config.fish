@@ -98,6 +98,7 @@ set -x CGO_CXXFLAGS '-g -O2 -Wdeprecated-declarations'
 set -x --path PATH \
     $GOPATH/bin \
     $HOME/repos/Odin \
+    $HOME/repos/runic/build \
     $PATH
 
 set -x BROWSER flatpak run net.waterfox.waterfox
