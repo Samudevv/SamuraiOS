@@ -17,12 +17,10 @@ import (
 var basePackages = []string{
 	// Base packages to make the system work
 	"base-devel",
-	"micro",
 	"neovim",
 	"grub",
 	"os-prober",
 	"dhcpcd",
-	"wpa_supplicant",
 	"networkmanager",
 	"reflector",
 	"fzf",
@@ -35,14 +33,12 @@ var basePackages = []string{
 	"pipewire-jack",
 	"pipewire-alsa",
 	"wireplumber",
-	"libmpeg2",
 	"sddm",
 	"hyprland",
 	"waybar",
 	"polkit-gnome",
 	"man",
 	"mako",
-	"libnotify",
 	"kitty",
 	"foot",
 	"noto-fonts",
@@ -118,7 +114,6 @@ var applicationPackages = []string{
 	"speech-dispatcher",
 	"thunar-archive-plugin",
 	"file-roller",
-	"android-file-transfer",
 	"openconnect",
 	"eruption",
 	"openrgb",
@@ -141,16 +136,6 @@ var flatpaks = []string{
 	"io.mpv.Mpv",
 	"org.pulseaudio.pavucontrol",
 	"org.inkscape.Inkscape",
-}
-
-var gamingPackages = []string{
-	"wine",
-	"winetricks",
-	"vkd3d",
-	"lib32-libpulse",
-	"lib32-mesa",
-	"lib32-vulkan-radeon",
-	"lib32-vkd3d",
 }
 
 var vscodeExtensions = []string{
@@ -182,8 +167,8 @@ var virtualizationPackages = []string{
 	"qemu-desktop",
 	"virt-manager",
 	"dnsmasq",
-	"docker",
-	"docker-compose",
+	"distrobox",
+	"podman",
 }
 
 func main() {
@@ -471,13 +456,6 @@ func main() {
 		exe("flatpak install --assumeyes " + strings.Join(flatpaks, " "))
 
 		logInfo("Stage 2 Done")
-	} else if stage == 3 {
-		// Gaming Stage
-		logInfo("Performing Gaming Stage ...")
-
-		exe("sudo pacman -S --noconfirm --needed " + strings.Join(gamingPackages, " "))
-
-		logInfo("Gaming Stage Done")
 	} else if stage == 4 {
 		// Virtualizazion Stage
 		logInfo("Performing Virtualization Stage ...")
@@ -500,7 +478,6 @@ func main() {
 		exe("sudo usermod -aG kvm " + curUser.Username)
 		exe("sudo usermod -aG input " + curUser.Username)
 		exe("sudo usermod -aG disk " + curUser.Username)
-		exe("sudo usermod -aG docker " + curUser.Username)
 
 		logInfo("Stage 7 Done")
 		logInfo("Now reboot and everything should be set up")
