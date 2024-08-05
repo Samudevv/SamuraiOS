@@ -19,8 +19,8 @@ if test -d ~/.local/bin
 end
 
 ## Starship prompt
-if status --is-interactive
-    source ("/usr/bin/starship" init fish --print-full-init | psub)
+if status --is-interactive; and command -qv starship
+   source (starship init fish --print-full-init | psub)
 end
 
 ## Functions
@@ -138,6 +138,7 @@ alias neofetch="hyfetch"
 alias update-mirrors="echo Updating mirrorlist ... && sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak sudo reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist && echo 'Update done!'"
 alias godot="flatpak run org.godotengine.Godot"
 alias mpv="flatpak run io.mpv.Mpv"
+alias inkscape="flatpak run org.inkscape.Inkscape"
 
 if [ "$TERM" = xterm-kitty ]
     alias ssh="kitty +kitten ssh"
@@ -149,7 +150,7 @@ if test -f (status dirname)/hidden.fish
 end
 
 if test -n "$KEYCHAIN_SSH_KEYS"
-    if status --is-interactive
+    if status --is-interactive; and command -qv keychain
         eval (keychain --eval --quiet --agents ssh $KEYCHAIN_SSH_KEYS)
     end
 end

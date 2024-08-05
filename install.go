@@ -131,21 +131,21 @@ var applicationPackages = []string{
 
 var flatpaks = []string{
 	"com.github.tchx84.Flatseal",
-	"com.heroicgameslauncher.hgl",  // x86_64 only
-	"net.lutris.Lutris",            // x86_64 only
-	"net.waterfox.waterfox",        // x86_64 only
+	"com.heroicgameslauncher.hgl", // x86_64 only
+	"net.lutris.Lutris",           // x86_64 only
+	"net.waterfox.waterfox",       // x86_64 only
 	"org.gnome.Evince",
 	"org.kde.KStyle.Kvantum",
 	"org.godotengine.Godot",
 	"org.gnome.eog",
 	"org.libreoffice.LibreOffice",
-	"com.getmailspring.Mailspring", // x86_64 only
 	"net.ankiweb.Anki",
 	"com.github.IsmaelMartinez.teams_for_linux",
-	"com.spotify.Client",           // x86_64 only
-	"com.valvesoftware.Steam",      // x86_64 only
+	"com.spotify.Client",      // x86_64 only
+	"com.valvesoftware.Steam", // x86_64 only
 	"io.mpv.Mpv",
 	"org.pulseaudio.pavucontrol",
+	"org.inkscape.Inkscape",
 }
 
 var gamingPackages = []string{

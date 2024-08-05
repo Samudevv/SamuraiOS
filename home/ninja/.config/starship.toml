@@ -1,4 +1,4 @@
-format = '''[╭─](bold #50fa7b) $battery$all[╰─](bold #50fa7b)$username$hostname $character'''
+format = '''[╭─](bold #50fa7b) $battery$container$all[╰─](bold #50fa7b)$username$hostname $character'''
 
 [aws]
 style = "bold #ffb86c"

@@ -82,7 +82,7 @@
   },
   "debug.onTaskErrors": "abort",
   "C_Cpp.default.cppStandard": "c++17",
-  "workbench.colorTheme": "Dracula",
+  "workbench.colorTheme": "Dracula Theme",
   "latex-workshop.latexindent.path": "latexindent",
   "latex-workshop.view.pdf.viewer": "tab",
   "security.workspace.trust.untrustedFiles": "open",

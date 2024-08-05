@@ -49,6 +49,7 @@ if not is_vscode then
             'lua',
             'odin',
             'fish',
+            'just',
         },
         sync_install = false,
         auto_install = false,
