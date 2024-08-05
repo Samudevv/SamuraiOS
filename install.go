@@ -82,26 +82,23 @@ var basePackages = []string{
 	"sassc",
 	"hyfetch",
 	"flatpak",
+	"eza",
+	"bat",
+	"starship",
+	"wofi",
+	"nm-connection-editor",
+	"blueman",
+	"ttf-fantasque-sans-mono",
+	"hyprpaper",
+	"swappy",
+	"wev",
 }
 
 var archChaoticPackages = []string{
 	// Packages for working graphical system with audio
-	"swappy",
-	"hyprpaper",
-	"starship",
-	"eza",
-	"bat",
-	"wofi",
-	"nm-connection-editor",
 	"wlogout",
 	"swaylock-effects",
-	"wev",
 	"dracula-icons-git",
-	"dracula-cursors-git",
-	// "dracula-gtk-theme", This package is currently broken
-	"ttf-fantasque-sans-mono",
-	"blueman",
-	"mtpfs",
 }
 
 var aurPackages = []string{
@@ -115,8 +112,6 @@ var aurPackages = []string{
 // Applications can be installed optionally (makes testing faster)
 var applicationPackages = []string{
 	"thunar",
-	"texlive",
-	"texlive-langgerman",
 	"vscodium",
 	"xmake",
 	"biber",
