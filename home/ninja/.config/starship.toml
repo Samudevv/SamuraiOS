@@ -1,4 +1,5 @@
 format = '''[╭─](bold #50fa7b) $battery$container$all[╰─](bold #50fa7b)$username$hostname $character'''
+command_timeout = 2000
 
 [aws]
 style = "bold #ffb86c"
@@ -28,3 +29,6 @@ style = "bold #bd93f9"
 [username]
 format = " [$user]($style)"
 style_user = "bold #8be9fd"
+
+[odin]
+disabled = true

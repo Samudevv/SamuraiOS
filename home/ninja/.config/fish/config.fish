@@ -107,6 +107,9 @@ set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 # set -x _JAVA_OPTIONS "-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 set -x FZF_DEFAULT_COMMAND 'find . -type f ! -path "*/.*" -readable'
 set -x MICRO_TRUECOLOR 1
+set -x SDL_VIDEODRIVER 'wayland,x11'
+set -x LANGUAGE "de_AT.UTF-8"
+set -x GSK_RENDERER "gl"
 
 alias fishconf="$EDITOR ~/.config/fish/config.fish"
 alias sourcefish="source ~/.config/fish/config.fish"
@@ -151,6 +154,6 @@ end
 
 if test -n "$KEYCHAIN_SSH_KEYS"
     if status --is-interactive; and command -qv keychain
-        eval (keychain --eval --quiet --agents ssh $KEYCHAIN_SSH_KEYS)
+        eval (SHELL=/usr/bin/fish keychain --eval --quiet --agents ssh $KEYCHAIN_SSH_KEYS)
     end
 end
