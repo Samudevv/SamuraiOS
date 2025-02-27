@@ -50,6 +50,7 @@ if not is_vscode then
             'odin',
             'fish',
             'just',
+            'vala',
         },
         sync_install = false,
         auto_install = false,
