@@ -91,15 +91,24 @@ set -x --path GOPATH ~/go
 if test -d ~/repos/SamuraiOS/home/ninja/go
     set -x --path GOPATH $GOPATH ~/repos/SamuraiOS/home/ninja/go
 end
+set -x --path VCPKG_ROOT $HOME/repos/vcpkg
 
 set -x CGO_CFLAGS '-g -O2 -Wdeprecated-declarations'
 set -x CGO_CXXFLAGS '-g -O2 -Wdeprecated-declarations'
 
 set -x --path PATH \
     $GOPATH/bin \
-    $HOME/repos/Odin \
     $HOME/repos/runic/build \
+    $HOME/repos/vcpkg \
+    /usr/lib/llvm19/bin \
     $PATH
+
+set -x --path LD_LIBRARY_PATH \
+    $HOME/.local/lib \
+    /usr/lib/llvm19/lib \
+    $LD_LIBRARY_PATH
+set -x --path LIBRARY_PATH $LD_LIBRARY_PATH $LIBRARY_PATH
+set -x --path ODIN_ROOT '/usr/lib/odin'
 
 set -x BROWSER flatpak run net.waterfox.waterfox
 set -x EDITOR nvim
@@ -133,7 +142,7 @@ alias microkeys="$EDITOR $HOME/.config/micro/bindings.json"
 alias microf="micro (fzf)"
 alias e="$EDITOR"
 alias ef="$EDITOR (fzf)"
-alias code="gtk-launch vscodium-wayland"
+alias code="gtk-launch vscodium-wayland-ime"
 alias clipboard="wl-copy --trim-newline"
 alias icat="kitty +kitten icat"
 alias odindemo="$EDITOR $HOME/repos/Odin/examples/demo/demo.odin"
@@ -154,6 +163,6 @@ end
 
 if test -n "$KEYCHAIN_SSH_KEYS"
     if status --is-interactive; and command -qv keychain
-        eval (SHELL=/usr/bin/fish keychain --eval --quiet --agents ssh $KEYCHAIN_SSH_KEYS)
+        eval (SHELL=/usr/bin/fish keychain --eval --quiet $KEYCHAIN_SSH_KEYS)
     end
 end
