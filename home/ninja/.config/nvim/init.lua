@@ -32,6 +32,7 @@ if not is_vscode then
     bufferline = prequire('bufferline')
     treesitter = prequire('nvim-treesitter.configs')
     fzf = prequire('fzf-lua')
+    dracula = prequire('dracula')
 end
 
 trim = prequire('trim')
@@ -117,7 +118,7 @@ cmd('SRC source %')
 --
 c('set relativenumber')
 term_c('set number')
-term_c('colorscheme dracula')
+if dracula then term_c('colorscheme dracula') end
 term_c('set listchars=space:·,tab:-->')
 term_c('set list')
 c('set tabstop=8 softtabstop=0')
