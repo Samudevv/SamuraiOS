@@ -82,8 +82,10 @@ if trim then trim.setup{
 -- |____/|_|_| |_|\__,_|_|_| |_|\__, |___/
 --                              |___/
 if not is_vscode then
-    bind(normal, '<c-P>',   function() fzf.files({ cmd = os.getenv('FZF_DEFAULT_COMMAND')}) end, slt)
-    bind(normal, '<S-P>',   fzf.blines,                                                          slt)
+    if fzf then
+        bind(normal, '<c-P>',   function() fzf.files({ cmd = os.getenv('FZF_DEFAULT_COMMAND')}) end, slt)
+        bind(normal, '<S-P>',   fzf.blines,                                                          slt)
+    end
     bind(all,    '<c-Q>',   '<cmd>q<CR>',                                                        slt)
     bind(all,    '<c-S>',   '<cmd>w<CR>',                                                        slt)
 end
