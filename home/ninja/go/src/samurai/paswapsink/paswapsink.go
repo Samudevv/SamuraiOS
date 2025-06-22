@@ -50,6 +50,7 @@ func sendNotification(title string, urgency int, message ...any) error {
 
 func main() {
 	infoCMD := exec.Command("pactl", "list")
+	infoCMD.Env = append(os.Environ(), "LANGUAGE=en_US.UTF-8")
 
 	var infoBuilder strings.Builder
 	infoCMD.Stderr = os.Stderr

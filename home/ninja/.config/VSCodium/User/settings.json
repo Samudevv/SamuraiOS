@@ -14,7 +14,6 @@
     "editor.defaultFormatter": "xaver.clang-format"
   },
   "cmake.configureOnOpen": true,
-  "terminal.integrated.defaultProfile.windows": "Command Prompt",
   "explorer.confirmDragAndDrop": false,
   "go.useLanguageServer": true,
   "vsicons.dontShowNewVersionMessage": true,
@@ -105,6 +104,9 @@
   "svg.preview.mode": "svg",
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.enablePersistentSessions": false,
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "terminal.integrated.defaultProfile.linux": "fish",
+  "terminal.integrated.fontSize": 16,
   "window.titleBarStyle": "custom",
   "editor.inlayHints.enabled": "off",
   "clangd.arguments": [
@@ -114,5 +116,9 @@
   "extensions.experimental.affinity": {
     "asvetliakov.vscode-neovim": 1
   },
-  "editor.autoClosingBrackets": "never"
+  "editor.autoClosingBrackets": "never",
+  "editor.fontFamily": "'Fantasque Sans Mono', 'Droid Sans Mono', 'monospace'",
+  "editor.fontSize": 16,
+  "cSpell.enabled": false,
+  "lldb.suppressUpdateNotifications": true
 }
