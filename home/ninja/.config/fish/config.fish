@@ -110,6 +110,7 @@ set -x MICRO_TRUECOLOR 1
 set -x SDL_VIDEODRIVER 'wayland,x11'
 set -x LANGUAGE "de_AT.UTF-8"
 set -x GSK_RENDERER "gl"
+set -x --path UNCRUSTIFY_CONFIG ~/.config/uncrustify.cfg
 
 alias fishconf="$EDITOR ~/.config/fish/config.fish"
 alias sourcefish="source ~/.config/fish/config.fish"
