@@ -52,6 +52,7 @@ if not is_vscode then
             'fish',
             'just',
             'vala',
+            'markdown',
         },
         sync_install = false,
         auto_install = false,

@@ -2,7 +2,7 @@
   "workbench.iconTheme": "vscode-icons",
   "explorer.sortOrder": "type",
   "editor.formatOnSave": false,
-  "editor.trimAutoWhitespace": true,
+  "editor.trimAutoWhitespace": false,
   "git.enableSmartCommit": true,
   "editor.renderWhitespace": "all",
   "git.confirmSync": false,
@@ -99,7 +99,7 @@
   "[lua]": {
     "editor.tabSize": 4
   },
-  "files.trimTrailingWhitespace": true,
+  "files.trimTrailingWhitespace": false,     
   "rust.ignore_deprecation_warning": true,
   "svg.preview.mode": "svg",
   "terminal.integrated.persistentSessionReviveProcess": "never",
@@ -123,4 +123,19 @@
   "lldb.suppressUpdateNotifications": true,
   "terminal.integrated.stickyScroll.enabled": false,
   "terminal.integrated.initialHint": false
+  "sqldeveloper.sqlHistory.historyLimit": 500,
+  "workbench.navigationControl.enabled": false,
+  "window.commandCenter": false,
+  "workbench.layoutControl.enabled": false,
+  "chat.commandCenter.enabled": false,
+  "window.zoomLevel": 1,
+  "editor.stickyScroll.enabled": false,
+  "xml.server.preferBinary": true,
+  "sonarlint.automaticAnalysis": true,
+  "sqldeveloper.format.general.identifierCase": "lower",
+  "sqldeveloper.format.general.keywordCase": "UPPER",
+  "workbench.editor.showTabs": "none",
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.perEditorGroup": true,
+  "workbench.editor.limit.value": 1
 }
