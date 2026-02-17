@@ -5,6 +5,12 @@ set VIRTUAL_ENV_DISABLE_PROMPT 1
 set -x MANPAGER "bat -l man -p"
 set -x LANG de_AT.UTF-8
 
+if string match -q -- '*tty*' "$(tty)"
+    set -x TERM_IS_TTY true
+else
+    set -x TERM_IS_TTY false
+end
+
 ## Environment setup
 # Apply .profile: use this to put fish compatible .profile stuff in
 if test -f ~/.fish_profile
@@ -19,7 +25,7 @@ if test -d ~/.local/bin
 end
 
 ## Starship prompt
-if status --is-interactive; and command -qv starship
+if not $TERM_IS_TTY; and status --is-interactive; and command -qv starship
    source (starship init fish --print-full-init | psub)
 end
 
@@ -152,6 +158,7 @@ alias update-mirrors="echo Updating mirrorlist ... && sudo cp /etc/pacman.d/mirr
 alias godot="flatpak run org.godotengine.Godot"
 alias mpv="flatpak run io.mpv.Mpv"
 alias inkscape="flatpak run org.inkscape.Inkscape"
+alias caddyreload="docker exec -w /etc/caddy caddy caddy reload"
 
 if [ "$TERM" = xterm-kitty ]
     alias ssh="kitty +kitten ssh"

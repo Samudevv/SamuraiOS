@@ -153,7 +153,7 @@ var vscodeExtensions = []string{
 	"vadimcn.vscode-lldb",
 	"ms-vscode.hexeditor",
 	"prince781.vala",
-	"jeanp413.open-remote-ssh",
+	// "jeanp413.open-remote-ssh",
 	"wmaurer.change-case",
 	"danielgavin.ols",
 	"yzhang.markdown-all-in-one",
@@ -492,8 +492,9 @@ func main() {
 		// Testing
 		logInfo("Performing Tests ...")
 
-		scriptDir, _ := os.Getwd()
-		compileStyles(filepath.Join(scriptDir, "/home/ninja"))
+		for _, ext := range vscodeExtensions {
+			exe("code --install-extension " + ext)
+		}
 
 		logInfo("Tests Done")
 	} else {
