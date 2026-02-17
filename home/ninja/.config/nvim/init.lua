@@ -91,12 +91,12 @@ if not is_vscode then
     end
     bind(all,    '<c-Q>',   '<cmd>q<CR>',                                                        slt)
     bind(all,    '<c-S>',   '<cmd>w<CR>',                                                        slt)
+    bind(normal, 'f',       '<cmd>Neoformat | Trim<CR>',                                         slt)
+    bind(normal, 'F',       '<cmd>Neoformat<CR>',                                                slt)
 end
 bind(normal, '<Tab>',   '<cmd>bnext<CR>',                                                    slt)
 bind(normal, '<S-Tab>', '<cmd>bprevious<CR>',                                                slt)
 bind(all,    '<c-E>',   '<cmd>bd<CR>',                                                       slt)
-bind(normal, 'f',       '<cmd>Neoformat | Trim<CR>',                                         slt)
-bind(normal, 'F',       '<cmd>Neoformat<CR>',                                                slt)
 --   ____          _
 --  / ___|   _ ___| |_ ___  _ __ ___
 -- | |  | | | / __| __/ _ \| '_ ` _ \
