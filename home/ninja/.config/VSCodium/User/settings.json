@@ -120,5 +120,7 @@
   "editor.fontFamily": "'Fantasque Sans Mono', 'Droid Sans Mono', 'monospace'",
   "editor.fontSize": 16,
   "cSpell.enabled": false,
-  "lldb.suppressUpdateNotifications": true
+  "lldb.suppressUpdateNotifications": true,
+  "terminal.integrated.stickyScroll.enabled": false,
+  "terminal.integrated.initialHint": false
 }
