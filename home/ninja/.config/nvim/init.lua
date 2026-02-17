@@ -53,6 +53,7 @@ if not is_vscode then
             'just',
             'vala',
             'markdown',
+            'caddy'
         },
         sync_install = false,
         auto_install = false,
